@@ -1,4 +1,4 @@
-# 🌐 [Project Title TeoMappingProject]
+# 🌐 [Digital TMP: Open Geospatial Integration of the Teotihuacan Mapping Project Data Files]
 
 > **Purpose:** Provide a concise but informative overview of the entire project. Designed for newcomers, reviewers, or hiring managers.
 
@@ -43,9 +43,10 @@ This project is organized into three core phases:
 ## 📂 Repository Structure
 | Folder | Purpose |
 |--------|---------|
-| `phases/` | Code and outputs for each project phase |
-| `docs/` | Narrative documentation |
-| `data/` | Raw, interim, and processed datasets |
+| `phases/` | Docs, code and outputs for each project phase |
+| `docs/` | Narrative project documentation |
+| `report/` | Comprehensive scientific project report |
+| `data/` | Raw, interim, processed and external (cloud downloaded) datasets |
 | `infrastructure/` | Database schema, Docker, external file info |
 | `workflows/` | Pipeline code |
 | `outputs/` | Final plots, tables, models |
@@ -57,5 +58,5 @@ This project is organized into three core phases:
 4. Download large data assets: [see this guide](infrastructure/cloud_downloads.md)
 
 ## 👤 Author
-- [Your Name] – [your email or website]
+- Rudolf Cesartetti – Rudolf.Cesaretti@asu.edu | [Linked-In](https://www.linkedin.com/in/rudolf-cesaretti) | [Website](https://rcesaret.github.io/) | [GitHub](https://github.com/rcesaret) | [ASU](https://search.asu.edu/profile/2306101)
 - Attribution & licensing info here.
