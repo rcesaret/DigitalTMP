@@ -1,4 +1,4 @@
-# 🌐 [Digital TMP: Open Geospatial Integration of the Teotihuacan Mapping Project Data Files]
+# 🌐 Digital TMP: Open Geospatial Integration of the Teotihuacan Mapping Project Data Files
 
 > **Purpose:** Provide a concise but informative overview of the entire project. Designed for newcomers, reviewers, or hiring managers.
 
