@@ -52,38 +52,44 @@ graph TD
 ### Phase 1: Database Analysis*
 
 **Description:**  
-This phase assesses the structure, schema, and contents of four legacy Microsoft Access databases used in the Teotihuacan Mapping Project (TMP). The goal is to migrate each database into PostgreSQL while critically analyzing their schema design, data completeness, and interoperability. A major deliverable is a written evaluation that recommends a unified, denormalized structure optimized for analysis and integration with geospatial data.
+This phase assesses the structure, schema, and contents of four legacy databases used in the Teotihuacan Mapping Project (TMP). The goal is to migrate each database into PostgreSQL and critically analyze their schema design, data completeness, and interoperability. A major deliverable is a written comparative analysis of these PostgreSQL databases, with the aim of determining the optimal database organization. 
 
-****NOTE:*** *This phase is an unusual one. In terms of programming, it involves migration of MS Access databases to PostgreSQL. However, it also involves a written comparative analysis of these PostgreSQL databases, with the aim of determining the optimal database organization. In my finished written analysis, I demonstrate that A) each of the databases can be represented as a single tabular wide-format dataframe, 2) that this denormalized wide-format is optimal given that the data needs no pivoting or updating, and 3) that the desired TMP database should be fully denormalized for analysis and geospatial integration. Thus, the analysis of the databases serves as the basis for planning Phase 2.*
+****NOTE:*** *This evaluation recommends a unified, denormalized structure optimized for analysis and integration with geospatial data. In the present draft of this report, I argue that A) each of the databases can be represented as a single tabular wide-format dataframe, 2) that this denormalized wide-format is optimal given that the data needs no pivoting or updating, and 3) that the desired TMP database should be fully denormalized for analysis and geospatial integration. Thus, the analysis of the databases serves as the basis for planning Phase 2.*
 
 **Inputs:**
-- DF8, DF9, DF10 MS Access (.accdb) files
-- REANs DF2 MS Access (.accdb) file
-
+- SQL scripts to replicate legacy TMP databases
+  - DF8: `TMP_DF8.sql` and `TMP_DF8_create.sql`
+  - DF9: `TMP_DF9.sql` and `TMP_DF9_create.sql`
+  - DF10: `TMP_DF10.sql` and `TMP_DF10_create.sql`
+  - Ceramic Reanalysis (REAN): `TMP_REAN_DF2.sql` and `TMP_REAN_DF2_create.sql`
+ 
 **Outputs:**
 - PostgreSQL versions of each database
-- Database schema comparisons (ER diagrams, tables)
+- Database schema comparisons (Entity Relationship Diagrams [ERDs], tables)
 - Written analysis supporting denormalization decision
 - Recommendation to proceed with fully denormalized wide-format structure
 
 **Tools & Techniques:**
-- MS Access
-- PostgreSQL (via pgAdmin + `pgloader` or `ogr2ogr`)
-- Entity Relationship Diagrams (ERD)
-- SQL schema introspection tools
-- Comparative data visualization in R or Python
+- PostgreSQL 17
+- Python-based connection, manipulation and analysis of pgsql RODBCS using libraries such as pandas, SQLAlchemy, psycopg2, pyodbc, sqlparse, etc.
+- Yet-undetermined python libraries for producing publication-quality figures/visualizations of schema diagrams/ERDs
 
-#### Workflow 1.1. Database Migration from MS Access to PostgreSQL
+
+#### Workflow 1.1. Setup Legacy TMP Databases on Local PostgreSQL Server
 
 **Overview:**  
-This workflow converts four legacy Microsoft Access 2016 databases into PostgreSQL. It ensures schema fidelity, handles data type coercion, and prepares the tables for structured analysis. Each migrated database will be evaluated for completeness, normalization structure, and integration potential.
+This workflow creates and populates four legacy TMP databases (`DF8`, `DF9`, `DF10` and `REANs DF2` on a local PostgreSQL server using .sql scripts. These SQL scripts were written to carefully replicate/migrate/convert legacy Microsoft Access (.mdb and .accdb) databases into PostgreSQL 17 (effectively database dumps) to ensure schema fidelity, handle data type coercion, prepare and populate the tables for structured analysis. 
+
+converts Microsoft Access 2016 databases into . It ensures . In the subsequent workflow, each migrated database will be evaluated for completeness, normalization structure, and integration potential.
 
 **Tasks:**
 
-- Convert DF8 Microsoft Access 2016 (.accdb) Database to PostgreSQL
-- Convert DF9 Microsoft Access 2016 (.accdb) Database to PostgreSQL
-- Convert DF10 Microsoft Access 2016 (.accdb) Database to PostgreSQL
-- Convert REANs DF2 Microsoft Access 2016 (.accdb) Database to PostgreSQL
+- create and populate the four legacy TMP databases on the local PostgreSQL server using the .sql files and the sqlalchemy package
+- test the connection to the TMP databases on the PostgreSQL server
+- Verify successful database setup by querying the databases
+- Run validation checks on the TMP database schemas
+- test harness for verifying row counts & key uniqueness after migration.
+
 
 #### Workflow 1.2. Evaluation and Redesign of the TMP Database
 
@@ -92,10 +98,22 @@ This workflow critically evaluates the structure and schema of the four PostgreS
 
 **Tasks:**
 
-- Analysis of DF8, DF9, DF10, and REANs DF2 tables and schemas
-- Critical evaluation using ERDs, flowcharts, and summary tables
-- Documentation of database evolution from DF8 to DF9 to DF10 in terms of schema/organizational differences, variable transformations and naming changes between database versions
-- Recommendation report justifying the denormalized wide-format schema in light of project goals, objectives and desired outputs (with reference to database theory and methods)
+Metadata report on each database (`TMP_DF8`, `TMP_DF9`, `TMP_DF10`, and `TMP_REAN_DF2`)
+1. Analysis and reporting for each individual database, involving:
+  - Analytics of databases + metadata review via Python/SQL, producing a well-structured technical report supported by tables and figures
+  - Figures = beautiful, professional and easy to digest schema diagrams
+  - Tables = summaries of key database dimensions/metrics + metadata)
+  - [NEED TO DETERMINE WHAT INFORMATION TO REPORT ABOUT EACH DATABASE, INCLUDING STANDARD METADATA + SUMMARY INFO PLUS METRICS THAT ANTICIPATE THE SUBSEQUENT COMPARISON OF THE DATABASES]
+ Comparative analysis of the database schemas + tables structure, involving:
+2. Comparative analytics of databases + metadata review via Python/SQL, producing a well-structured written comparative analysis supported by tables (and possibly figures)
+  - [NEED TO DETERMINE THEORETICALLY-INFORMED AND CONTEXT-APPROPRIATE METRICS + KEY DIMENSIONS OF COMPARISON FOR DATABASE REPORTS]
+  - The written analysis should include narrative explanation of the database evolution from DF8 to DF9 to DF10 in terms of schema/organizational differences, variable changes and variable name changes between database versions (complete with supporting database analytics)
+  - This written analysis is supposed to lead up to the subsequent database redesign proposal/plan, anticipating it by providing key quantitative metrics that justify its conclusions (see below)
+3. Recommendation report justifying the denormalized wide-format schema in light of project goals, objectives and desired outputs (with reference to database theory and methods)
+  - Need to revise, edit and expand the draft of the TMP database redesign proposal/plan, which argues for denormalization of the TMP database.
+  - At present, the denormalization decision rationale is argued purely qualitatively, lacking quantitative metrics. We need to determine what quant metrics to use and employ to persuasively argue for wide-format denormalization -- ideally, drawing on metrics already laid out in the preceeding parts of Workflow 1.2. Included in these metrics should be strategic project design concerns such as scalability, size and speed of the database.
+  - In addition, we need to come up with a plan for how to connect the core TMP databases (`TMP_DF8`, `TMP_DF9`, `TMP_DF10`) with the ceramic reanalysis database (`TMP_REAN_DF2`) based on approximate ceramic type associations between the two. On the other hand, the core TMP databases and the REANs database both share the same primary key (SSN) and structure (SSNs == collection units == rows), so the matter of the equivalence between the core db's ceramic variables and the REANs db's ceramic variables may not be relevant at this stage(?)
+  
 
 ### Phase 2: Database Transformation
 
@@ -440,6 +458,4 @@ Construct new variables from spatial geometry (area, adjacency, topological trai
 - Flag inconsistencies or errors for revision
 - Cross-validate + refine/edit/correct TMP variables using GIS features data (GIS features quantification vs. database variable values)
 - Store revised and new engineered features in TMP_DF12 for analysis
-
-
 
