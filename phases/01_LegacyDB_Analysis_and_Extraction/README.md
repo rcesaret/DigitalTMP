@@ -1,5 +1,5 @@
 
-# Phase [01]: [Phase Title]
+# Phase [number]: [Phase Title]
 
 > **Purpose**: Serve as a self-contained summary for each phase of your project—especially helpful for onboarding, documentation, or portfolio readers.
 
@@ -40,4 +40,4 @@ Brief paragraph on the purpose of this phase.
 Short notes on any issues, surprises, or key decisions made.
 
 ## 🔗 Next Phase
-[Phase 02: PHASE 1 NAME](../PHASE1_NAME/README.md)
+[Phase 02: PHASE 2 NAME](../PHASE2_NAME/README.md)
