@@ -4,6 +4,7 @@
 **Author:** Rudolf Cesaretti
 **Affiliation:** ASU Teotihuacan Research Laboratory
 **Date:** June 3, 2025
+**Project Environment:** TMP_geo_db (Conda)
 ---
 
 ## Abstract
@@ -497,6 +498,19 @@ The project employs a strategic, phase-specific approach to technology selection
 - Multiple export formats supporting diverse user needs (GeoJSON, CSV, Shapefile, GeoTIFF)
 
 ## 7.3. Technology Stack Rationale
+
+### 7.3.0. Project Environment - TMP_geo_db
+
+The Digital TMP project utilizes a dedicated Conda environment named **TMP_geo_db** to ensure reproducibility and consistent dependency management across all development workstations. This environment is defined in the project's `environment.yml` file and includes all necessary Python packages, geospatial libraries, and analytical tools required for the project's eight-phase workflow.
+
+**Key Features:**
+- Python 3.11+ with extensive geospatial and data science packages
+- Complete PostgreSQL/PostGIS client libraries for database integration
+- GDAL/OGR and related geospatial libraries pre-configured with correct versions
+- Visualization tools for both analytical and presentation-quality outputs
+- Strict version control to ensure computational reproducibility
+
+The environment can be recreated on any workstation using the `conda env create -f environment.yml` command, ensuring a consistent foundation for all project contributors and maintaining the integrity of analytical outputs across different computing environments.
 
 ### 7.3.1. Open Source Priority
 The technology stack prioritizes open-source solutions to ensure long-term accessibility, reduce licensing dependencies, and support the project's commitment to open science principles. This approach facilitates reproducibility and enables global collaboration without institutional barriers.
