@@ -1,221 +1,192 @@
-# Digital TMP - Project Overview (Draft v1.1 -- 5/23/2025)
+# Digital TMP - Project Overview (Draft v2.0 -- 6/3/2025)
 
 ---
 **Author:** Rudolf Cesaretti
 **Affiliation:** ASU Teotihuacan Research Laboratory
-**Date:** May 23, 2025
+**Date:** June 3, 2025
 ---
 
-# Abstract [⚠ !FLAG - ABSTRACT NEEDS EDITS! ⚠]
+## Abstract
 
-This project presents the integration, modernization, and digital publication of one of the most significant archaeological datasets in the Americas: the Teotihuacan Mapping Project (TMP). Originally led by René Millon in the 1960s, the TMP remains the only full-surface archaeological survey ever conducted for the ancient city of Teotihuacan, encompassing over 5,000 surface collection units across approximately 37.5 square kilometers. Its outputs—1:2,000-scale photogrammetric base maps, extensive artifact counts, and architectural overlays—form the empirical foundation of decades of Mesoamerican research. Yet, despite its legacy, the TMP’s dataset remains fragmented across obsolete file formats, incompatible schemas, and spatial systems that prevent integration with modern digital tools.
+The Teotihuacan Mapping Project (TMP) stands as one of the most ambitious archaeological survey and mapping efforts ever undertaken, providing an unparalleled dataset for the study of one of the ancient world's largest and most influential cities. Initiated in the 1960s, the project generated vast quantities of attribute data from surface collections and detailed geospatial information through comprehensive mapping. Over several decades, this data has transitioned from analog formats through multiple generations of digital databases and GIS files, managed primarily at Arizona State University’s Teotihuacan Research Laboratory. Despite numerous efforts to preserve, enhance, and integrate these datasets, significant challenges related to data fragmentation, quality, technological obsolescence, and incomplete documentation persist. This document outlines the **TMP Data Integration Initiative**, a comprehensive project aimed at addressing these legacy issues. By systematically analyzing, transforming, integrating, and archiving the TMP's diverse digital assets, this initiative seeks to create a unified, accurate, well-documented, and accessible digital research infrastructure. The project employs a phased methodology, encompassing database analysis and transformation, GIS digitization and georeferencing, geospatial integration, and robust outputs for archival and dissemination through platforms like tDAR and PostGIS. The ultimate goal is to unlock the full scholarly potential of the TMP data for future generations of researchers, enabling new forms of data-driven inquiry into the urbanism, society, and history of Teotihuacan, while adhering to principles of open science and reproducibility.
 
-The Digital TMP Project initiative addresses this longstanding problem by executing a structured, multi-phase digital transformation pipeline. It systematically converts analog archives and legacy software outputs (including DF8, DF9, and REANS2 databases) into a unified PostgreSQL/PostGIS platform. Vector GIS files—originally digitized in MapInfo and housed in a local “Millon Space” coordinate system—are re-digitized, validated, and georeferenced to global CRS standards (WGS84, UTM Zone 14N). The outcome is a modular, reproducible, and open-access geospatial database supporting SQL-based queries, shapefile and GeoJSON exports, and spatial analyses across artifact, architectural, and typological datasets.
+# 1. Background: The Teotihuacan Mapping Project and its Evolving Data Landscape
 
-Designed to support a wide spectrum of users, this project benefits archaeologists, GIS analysts, policy planners, and educators. For scholars, it enables new investigations of ceramic distribution, spatial clustering, urban infrastructure, and residential zoning. For INAH and urban planners, the high-accuracy vector base layers serve as tools for heritage conservation and zoning around the site. For students and the broader public, the project will provide interactive maps, reproducible notebooks, and classroom-ready datasets hosted online.
+## 1.1. The Teotihuacan Mapping Project: A Legacy of Urban Archaeology
 
-In addition to scholarly infrastructure, this initiative functions as a digital preservation strategy. By unifying and publishing the TMP’s outputs with persistent identifiers and formal metadata, the project safeguards a dataset increasingly threatened by physical degradation and institutional loss. Moreover, the platform is extensible: future excavations, drone photogrammetry, geophysical scans, and legacy INAH materials can be added to the normalized spatial schema.
+Teotihuacan, flourishing in the Basin of Mexico from ca. 100 BCE to 650/750 CE, was an urban center of unparalleled scale and influence in the pre-Columbian Americas. Its comprehensive study was the goal of the Teotihuacan Mapping Project (TMP), initiated in 1962 by René Millon. The TMP was a groundbreaking archaeological endeavor, involving intensive, full-coverage survey of nearly 20 square kilometers, meticulous mapping of architectural and topographical features, and the systematic collection of over one million artifacts from more than 5,000 distinct tracts. This work culminated in the landmark 1973 publication, "Urbanization at Teotihuacan, Mexico, Volume 1: The Teotihuacan Map" ([Millon 1973; Millon, Drewitt, and Cowgill 1973](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\knowledge_base\Technical Report - Unfinished TMP Geospatial Data Across Three NSF Grants (1999-2020).md)), which remains a foundational resource.
 
-This project thus represents not only a digital rescue of the TMP’s data corpus but also a long-overdue realization of Millon’s original vision—one made actionable through modern data science, GIS workflows, and a commitment to open research. By creating a scalable infrastructure for integrating archaeological data from Teotihuacan, it invites collaboration, transparency, and innovation in the study of ancient urbanism.
+The data generated by the TMP is inherently dual in nature, comprising rich **attribute data** (detailed observations from "Site Survey Record" (SSR) forms, artifact counts, classifications) and fundamental **geospatial data** (the published maps, field maps, and 147 detailed "interpretation" sheets). The analytical power of the TMP data hinges on the precise linkage of these two components, a central theme throughout its history.
 
----
+## 1.2. Evolution of the TMP Digital Ecosystem: From Analog to Relational Data
 
-# 1. Background [⚠ !FLAG - BACKGROUND NEEDS EDITS! ⚠]
+The transition from analog records to digital formats began early in the TMP's history, spearheaded by George Cowgill's visionary adoption of computational methods in 1965. This evolution spanned over five decades, resulting in a complex, multi-generational digital ecosystem.
 
-The Teotihuacan Mapping Project (TMP) represents one of the most ambitious and methodologically innovative urban-scale archaeological undertakings of the 20th century. Initiated in 1962 under the direction of René Millon, the TMP sought to document, with unprecedented precision and breadth, the entirety of Teotihuacan—the largest and most influential ancient city in Mesoamerica.
+### 1.2.1. Early Computational Efforts (1960s-1970s): DF1-DF8
 
-Millon's vision was grounded in the understanding that comprehending the urban character of Teotihuacan, its societal structure, and its rise to prominence required a detailed map of the entire city. He envisioned that an accurate, detailed map was an indispensable precondition for any intensive study of urbanization at Teotihuacan, allowing investigation into settlement patterns, population distribution, and the nature of this ancient urban center. This was a "big problem" that required a comprehensive approach—only by mapping the city in its entirety could its true extent, density of construction, and relationships between constituent parts be determined.
+The initial foray into digital data management involved transcribing coded information from SSRs onto punch cards for processing on mainframe computers like the IBM 7094.
+-   **DF1-DF4**: These were preliminary, sequentially constructed, and often incomplete files used for methodological exploration and early statistical analyses (e.g., using SYMAP for distribution studies), as detailed in the [TMP Database Genealogy Report (v2)](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\knowledge_base\TMP_DB_Genealogy_v2.md).
+-   **DF5**: Created by transferring data from approximately 50,000 punch cards to magnetic tape.
+-   **DF6-DF7**: Involved complex FORTRAN programming for editing and reformatting, which sometimes led to unintended data loss due to the complexity of a single-program approach.
+-   **DF8**: Established between 1975-1977, DF8 became the core research database, superseding earlier files. It resided on VAX mainframes and introduced a "random access" file structure. A critical, and later problematic, feature was the "merging" of data from ~5,500 original collections into ~5,046 "cases" or "sites" to represent analytically meaningful structural units. This merging process was "not always clearly documented" ([Technical Report - Unfinished Core Database Work...](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\knowledge_base\Technical Report - Unfinished Core Database Work of the TMP Across Three NSF Grants (1999-2020).md)) and complicated later data integration. DF8's ceramic classifications were also recognized as too broad for nuanced analysis.
 
-The project was ambitious in scope, ultimately covering approximately 20 square kilometers of the ancient city core, though the survey to define its limits encompassed a larger area of roughly 35-38 square kilometers. The methodology involved creating a photogrammetric base map from low-altitude aerial surveys conducted in April and September 1962, followed by detailed ground surveys where archaeological remains were systematically recorded and surface collections made across approximately 5,000 provenience tracts.
+### 1.2.2. The Ceramic Reanalysis (REANS)
 
-The TMP employed a rigorous 500×500 meter grid system, termed "sectors," oriented 15°25′ east of true north to align with the Avenue of the Dead. From the outset, it was clear that the project's research questions—concerning urban settlement patterns, population distribution, social composition, craft production, and external relations—necessitated the collection of vast amounts of diverse data. This included systematic collection of nearly one million artifacts from approximately 5,046 individual archaeological cases, along with detailed architectural descriptions and field observations recorded on standardized Site Survey Record (SSR) forms.
+To address the limitations of DF8's ceramic data, a comprehensive reanalysis (REANS) was initiated in the 1970s under Dr. Evelyn Rattray.
+-   **Rationale**: To provide more detailed typological and chronological information than available in DF8.
+-   **Methodology**: REANS was based on original, individual collection lots, not DF8's merged units, creating a fundamental difference for integration. Data entry was complex, involving transfer from paper forms to intermediate code sheets, then to ASCII files.
+-   **Challenges**: Undocumented or ambiguously documented removal of sherds to "specials" collections created count discrepancies. Ian Robertson completed the first robust electronic versions in the 1990s.
 
-The scale and complexity of this data collection underscored the need for systematic management and analysis, a challenge that led to early adoption of computerization within the project beginning in 1965 with George Cowgill's involvement—making the TMP a pioneer in computer-aided archaeological analysis.
+### 1.2.3. Relational Databases and GIS Integration (1990s): DF9 and MF2
 
-## 1.1. What Data Was Collected  [⚠ !FLAG -- INCORRECT / BAD ⚠]
+The 1990s saw a shift to PC-based relational database systems and GIS.
+-   **DF9**: Developed by Ian Robertson, DF9 migrated data from DF8 into Paradox and later Microsoft Access. It implemented a relational structure, incorporated error corrections, and, crucially, integrated with digitized spatial data.
+-   **MF2**: Robertson also created MF2, a digital map file of TMP collection tract boundaries (in MapInfo and ArcView formats), enabling GIS-supported spatial analyses by linking tract polygons to DF9 attribute data.
 
-The TMP generated several distinct but interrelated classes of data:
+### 1.2.4. Ongoing Refinements and Challenges (2000s-Present): DF10 and Advanced GIS
 
-- **Surface Collection Data**: Each of the 5,046 tracts was surveyed for artifacts visible on the ground. These included ceramic fragments, lithics (especially obsidian), figurines, groundstone tools, and occasional bone and shell materials.
-- **Observational and Architectural Data**: Surveyors completed Site Survey Records (SSRs) for each tract, documenting architectural remains, construction materials, vegetation cover, drainage features, slope, and site integrity. These forms often contained field sketches, interpretive notes, and complex observations not easily translatable into structured formats.
-- **Mapping and Photogrammetric Data**: The project relied on a grid-based coordinate system overlaid on a large-scale aerial base map. This grid divided the city into 500 × 500 meter “sectors,” oriented 15°25′ east of true north to match the city’s Avenue of the Dead alignment. The base map, created from stereoscopic aerial photos taken in 1962, served both as a survey aid and analytical platform.
-- **Excavation and Ethnoarchaeological Records**: Though limited in scope compared to the surface survey, TMP investigators also conducted test excavations in key areas and collected ethnographic observations of modern land use and irrigation practices, tying the ancient city into broader temporal frameworks.
+Efforts to refine and manage the TMP data continued into the 21st century.
+-   **DF10**: Initiated by Anne Sherfield in 2022, DF10 (an evolution of DF9) aims to reduce database complexity, enhance user-friendliness (e.g., by minimizing zero values using "long" table formats), and systematically document known inherited data problems ([TMP Database Genealogy Report (v2)](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\knowledge_base\TMP_DB_Genealogy_v2.md)).
+-   **Geospatial Data Evolution**:
+    -   The 147 "interpretation" sheets were scanned, and their georeferencing as GeoTIFFs was initiated under a 1999 NSF grant, though this process was reported as "underway" in 2002 and its final validation remains a key task ([Technical Report - Unfinished TMP Geospatial Data...](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\knowledge_base\Technical Report - Unfinished TMP Geospatial Data Across Three NSF Grants (1999-2020).md)).
+    -   Michael Smith later digitized the main TMP architectural map. Further GIS work was conducted by researchers like Huster, Dennehy, and notably Anne Sherfield, who undertook significant redigitization and methodological refinements to address inconsistencies and improve spatial accuracy, as detailed in [Finalizing the GIS Digitization of the TMP Data Files v0](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\knowledge_base\report_drafts\Finalizing the GIS Digitization of the TMP Data Files v0.md).
 
-## 1.2. The TMP Digital Data Ecosystem: A Multi-Generational Evolution
+## 1.3. Previous NSF-Funded Interventions (1999-2020): Progress and Persistent Gaps
 
-The transition from analog data to digital structures began in the 1970s and has continued through successive waves of research at Arizona State University’s Teotihuacan Research Lab. The TMP’s electronic data ecosystem comprises multiple generations of databases and GIS files. This transition from analog field records to digital databases represents one of the longest-running and most complex data management efforts in archaeology. The TMP's electronic data ecosystem comprises multiple generations of databases spanning over five decades, each addressing specific technological limitations and analytical needs of its era.
+Three significant NSF grants awarded to Arizona State University (ASU) between 1999 and 2020 aimed to preserve, enhance, and make accessible the TMP's digital legacy.
+-   **NSF #SBR-9816263 (1999-2002)**: Focused on data rescue, structural improvement, and initial web accessibility. Key outcomes included the creation of DF9 (MS Access) from DF8, an MS Access version of REANS, reconciliation of most records between DF9, REANS, and MF2 (all but ~50 cases), reprojection of MF2 into standard coordinate systems, scanning of the 147 interpretation sheets and initiation of their georeferencing, and development of an "integrated mapping" prototype. However, full error resolution, complete REANS documentation, finalized EML metadata, completion of the ArcIMS website, and full georeferencing of all interpretation sheets remained unfinished ([Technical Report - Unfinished Core Database Work...](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\knowledge_base\Technical Report - Unfinished Core Database Work of the TMP Across Three NSF Grants (1999-2020).md)).
+-   **NSF #0004286 (2001-2002)**: Primarily an infrastructure grant that expanded and upgraded the ASU Teotihuacan Research Laboratory, ensuring the physical preservation of original analog maps, field notes, aerial photos, and artifact collections—the primary referents for all digital data ([Technical Report - Unfinished TMP Geospatial Data...](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\knowledge_base\Technical Report - Unfinished TMP Geospatial Data Across Three NSF Grants (1999-2020).md)).
+-   **NSF #1723322 (2017-2020)**: Aimed to complete unfinished analyses, archive data in tDAR, and publish findings. This grant inherited DF10, which was still "far from optimal in organization and content." A critical new task (Task 2F) was to "Clean the map GIS, link to the database" due to "problems that inhibit easy linkage" with Smith's digitized architectural map. While some progress was made (e.g., identifying outdated DF10 fields, readying some maps for tDAR), the final cleaning of DF10, full integration of problematic REANS cases, and complete "fixing" of the architectural map GIS to resolve linkage issues remained "ongoing" or "uncompleted tasks" ([Technical Report - Unfinished Core Database Work...](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\knowledge_base\Technical Report - Unfinished Core Database Work of the TMP Across Three NSF Grants (1999-2020).md); [Technical Report - Unfinished TMP Geospatial Data...](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\knowledge_base\Technical Report - Unfinished TMP Geospatial Data Across Three NSF Grants (1999-2020).md)).
 
-### 1.2.1 Early Digital Foundations (DF1-DF8, 1965-1977)
+These decades of effort laid crucial groundwork but also highlighted the depth and persistence of the data challenges, setting the stage for the current comprehensive integration initiative.
 
-The TMP's engagement with electronic data processing began in 1965, when George Cowgill joined the project and, with René Millon, secured grants for pioneering computer-aided archaeological analysis. The initial Data Files 1 through 4 (DF1-DF4) were preliminary, incomplete datasets created primarily for methodological exploration and statistical technique development while data coding was still underway. These files served as testbeds for early analyses using programs like SYMAP, but were inherently non-representative due to their sequential, non-random construction.
+# 2. Problems & Motivations: Addressing a Complex Legacy
 
-The transition to comprehensive digital records required monumental effort. By the late 1960s, approximately 50,000 IBM punch cards were manually transcribed from coding forms—a dataset sufficient to fill the back seat of a Volkswagen beetle. These cards were read by an IBM 7094 computer at Harvard University Computing Center and transferred to magnetic tape, creating Data File 5 (DF5). Subsequent versions (DF6-DF7) involved complex FORTRAN programming for editing and reformatting, though the single-program approach proved problematic and led to occasional unintended data loss.
+Despite its landmark status and decades of dedicated data management efforts, the Teotihuacan Mapping Project's digital archive presents a complex array of legacy challenges. These issues, stemming largely from the project's historical depth, multi-generational development, and evolving technologies, must be systematically resolved to unlock its full scholarly potential. This initiative is motivated by the imperative to overcome these hurdles and create a unified, reliable, and accessible research resource.
 
-Data File 8 (DF8), developed between 1975-1977, marked a critical juncture as the first stable, comprehensive electronic representation of TMP survey results. DF8 contained 5,050 cases (including 4 dummy records) described by 291 variables, encompassing administrative data, locational information, architectural observations, and artifact tabulations. A significant technical advancement was the implementation of "random access" file structure for the VAX mainframe version, allowing direct navigation to specific data locations rather than sequential processing required by earlier tape-based files.
+## 2.1. Data Fragmentation and Interoperability Failures
 
-DF8 incorporated several key improvements: completion of record merging for cases considered single archaeological units, inclusion of approximately 300 cases absent in DF6, and addition of previously missing ceramic data. However, it retained limitations from early computing constraints, including short data fields (2-4 characters) and flat-file structure that limited complex querying capabilities.
+The most fundamental challenge is the fragmentation of the TMP digital ecosystem. Over 50+ years, different researchers and teams produced a patchwork of datasets, often with distinct structures, formats, and analytical aims.
+-   **Heterogeneous Datasets**: The primary attribute database (DF8, evolving to DF9 and DF10), the GIS vector files (MF2, various architectural map versions), and the ceramic reanalysis database (REANS) were often developed independently.
+-   **Inconsistent Definitions and Keys**: This has led to inconsistent variable definitions, spatial keys, and attribute coding across datasets, severely hindering robust cross-referencing and system-wide querying. For instance, REANS uses original collection lots while DF8/DF9/DF10 use merged "sites," and resolving these differences for all cases remains a challenge ([Technical Report - Unfinished Core Database Work...](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\knowledge_base\Technical Report - Unfinished Core Database Work of the TMP Across Three NSF Grants (1999-2020).md)).
 
-### 1.2.2 The Ceramic Reanalysis Project (REANS, 1973-1983)
+## 2.2. Data Quality and Integrity Deficiencies
 
-Concurrent with DF8 development, a comprehensive ceramic reanalysis was undertaken to address critical deficiencies in the original artifact analyses. By 1971, it was clear that the original ceramic tabulations omitted crucial information about vessel forms and decorative modes, and Evelyn Rattray began questioning some chronological interpretations based on her study of TMP stratigraphic excavations.
+Ensuring the accuracy and reliability of the data is paramount.
+-   **Attribute Data Issues**:
+    -   The main attribute database (DF10) was described in 2020 as "one of the biggest uncompleted tasks" and "far from optimal in organization and content," with only "slight progress" made on its cleaning during the 2017-2020 NSF grant. Issues include outdated/unreliable fields, typographical and coding errors, and inconsistencies in architectural categorizations ([Technical Report - Unfinished Core Database Work...](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\knowledge_base\Technical Report - Unfinished Core Database Work of the TMP Across Three NSF Grants (1999-2020).md)).
+    -   Approximately 350 "particularly problematic collections" in the REANS ceramic database remain unresolved and unintegrated with DF10 due to complex historical data ambiguities ([Technical Report - Unfinished Core Database Work...](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\knowledge_base\Technical Report - Unfinished Core Database Work of the TMP Across Three NSF Grants (1999-2020).md)).
+-   **Geospatial Data Issues**:
+    -   The digitized architectural map GIS was found to have "problems that inhibit easy linkage with the database," requiring a dedicated "fixing the map" effort (Task 2F of the 2017 grant) that was ongoing as of 2020 ([Technical Report - Unfinished Core Database Work...](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\knowledge_base\Technical Report - Unfinished Core Database Work of the TMP Across Three NSF Grants (1999-2020).md)). These problems could include geometric errors, attribute inconsistencies within GIS tables, or topological issues.
+    -   While the MF2 tract map was topologically cleaned, its comprehensive spatial accuracy validation against a finalized architectural map or other control sources remains to be fully documented ([Technical Report - Unfinished TMP Geospatial Data...](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\knowledge_base\Technical Report - Unfinished TMP Geospatial Data Across Three NSF Grants (1999-2020).md)).
 
-The decade-long reanalysis project (ca. 1973-1983) was directed by Rattray under Cowgill's general oversight, with analyses conducted by Rattray herself, Andrea and Ángela Ávila, and TMP technicians Pedro Baños and Zeferino Ortega. Results were initially recorded on detailed "Reans Data Sheets," then transcribed to "Reanalysis Code Sheets" by Mary R. Hopkins for computer entry performed by Eva Zilberman and Diane Menyuk.
+## 2.3. Geospatial Data Complexities
 
-The resulting REANS database provided vastly increased detail in ceramic information compared to DF8, with terminology and categories closely aligned with Rattray's (2001) published ceramic typology. However, the creation process was beset by technical challenges including transcription errors, difficulty merging reanalysis records with DF8/DF9 cases (approximately 300 remain unmatched), and complications from removed objects and incomplete documentation.
+The spatial nature of the TMP data introduces specific challenges critical to its interpretation.
+### 2.3.1. Georeferencing and Spatial Accuracy
 
-REANS represents a partial reanalysis rather than complete replacement of original data, leading to discrepancies in ceramic phase totals between databases. For instance, REANS generally shows significant increases in Patlachique counts and decreases in Tzacualli compared to DF8/DF9, reflecting reclassification of sherds under evolved criteria.
+Achieving and validating high-accuracy spatial referencing for all GIS layers is a non-negotiable prerequisite for reliable analysis.
+-   The georeferencing of the 147 "interpretation" sheets, initiated under the 1999 NSF grant, was reported as "underway" in 2002. Their final, validated georeferencing status across all sheets, including accuracy assessments (e.g., RMSE), remains unconfirmed ([Technical Report - Unfinished TMP Geospatial Data...](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\knowledge_base\Technical Report - Unfinished TMP Geospatial Data Across Three NSF Grants (1999-2020).md)).
+-   Legacy map data often contains inherent local and systematic distortions that require sophisticated transformation methods (e.g., Thin Plate Spline, as explored in [Report_Georeferencing_TMP_Database.md](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\knowledge_base\tmp_gis\georef\Report_Georeferencing_TMP_Database.md)) to ensure accurate alignment with modern coordinate systems.
 
-### 1.2.3 Relational Database Evolution (DF9, 1990s)
+### 2.3.2. Geometric and Topological Integrity
 
-Data File 9 (DF9), developed primarily by Ian Robertson in the 1990s, represented a paradigmatic shift from mainframe flat-files to PC-based relational database systems. Initially implemented in Paradox and later Microsoft Access, DF9 moved beyond DF8's structural limitations to enable sophisticated data relationships and more efficient querying.
+GIS layers must be free of errors that compromise spatial calculations and relationships.
+-   Digitized features may suffer from imprecise shapes, incorrect placements, or erroneous orientations relative to original sources.
+-   Topological errors (e.g., unclosed polygons, overlaps, gaps) must be systematically identified and corrected to ensure data integrity for analysis.
 
-DF9 retained DF8's core content—5,046 cases described by approximately 300 data fields—while incorporating significant improvements: error identification and correction, relational database structure advantages, and most importantly, integration with digitized spatial data. Robertson created electronic maps of collection tract boundaries (initially MF2, later the topologically clean MF3) that could be directly linked to DF9 attribute data, enabling GIS-supported spatial analyses and visualizations previously impossible.
+### 2.3.3. Inconsistent Digitization Efforts
 
-A Microsoft Access application, "TMP Datafile 9 Browser.mdb," was developed as a user-friendly interface providing case-by-case data access integrated with map visualization tools. Despite these advances, DF9 retained data fields largely based on 1960s-1970s typologies and continued to face integration challenges with REANS due to persistent provenience unit incompatibilities.
+The long history of the TMP means GIS datasets were often constructed at different times, by various personnel with differing goals and levels of precision. This can result in mismatched feature IDs, divergent schema definitions, and varied spatial precision across layers ([docs/overview.md](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\docs\overview.md) original text).
 
-### 1.2.4 Recent Database Updates (DF10, 2022+)
+## 2.4. Metadata Deficiencies and Documentation Gaps
 
-Data File 10 (DF10), initiated by Anne Sherfield in 2022, represents the most recent effort to enhance TMP data accessibility and usability. Building on the DF9 lineage, DF10 aims to address known structural complexities and data quality issues through systematic database reorganization and comprehensive documentation of inherited problems.
+Comprehensive documentation is essential for data interpretability and long-term usability.
+-   Much of the TMP data lacks complete, standardized metadata. The 1999 NSF grant initiated extensive documentation for DF9 and planned EML metadata, but this was not fully finalized for all datasets ([Technical Report - Unfinished Core Database Work...](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\knowledge_base\Technical Report - Unfinished Core Database Work of the TMP Across Three NSF Grants (1999-2020).md)).
+-   Effective use has often relied on "insider knowledge," susceptible to loss as original researchers age or depart.
+-   "Gray variables"—ambiguous fields with unclear definitions or truncated labels due to early storage limitations—require painstaking reconstruction from legacy codebooks or paper records.
 
-Key DF10 changes include:
-- **Structural normalization**: Consolidation of 15 DF9 code tables into unified structures, reduction of zero-value prevalence through "long" table formats
-- **Variable modifications**: Strategic removal of problematic variables (e.g., `lastBuildPhase` based on programming errors, `stoneCut` with no data), renaming for clarity, and merging of unreliably distinguished categories
-- **Data integrity documentation**: Systematic identification of the "Total Counts Problem" where subdivision sums exceed category totals, highlighting areas requiring return to original records
-- **Enhanced metadata**: Explicit documentation of known limitations, missing data patterns, and pathways for future refinement
+## 2.5. Technological Obsolescence
 
-### 1.2.5. GIS Data [⚠ !FLAG ⚠]
+The TMP data ecosystem was designed for computing environments that are now archaic.
+-   Early analyses used FORTRAN on VAX mainframes. Later phases adopted platforms like Paradox and Microsoft Access, which present interoperability challenges with modern systems like PostgreSQL and PostGIS.
+-   Proprietary and outdated file formats (e.g., early MapInfo versions) require careful conversion, risking data loss or corruption.
 
-Robertson’s digitization of the TMP map sheets in the late 1990s (known as MF2) produced the first vector GIS file of the TMP’s surface collection units. These polygon shapefiles—one per tract—were traced from raster scans of the original 1:2,000 TMP base maps and encoded within the TMP’s “Millon Space” coordinate system.
+## 2.6. Preservation and Accessibility Gaps
 
-Another key output of the TMP was a set of architectural interpretation overlays—red-ink drawings layered onto transparent sheets atop the 1:2,000 maps. These traced outlines of buildings, walls, and plazas have since been digitized and converted into vector GIS layers across multiple versions. Despite variation in digitization precision and interpretation fidelity, these files represent the most detailed spatial model of Teotihuacan’s urban architecture available today.
+Despite its scholarly importance, the TMP dataset has never been fully published or archived in a comprehensively discoverable, interoperable, and reusable format.
+-   Previous NSF-funded efforts made progress but did not achieve complete, integrated archival and dissemination for all core components.
+-   The physical archive (original maps, notebooks, negatives) also faces preservation risks without comprehensive digital backups.
 
-## 1.3. Spatial Reference System and Technical Challenges [⚠ !FLAG ⚠]
+## 2.7. Motivation for the Current Initiative: Realizing the TMP's Full Potential
 
-A major technical challenge in modernizing the TMP dataset lies in its original coordinate system. “Millon Space” is a custom, site-centered Cartesian framework with no link to standard geodetic datums. While internally consistent and analytically effective in the 1960s–90s, this system cannot interface with modern GPS, remote sensing, or GIS workflows without complex georeferencing procedures—a key objective of the current project.
+The Teotihuacan Mapping Project dataset is an irreplaceable global heritage resource. The persistence of the aforementioned challenges has, however, hindered its full utilization. This **TMP Data Integration Initiative** is motivated by the scholarly imperative to:
+-   **Preserve and Secure**: Safeguard this unique dataset from degradation and loss.
+-   **Unify and Integrate**: Consolidate the fragmented data into a coherent, internally consistent research infrastructure.
+-   **Enhance and Validate**: Improve data quality, accuracy, and completeness through systematic cleaning and validation.
+-   **Document Comprehensively**: Create robust metadata to ensure long-term interpretability.
+-   **Enable Future Research**: Unlock the dataset for new generations of researchers and innovative analytical approaches, as envisioned in the project's multi-phase [architecture](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\docs\architecture.md).
 
-Additionally, the digitized datasets (MF2, architectural GIS, REANS2, etc.) were constructed at different times, for different goals, by rotating personnel. As a result, integration is hindered by inconsistent spatial precision, mismatched IDs, and divergent schema definitions.
+By addressing these long-standing issues, this project aims to transform the TMP's complex legacy into a powerful, accessible, and enduring resource for understanding one of the ancient world's most significant cities.
 
-## 1.4. Toward Integration and Reproducibility [⚠ !FLAG ⚠]
+# 3. Project Goals and Objectives: Building a Unified Digital Infrastructure
 
-The TMP datasets—spanning over four decades of data entry, analysis, and reanalysis—require a consolidated approach to achieve interoperability, reproducibility, and public accessibility. This project addresses those challenges by employing a phased methodology of database analysis, GIS digitization, coordinate transformation, and relational integration.
+The overarching vision of the Teotihuacan Mapping Project (TMP) Data Integration Initiative is to transform the project's vast and complex legacy data into a unified, accurate, thoroughly documented, and readily accessible digital research infrastructure. This initiative aims to empower new generations of researchers to explore Teotihuacan with unprecedented depth and analytical power, ensuring the long-term preservation and scholarly impact of this unique archaeological dataset.
 
-It represents not only a technical endeavor but also a scholarly imperative: to preserve, unify, and expand one of the most important archaeological datasets in the Americas for future generations of researchers and collaborators.
+## 3.1. Core Technical Objectives
 
----
+To achieve this vision, the project will pursue the following interconnected technical objectives, drawing upon the systematic methodologies outlined in the [project architecture document](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\docs\architecture.md):
 
-# 2. Problems & Motivations [⚠ !FLAG ⚠]
+### 3.1.1. Attribute Database Finalization and Integration
 
-Despite its landmark status in archaeological research, the Teotihuacan Mapping Project presents a complex array of legacy challenges that must be resolved to unlock its full scholarly potential. These issues span data structure, technological obsolescence, spatial alignment, and systemic fragmentation—most stemming from the project's sheer historical depth and multigenerational development.
+-   **Complete DF10 Cleaning and Validation**: Execute a systematic, field-by-field and record-by-record audit of the main TMP attribute database (DF10) to identify and correct remaining errors (typographical, coding, computational), purge outdated or unreliable data fields, and standardize categorical variables. This addresses "one of the biggest uncompleted tasks" identified in prior work ([Technical Report - Unfinished Core Database Work...](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\knowledge_base\Technical Report - Unfinished Core Database Work of the TMP Across Three NSF Grants (1999-2020).md)).
+-   **Finalize REANS Data Integration**: Achieve full resolution of data ambiguities within the approximately 350 "particularly problematic collections" in the REANS ceramic database and complete their verified, seamless integration into the finalized DF10 structure.
+-   **Structural Optimization**: Ensure the final database (e.g., DF12 as per [architecture.md](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\docs\architecture.md) Workflow 2.2) possesses optimal relational integrity and query performance, potentially involving denormalization strategies where justified for analytical efficiency.
 
-### 2.1. Fragmentation and Interoperability Failures [⚠ !FLAG ⚠]
+### 3.1.2. Geospatial Data Remediation, Validation, and Standardization
 
-The most fundamental challenge facing the TMP digital archive is fragmentation. Over the course of 40+ years, different researchers, graduate students, and institutional teams have produced a patchwork of datasets—each with distinct structures, formats, and analytical aims. The primary artifact database (DF8), the GIS vector files (MF1 and MF2), and the ceramic reanalysis database (REANS2) were all developed independently, often using inconsistent variable definitions or spatial keys.
+-   **Complete and Validate Georeferencing**: Ensure all core TMP map products—including the primary architectural map, the MF2 tract map, and crucially, all 147 "interpretation" sheets—are georeferenced to a high, documented standard of absolute and relative spatial accuracy using robust methodologies (as explored in [tmp_gis/georef/Report_Georeferencing_TMP_Database.md](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\knowledge_base\tmp_gis\georef\Report_Georeferencing_TMP_Database.md)).
+-   **Comprehensive Spatial Cleaning**: Perform rigorous spatial cleaning of all GIS layers. This includes correcting geometric errors in features, ensuring topological integrity (e.g., resolving overlaps, gaps), and standardizing feature representations. This addresses the "fixing the map" task for the architectural GIS identified as ongoing in 2020 ([Technical Report - Unfinished Core Database Work...](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\knowledge_base\Technical Report - Unfinished Core Database Work of the TMP Across Three NSF Grants (1999-2020).md)).
+-   **Standardize Coordinate Systems and Precision**: Ensure all geospatial datasets adhere to consistent, well-documented coordinate reference systems and levels of spatial precision.
 
-This fractured landscape has severely hindered cross-referencing and system-wide querying. For example, while the REANS2 database includes enhanced ceramic typologies, it does not natively link to the spatial units encoded in MF2. Similarly, DF8’s observational records are only loosely related to geospatial boundaries, and often lack definitive spatial joins. This legacy of parallel, unintegrated data streams now poses a major obstacle to comprehensive archaeological analysis.
+### 3.1.3. Robust Data Integration and Interoperability
 
-### 2.2. Coordinate System Limitations [⚠ !FLAG ⚠]
+-   **Achieve Verified Linkage**: Establish and meticulously verify seamless, accurate, and bidirectional linkage between the finalized attribute databases (DF10/REANS derivatives) and all cleaned, validated geospatial layers (architectural map, MF2, interpretation sheets). This is critical for resolving the "problems that inhibit easy linkage" previously identified ([Technical Report - Unfinished Core Database Work...](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\knowledge_base\Technical Report - Unfinished Core Database Work of the TMP Across Three NSF Grants (1999-2020).md)).
+-   **Implement Consistent Identifiers**: Ensure unique, consistent, and reliable linking keys (e.g., structure IDs, tract IDs) are employed across all database tables and GIS attribute tables to guarantee relational integrity.
 
-A second, highly specific technical issue arises from the use of a project-internal spatial reference framework, colloquially termed “Millon Space.” The original TMP survey grid was designed to match Teotihuacan’s architectural orientation—approximately 15° east of true north—rather than any global geodetic datum. While this internal system enabled analytical clarity during the survey’s execution, it is now a major barrier to integration with modern geospatial tools.
+### 3.1.4. Comprehensive Metadata Development
 
-Because none of the original TMP maps were georeferenced to real-world coordinates, vector shapefiles derived from the TMP base maps must be retroactively transformed using ground control points and affine or rubber-sheet transformations. As of the start of this project, only a portion of the TMP’s spatial data had undergone this transformation with full positional fidelity.
+-   **Create Standardized Metadata**: Develop comprehensive, standardized, machine-readable metadata for all data components (attribute tables, GIS layers, source documents). This metadata will cover provenance, methodology, data structure, variable definitions, coding schemes, georeferencing parameters, spatial accuracy assessments, and access/use conditions.
+-   **Ensure Archival Compliance**: Adhere to archival best practices and specific requirements of repositories like tDAR to ensure discoverability, interoperability, and long-term usability (FAIR principles).
 
-### 2.3. Data Integrity, Coding Errors, and Metadata Gaps [⚠ !FLAG ⚠]
+### 3.1.5. Advanced Data Transformation and Enhancement (as per `architecture.md`)
 
-The TMP’s legacy files are also riddled with interpretive complications due to early computing constraints and field-data transcription methods. The SSRs (Site Survey Records), which formed the backbone of the DF8 dataset, contained many qualitative and subjective assessments by field crew. These included terms like “insubstantial structure” or “possible canal,” which were often misinterpreted or inconsistently encoded by coders unfamiliar with field conditions.
+-   **Systematic ETL Processes**: Implement robust Extract, Transform, Load (ETL) pipelines for data cleaning, schema harmonization, and structural reorganization from legacy formats to analysis-ready datasets (Phases 1-2, [architecture.md](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\docs\architecture.md)).
+-   **Database Profiling and Schema Optimization**: Conduct thorough analysis of database structures, optimize schemas, and standardize controlled vocabularies to enhance data quality and analytical coherence.
+-   **Feature Engineering**: Derive new analytical variables through consolidation, decomposition, or computation from existing data fields to support advanced research questions (Phase 5, [architecture.md](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\docs\architecture.md)).
 
-Many database variables also suffer from unclear definitions, truncated labels, or inconsistent units, making metadata reconstruction labor-intensive. In the case of DF8, data field lengths were restricted to 2–4 characters due to early storage limitations. This forced extensive abbreviation and code compression, leading to “gray variables”—ambiguous fields that require consultation of supplementary paper records or legacy codebooks.
+## 3.2. Broader Project Aims
 
-Additionally, some records in DF8 and REANS2 reference tracts that do not exist in the MF2 shapefile, and vice versa, due to inconsistent naming conventions or lost mapping crosswalks. These gaps threaten the relational integrity necessary for robust geospatial analysis.
+Beyond the core technical objectives, this initiative aims to achieve wider scholarly and societal impacts:
 
-### 2.4. Technological Obsolescence [⚠ !FLAG ⚠]
+### 3.2.1. Long-Term Preservation and Archival
 
-The TMP data ecosystem was originally designed for a computing environment that no longer exists. Early statistical analyses were conducted using FORTRAN programs running on VAX mainframes. Outputs were produced as ASCII tables, punch card printouts, and flat-file encodings without version control or schema tracking.
+-   **Ensure Sustainable Preservation**: Formally archive the complete, integrated, and documented TMP dataset in trusted digital repositories (e.g., tDAR, as outlined in Phase 6, [architecture.md](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\docs\architecture.md)) to ensure its long-term viability and protection against loss or obsolescence.
 
-Although later phases of the project adopted Microsoft Access and Paradox database systems in the 1990s and early 2000s, these platforms are now largely obsolete. They present serious interoperability issues with modern relational database frameworks like PostgreSQL, and are incompatible with contemporary GIS integration standards like PostGIS.
+### 3.2.2. Enhanced Accessibility and Dissemination
 
-Similarly, the first-generation vector GIS files were created in MapInfo (a proprietary and now-archaic format), and require reprocessing for use in modern open-source or enterprise GIS software. This introduces additional risks related to conversion loss, data corruption, and transformation error.
+-   **Provide Multiple Access Pathways**: Offer diverse methods for data access, including downloadable datasets in standard formats, a production-grade PostGIS database for advanced querying (Phase 7, [architecture.md](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\docs\architecture.md)), and user-friendly web applications or dashboards for interactive exploration and visualization (Phase 8, [architecture.md](C:\Users\rcesa\ASU Dropbox\Rudolf Cesaretti\GitHubRepos\TeoMappingProject\docs\architecture.md)).
 
-### 2.5. Preservation Gaps and Institutional Failures [⚠ !FLAG ⚠]
+### 3.2.3. Fostering Reproducibility and Open Science
 
-Despite its recognized scholarly importance, the TMP dataset has never been fully published or archived in a discoverable, interoperable format. Several attempts were made to secure NSF and NEH funding in the late 1990s and early 2000s, including a comprehensive proposal authored by Cowgill, Robertson, and Peter McCartney in 1999. However, these efforts failed to materialize into funded initiatives, delaying systematic digitization and dissemination.
+-   **Adhere to Open Science Principles**: Employ transparent methodologies, well-documented workflows (as emphasized in the modular workflow architecture, Section 5.1), and version control to ensure the reproducibility of all data transformations and analytical outputs.
 
-Compounding this is the fact that much of the physical archive—original field maps, survey notebooks, and photographic negatives—remains housed in institutional offices at ASU and the University at Buffalo without comprehensive digital backups. The risk of data loss due to neglect or environmental degradation remains a concern.
+### 3.2.4. Enabling New Research and Pedagogical Applications
 
-### 2.6. Motivations for the Present Project [⚠ !FLAG ⚠]
+-   **Unlock Advanced Analyses**: Facilitate new research avenues by providing a robust dataset suitable for advanced quantitative methods, spatial modeling, machine learning applications, and interdisciplinary investigations.
+-   **Support Educational Use**: Develop curriculum-aligned modules and tutorials to enable the use of TMP data in educational settings for archaeology, digital humanities, and GIS (Section 4.2.4).
 
-The challenges outlined above define the rationale for the present data science initiative. This project seeks not only to modernize the TMP dataset but also to unify its disparate components into a single, accessible, and richly documented geospatial database. The core motivation is scholarly: to unlock the potential of one of the most data-rich archaeological surveys ever conducted and make it usable for 21st-century research.
-
-Additionally, the initiative aims to establish a public-facing platform for global collaboration. By publishing the TMP as an open-access, citation-ready geospatial archive, it will support comparative studies in ancient urbanism, cross-site analysis of Mesoamerican cities, and future fieldwork design. The dataset is intended to serve as both an analytical tool and a scaffold for additional datasets—including excavation reports, drone surveys, GPR scans, and new ceramic analyses.
-
-Finally, the project operates as a form of digital heritage preservation. In a region increasingly threatened by modern urban development and agricultural expansion, the georeferenced TMP archive can function as both a historical record and a policy tool for managing cultural landscapes.
-
----
-
-# 3. Goals / Objectives [⚠ !FLAG -- Does this section need revision???⚠]
-
-The primary aim of the Teotihuacan Mapping Project (TMP) Data Science Integration Initiative is to transform a historically fragmented and technologically obsolete archaeological dataset into a unified, geospatially coherent research infrastructure. At its core, this project endeavors to render the TMP’s rich trove of spatial, typological, and observational data interoperable, reproducible, and accessible for the global research community.
-
-The following sections articulate the specific technical, scholarly, and public-facing goals that guide the architecture and implementation of the project.
-
-### 3.1. Integrate Legacy TMP Datasets into a Unified Spatial Database  [⚠ !FLAG ⚠]
-
-The first and most foundational objective of the project is to merge the disparate datasets generated by the TMP across its multi-decade lifespan. This includes the original flat-file database (DF8), its relational successor (DF9), the REANS2 ceramic reanalysis dataset, the collection unit shapefiles (MF2), architectural overlays, and associated raster maps and annotations.
-
-This unification process involves:
-- **Schema harmonization** of variable names, types, and value domains
-- **Entity key alignment** across tracts, artifact classes, and feature IDs
-- **Relational linking** of tabular artifact records to geospatial geometries using PostgreSQL + PostGIS
-
-The outcome will be a fully integrated, queryable, and spatially referenced PostgreSQL/PostGIS database (tentatively DF10), capable of supporting high-level archaeological analysis and modular extension.
-
-### 3.2. Finalize and Georeference GIS Layers with High Positional Accuracy [⚠ !FLAG ⚠]
-
-A major deliverable of this project is the complete, corrected digitization and georeferencing of the TMP’s architectural and collection-unit vector data. Many of the original vectorizations—especially MF2 and the architectural overlays—exist only in a local coordinate system (“Millon Space”) or in non-standard, rotated grids.
-
-The project will:
-- Digitize all architectural and natural features from the 1:2,000 TMP base maps using QGIS
-- Georeference raster and vector data to a global Coordinate Reference System (CRS), using ground control points and photogrammetric alignment
-- Validate vector accuracy and perform feature-level QA/QC on shapefile geometries
-
-These geospatial products will serve as a platform for new spatial analyses and will underpin the broader integration effort.
-
-### 3.3. Enable Public and Scholarly Access through Open Infrastructure [⚠ !FLAG ⚠]
-
-A critical component of this project is its open-access orientation. The finalized spatial database, metadata schemas, and supporting documentation will be published in full through one or more of the following platforms:
-- **tDAR (The Digital Archaeological Record)**: for DOI-assigned scholarly archive hosting
-- **GitHub/GitLab**: for version-controlled scripts, schema files, and digitization workflows
-- **Web-based GIS viewer (e.g., Leaflet or ArcGIS Online)**: for interactive map exploration and outreach
-
-All outputs will be accompanied by formal metadata (e.g., ISO 19115, Dublin Core), educational summaries, and downloadable content in standard formats (CSV, SQL, GeoJSON, PDF).
-
-### 3.4. Support Future Excavation and Fieldwork Planning [⚠ !FLAG ⚠]
-
-One of the most tangible research goals of this initiative is to furnish archaeologists with high-quality spatial base layers that can guide future work at Teotihuacan. The unified dataset will allow field teams to:
-- Precisely relocate prior TMP surface tracts and test pits
-- Plan excavations using architectural overlays and ceramic distribution heatmaps
-- Overlay geophysical scans (GPR, magnetometry) and drone orthophotos onto an aligned TMP basemap
-
-As such, the project provides not just a digital archive but a dynamic planning and exploratory tool.
-
-### 3.5. Establish a Platform for Dataset Integration and Comparative Research [⚠ !FLAG ⚠]
-
-The TMP dataset has long served as the evidentiary backbone for a wide range of research on Teotihuacan. By systematizing and spatially enabling this core dataset, the project opens the door to:
-- Layering in TMP excavation records, site maps, and stratigraphic profiles
-- Cross-referencing with INAH archival datasets and other surveys in the Basin of Mexico
-- Supporting global comparative urbanism projects that seek to understand state formation, residential zoning, infrastructure, and spatial inequality across early cities
-
-In this regard, the project contributes not just to Teotihuacan studies, but to the global comparative study of ancient complex societies.
-
-### 3.6. Enhance Digital Scholarship and Curriculum Development [⚠ !FLAG ⚠]
-
-Lastly, the project aims to produce curated subsets of data and reproducible workflows that support teaching in archaeology, GIS, and digital humanities. These resources will include:
-- Annotated sample datasets aligned with curricular goals
-- Jupyter Notebooks for data querying, visualization, and statistical analysis
-- StoryMaps and WebGIS environments for interactive classroom exploration
-
-This public pedagogical focus is consistent with the ethical responsibility of archaeological data stewards to maximize the impact and accessibility of historical research.
-
----
+By achieving these goals and objectives, the TMP Data Integration Initiative will not only address the persistent challenges of a complex archaeological legacy but also establish a new benchmark for the management, integration, and dissemination of large-scale archaeological datasets.
 
 # 4. Stakeholders & Use Cases
 
