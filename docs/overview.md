@@ -435,11 +435,13 @@ The project employs a strategic, phase-specific approach to technology selection
 | **Phase 1: Database Analysis** | **PostgreSQL 17, Python 3.11+** | SQLAlchemy, psycopg2, Pandas, SQLParse (schema parsing), Graphviz (ERD generation), Jupyter Notebooks |
 | **Phase 2: Database Transformation** | **PostgreSQL 17, Python 3.11+** | Pandas, GeoPandas, SQLAlchemy, Great Expectations (validation), dbt (optional), Jupyter Notebooks, regex libraries |
 | **Phase 3: GIS Digitization** | **QGIS 3.40.5** | QGIS Topology Checker, Geometry Validation tools, Python (GeoPandas, Shapely) for QA/visualization |
-| **Phase 4: Georeferencing** | **QGIS 3.40.5, GDAL 3.8+, PROJ 9.0+** | QGIS Georeferencer, gdal_warp, gdal_translate, pyproj, custom NTv2 grid tools, spatial statistics libraries (R/Python) |
+| **Phase 4: Georeferencing** | **QGIS 3.40.5, GDAL 3.6+ (tested on 3.6.2 ▼ †), PROJ 9.0+** | QGIS Georeferencer, gdal\_warp, gdal\_translate, pyproj, custom NTv2 grid tools, spatial statistics libraries (R/Python) |
 | **Phase 5: Geospatial Integration** | **PostgreSQL 17 + PostGIS 3.4, Python 3.11+** | GeoPandas, Shapely, psycopg2, rasterstats, QGIS (visualization), SQL spatial functions |
 | **Phase 6: tDAR Outputs** | **PostgreSQL + PostGIS, GDAL, Python/R** | ogr2ogr, GeoPandas, sf (R), tidyverse (R), Pandoc (documentation), LaTeX/Markdown, 7-Zip |
 | **Phase 7: PostGIS Database** | **PostgreSQL 17 + PostGIS 3.4, Docker** | ogr2ogr, raster2pgsql, psycopg2, SQLAlchemy, FastAPI, Docker Compose, pg_dump utilities |
 | **Phase 8: Tutorials & Dashboards** | **FastAPI, Leaflet.js, Python 3.11+, R 4.3+** | Folium, Plotly, sf, ggplot2, tmap, DBI, RPostgreSQL, Jupyter Notebooks, RMarkdown, QGIS |
+
+† GDAL 3.8+ remains optional for the `gdal_footprint` utility and new JSONFG / PMTiles drivers but is **not required** for project workflows.
 
 ## 7.2. Core Technology Domains
 
@@ -460,10 +462,12 @@ The project employs a strategic, phase-specific approach to technology selection
 **QGIS** provides essential manual digitization capabilities, visualization tools for quality assurance, and a user-friendly interface for complex geospatial operations. Version 3.40.5 offers enhanced topology checking and geometry validation tools critical for archaeological feature digitization.
 
 **Key Components:**
-- GDAL 3.8+ and PROJ 9.0+ for coordinate transformations and spatial data format handling
+- GDAL **3.6+ (validated on 3.6.2)** and PROJ 9.0+ for coordinate transformations and spatial data format handling  <sup>‡</sup>
 - QGIS 3.40.5 for manual digitization, georeferencing, and spatial visualization
 - Custom NTv2 grid transformation tools for high-precision coordinate system alignment
 - Advanced spatial statistics libraries for accuracy assessment and validation
+
+<sup>‡</sup> Upgrade to GDAL 3.8+ is only necessary if future work requires the stand‑alone `gdal_footprint` utility or ingesting PMTiles/JSONFG sources.
 
 ### 7.2.3. Programming and Analysis Frameworks
 
