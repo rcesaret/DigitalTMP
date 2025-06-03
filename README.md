@@ -142,7 +142,7 @@ git clone <repository-url>
 2. **Python Environment**:
 ```bash
 conda env create -f environment.yml
-conda activate digital-tmp
+conda activate TMP_geo_db
 ```
 3. **Database Setup**:
 ```bash
