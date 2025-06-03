@@ -269,7 +269,7 @@ This workflow formalizes the controlled vocabularies applied to the DF12 and REA
 
 ---
 
-#### Workflow 2.4.Automated Metadata Validation & Data Quality Framework
+#### Workflow 2.4. Automated Metadata Validation & Data Quality Framework
 
 **Overview:**
 This workflow implements an automated framework for data validation and metadata compliance, integrating data quality assurance directly into the project’s ETL pipelines. The framework enforces schema integrity, relational consistency, and metadata completeness through the application of formal validation rules and automated reporting mechanisms. This ensures that the DF12 dataset and all future data products meet rigorous standards for analytical reliability and long-term reproducibility.
