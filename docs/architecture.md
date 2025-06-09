@@ -43,7 +43,7 @@ The architecture incorporates modern data science principles throughout, includi
 
 | Phase | Description | Inputs | Outputs |
 |-------|-------------|--------|---------|
-| Phase 1: Database Analysis | Systematic evaluation and profiling of legacy MS Access databases to inform optimal schema design and transformation strategies | 4 MS Access DBs, historical documentation | PostgreSQL migration, ERDs, schema profiling reports, denormalization white paper |
+| Phase 1: Database Analysis | Systematic evaluation and profiling of legacy MS Access databases to inform optimal schema design and transformation strategies | 4 SQL Database Dumpt files written from comprehensive analysis of the original MS Access DBs | PostgreSQL migration, ERDs, schema profiling reports, denormalization white paper |
 | Phase 2: Database Transformation | Comprehensive ETL and feature engineering to produce analysis-ready tabular datasets with standardized vocabularies | PostgreSQL tables, controlled vocabularies | TMP_DF12, TMP_REANs_DF4, transformation logs, validation reports |
 | Phase 3: GIS Digitization | Manual digitization of archaeological, environmental, and modern features from historical raster maps | Raster basemaps, legacy documentation | Digitized vector layers, provisional attribute schemas, digitization metadata |
 | Phase 4: Georeferencing | High-precision georeferencing using custom NTv2 transformations and spatial accuracy validation | Digitized vectors, GCPs, raster tiles | Spatially-aligned datasets, transformation grids, accuracy assessments |
