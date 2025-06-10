@@ -1,18 +1,22 @@
 # -*- coding: utf-8 -*-
 """
-Creates and populates wide-format benchmark databases from a legacy DB.
+Creates and populates wide-format benchmark databases from TMP_DF9.
 
-This script performs an ETL (Extract, Transform, Load) process:
-1.  EXTRACT: Reads data from a specified complex legacy database (TMP_DF9)
-    by executing a large SQL flattening query.
-2.  TRANSFORM: Prepares the resulting DataFrame in two ways:
-    a. 'numeric': Coded value columns are converted to numeric types.
-    b. 'text': Coded value columns are converted to text/string types.
-3.  LOAD: Creates two new PostgreSQL databases and loads each transformed
-    DataFrame into its respective database.
+This script orchestrates an ETL (Extract, Transform, Load) process that leverages
+two powerful, purpose-built SQL queries to generate benchmark databases.
 
-These benchmark databases serve as a performance baseline to compare against
-the highly normalized legacy schemas.
+1.  EXTRACT & TRANSFORM: It executes one of two complex SQL scripts against the
+    live TMP_DF9 database:
+    a) `flatten_df9.sql`: Flattens 18+ tables into a wide format, preserving
+       numeric codes for categorical data.
+    b) `flatten_df9_text_nulls.sql`: Performs the same flattening but also
+       translates numeric codes to their text descriptions and converts
+       known NA-marker values (e.g., -1, 'NONE') to standard SQL NULLs.
+2.  LOAD: It creates two new PostgreSQL databases and loads the resulting
+    DataFrame from each query into its respective database.
+
+This approach offloads the complex transformation logic to the database engine
+for maximum performance and robustness.
 
 Usage:
     From the src/ directory, run:
@@ -24,7 +28,7 @@ import configparser
 import logging
 import sys
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict
 
 import pandas as pd
 import psycopg2
@@ -37,13 +41,12 @@ from sqlalchemy.engine import Engine
 LOG_FILE_NAME = "01_create_benchmark_dbs.log"
 BENCHMARK_TABLE_NAME = "wide_format_data"
 
-# A list of column name substrings that identify "coded value" columns
-# which need to be transformed for the numeric vs. text benchmark DBs.
-CODED_COLUMN_SUBSTRINGS = [
-    "_Code", "_Pres", "_Conf", "_Density", "_Type", "_Orient",
-    "_Shape", "_TALUD", "_TABLERO", "_Stairway", "_Color", "_Hard",
-    "_Present"
-]
+# Mapping of benchmark database names to their corresponding SQL query files.
+# This makes the script's logic clear and easily extensible.
+BENCHMARK_DB_TO_SQL_MAP = {
+    "tmp_benchmark_wide_numeric": "flatten_df9.sql",
+    "tmp_benchmark_wide_text_nulls": "flatten_df9_text_nulls.sql"
+}
 
 
 # --- Logging Setup ---
@@ -53,7 +56,7 @@ def setup_logging(log_path: Path) -> None:
         level=logging.INFO,
         format="%(asctime)s [%(levelname)-7s] %(message)s",
         handlers=[
-            logging.FileHandler(log_path),
+            logging.FileHandler(log_path, mode='w'), # Overwrite log on each run
             logging.StreamHandler(sys.stdout)
         ]
     )
@@ -94,53 +97,36 @@ def create_database(db_config: Dict, db_name: str) -> bool:
 
 def get_sqlalchemy_engine(db_config: Dict, db_name: str) -> Engine:
     """Creates a SQLAlchemy engine for a specific database."""
-    db_url = (
-        f"postgresql+psycopg2://{db_config['user']}:{db_config['password']}"
-        f"@{db_config['host']}:{db_config['port']}/{db_name}"
-    )
-    return create_engine(db_url)
+    try:
+        db_url = (
+            f"postgresql+psycopg2://{db_config['user']}:{db_config['password']}"
+            f"@{db_config['host']}:{db_config['port']}/{db_name}"
+        )
+        return create_engine(db_url)
+    except Exception as e:
+        logging.critical(f"Failed to create SQLAlchemy engine for '{db_name}'. Error: {e}")
+        sys.exit(1)
 
 
-def load_flattened_data(engine: Engine, query_path: Path) -> pd.DataFrame | None:
-    """Loads data from the source DB using the flattening SQL query."""
+def extract_transform_data(engine: Engine, query_path: Path) -> pd.DataFrame | None:
+    """Loads and transforms data from the source DB using a specific SQL query."""
     if not query_path.is_file():
-        logging.critical(f"Flattening query not found at: {query_path}")
+        logging.critical(f"SQL query file not found at: {query_path}")
         return None
     
-    logging.info("Reading flattening query from file...")
+    logging.info(f"Reading query from '{query_path.name}'...")
     with open(query_path, 'r', encoding='utf-8') as f:
         query = f.read()
 
-    logging.info("Executing flattening query against source database (this may take a moment)...")
+    logging.info("Executing query against source database (this may take several minutes)...")
     try:
         with engine.connect() as connection:
             df = pd.read_sql_query(sql=text(query), con=connection)
         logging.info(f"Successfully extracted data into DataFrame with shape: {df.shape}")
         return df
     except Exception as e:
-        logging.critical(f"Failed to execute flattening query. Error: {e}")
+        logging.critical(f"Failed to execute query from '{query_path.name}'. Error: {e}")
         return None
-
-
-def prepare_dataframe(df: pd.DataFrame, mode: str) -> pd.DataFrame:
-    """Prepares DataFrame dtypes for either 'numeric' or 'text' mode."""
-    df_copy = df.copy()
-    
-    coded_cols = [
-        col for col in df_copy.columns
-        if any(sub in col for sub in CODED_COLUMN_SUBSTRINGS)
-    ]
-    logging.info(f"Found {len(coded_cols)} coded columns to transform for '{mode}' mode.")
-
-    for col in coded_cols:
-        if mode == 'numeric':
-            # Convert to numeric, coercing errors to NaT. Use nullable integer.
-            df_copy[col] = pd.to_numeric(df_copy[col], errors='coerce').astype('Int64')
-        elif mode == 'text':
-            # Convert to string, ensuring NaNs become empty strings or a marker.
-            df_copy[col] = df_copy[col].astype(str).fillna('NULL_AS_TEXT')
-    
-    return df_copy
 
 
 def write_to_database(df: pd.DataFrame, engine: Engine) -> bool:
@@ -148,8 +134,8 @@ def write_to_database(df: pd.DataFrame, engine: Engine) -> bool:
     db_name = engine.url.database
     logging.info(f"Writing {df.shape[0]} rows to table '{BENCHMARK_TABLE_NAME}' in database '{db_name}'...")
     try:
-        # Use method='multi' for significant performance improvement.
-        # chunksize helps manage memory for very large datasets.
+        # Using method='multi' is crucial for bulk insert performance.
+        # chunksize helps manage memory for extremely large datasets.
         df.to_sql(
             name=BENCHMARK_TABLE_NAME,
             con=engine,
@@ -174,60 +160,52 @@ def main() -> None:
     log_file_path = Path(__file__).parent / LOG_FILE_NAME
     setup_logging(log_file_path)
 
+    logging.info("Reading configuration...")
     if not config_path.is_file():
-        logging.critical(f"Configuration file not found at: {config_path}")
+        logging.critical(f"Configuration file not found: {config_path}")
         sys.exit(1)
 
     config = configparser.ConfigParser()
     config.read(config_path)
 
     try:
-        # Prepare connection config for the root database
-        db_config_root = {
-            "host": config.get("postgresql", "host"),
-            "port": config.get("postgresql", "port"),
-            "user": config.get("postgresql", "user"),
-            "password": config.get("postgresql", "password"),
-            "dbname": config.get("postgresql", "root_db")
-        }
+        db_config_root = dict(config["postgresql"])
         source_db_name = config.get("databases", "benchmark_source_db")
-        benchmark_dbs = [db.strip() for db in config.get("databases", "benchmark_dbs").split(',')]
-        flatten_query_path = Path(config.get("paths", "sql_dump_dir")).parent.parent / "sql/flatten_df9.sql"
-        flatten_query_path = Path("sql/flatten_df9.sql")
+        # The new benchmark DB name from the user's updated SQL script
+        benchmark_dbs = ["tmp_benchmark_wide_numeric", "tmp_benchmark_wide_text_nulls"]
+        sql_dir = Path(config.get("paths", "sql_queries_dir"))
+
     except (configparser.NoSectionError, configparser.NoOptionError) as e:
         logging.critical(f"Config file is missing a required section or option: {e}")
         sys.exit(1)
-
+        
     logging.info("Starting benchmark database creation process...")
 
-    # 1. Create the empty benchmark databases
+    # 1. Create the empty benchmark databases first
     for db_name in benchmark_dbs:
         if not create_database(db_config_root, db_name):
-            logging.critical(f"Halting process because creation of '{db_name}' failed.")
+            logging.critical(f"Halting: failed to create prerequisite database '{db_name}'.")
             sys.exit(1)
 
-    # 2. Extract data from source database
+    # 2. Establish connection to the source database
     source_engine = get_sqlalchemy_engine(db_config_root, source_db_name)
-    base_df = load_flattened_data(source_engine, flatten_query_path)
-    if base_df is None:
-        logging.critical("Halting process because data extraction failed.")
-        sys.exit(1)
 
-    # 3. Transform and Load for each benchmark DB
-    for db_name in benchmark_dbs:
-        logging.info(f"--- Processing for benchmark database: {db_name} ---")
-        if 'numeric' in db_name:
-            mode = 'numeric'
-        elif 'text' in db_name:
-            mode = 'text'
-        else:
-            logging.warning(f"Could not determine mode for '{db_name}'. Skipping.")
-            continue
-            
-        transformed_df = prepare_dataframe(base_df, mode)
+    # 3. Loop through the map, execute the correct SQL, and load the correct DB
+    for db_name, sql_filename in BENCHMARK_DB_TO_SQL_MAP.items():
+        logging.info(f"--- Processing benchmark database: {db_name} ---")
+        query_path = sql_dir / sql_filename
+        
+        # Extract and Transform using the specified SQL query
+        df = extract_transform_data(source_engine, query_path)
+        if df is None:
+            logging.error(f"Halting: data extraction failed for {db_name}.")
+            continue # Try the next one, but this is a critical failure
+
+        # Load data into the target benchmark database
         target_engine = get_sqlalchemy_engine(db_config_root, db_name)
-        write_to_database(transformed_df, target_engine)
-
+        if not write_to_database(df, target_engine):
+            logging.error(f"Halting: failed to load data into {db_name}.")
+            
     logging.info("--- Benchmark database creation process complete. ---")
 
 
