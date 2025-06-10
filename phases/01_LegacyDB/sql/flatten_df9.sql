@@ -1,6 +1,7 @@
 -- ============================================================================
 --           Flattening Query for TMP_DF9 Benchmark Database
 -- ============================================================================
+-- File: `flatten_df9.sql`
 -- Date: 2025-06-10
 -- Author: Rudolf Cesaretti
 -- Version: v2.0
