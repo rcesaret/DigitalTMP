@@ -5,6 +5,8 @@
 -- Date: 2025-06-10
 -- Author: Rudolf Cesaretti
 -- Version: v2.0
+--
+-- Description:
 -- This query joins the 18 core data tables from the tmp_df9 schema into a
 -- single wide-format table. It uses LEFT JOINs from the central "tblSSN"
 -- table to ensure all site records are preserved.
