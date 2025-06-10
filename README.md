@@ -115,6 +115,118 @@ This project systematically transforms legacy archaeological databases into a mo
 
 ## 📂 Repository Structure
 
+```
+.
+├── README.md
+├── .env
+├── .env.example
+├── .gitignore
+├── LICENSE
+├── PLANNING.md
+├── TASKS.md
+├── PULL_REQUEST_TEMPLATE.md
+├───.windsurf/
+│   └── rules/
+│        └── python_coding_standards.md
+├───docs/
+│   ├── drafts/
+│   ├── overview.md
+│   ├── architecture.md
+│   ├── data_sources.md
+│   ├── methods.md
+│   └── outputs_summary.md
+├── envs/
+│   └── environment.yml
+├───data/
+│   ├── raw/
+│   ├── external/
+│   ├── interim/
+│   ├── processed/
+│   └── final/
+├── phases/
+│   ├── 01_LegacyDB/
+│   │   ├── src/
+│   │   ├── notebooks/
+│   │   ├── outputs/
+│   │   ├── drafts/
+│   │   ├── README.md
+│   │   └── metadata.json
+│   ├── 02_TransformDB
+│   │   ├── src/
+│   │   ├── notebooks/
+│   │   ├── outputs/
+│   │   ├── drafts/
+│   │   ├── README.md
+│   │   └── metadata.json
+│   ├── 03_DigitizeGIS
+│   │   ├── src/
+│   │   ├── notebooks/
+│   │   ├── outputs/
+│   │   ├── drafts/
+│   │   ├── README.md
+│   │   └── metadata.json
+│   ├── 04_Georef
+│   │   ├── src/
+│   │   ├── notebooks/
+│   │   ├── outputs/
+│   │   ├── drafts/
+│   │   ├── README.md
+│   │   └── metadata.json
+│   ├── 05_GeoIntegration
+│   │   ├── src/
+│   │   ├── notebooks/
+│   │   ├── outputs/
+│   │   ├── drafts/
+│   │   ├── README.md
+│   │   └── metadata.json
+│   ├── 06_tDAR
+│   │   ├── src/
+│   │   ├── notebooks/
+│   │   ├── outputs/
+│   │   ├── drafts/
+│   │   ├── README.md
+│   │   └── metadata.json
+│   ├── 07_PostGIS
+│   │   ├── src/
+│   │   ├── notebooks/
+│   │   ├── outputs/
+│   │   ├── drafts/
+│   │   ├── README.md
+│   │   └── metadata.json
+│   └── 08_Dashboards
+│       ├── src/
+│       ├── notebooks/
+│       ├── outputs/
+│       ├── drafts/
+│       ├── README.md
+│       └── metadata.json
+├── infrastructure/
+│   ├── db/
+│   │   └── legacy_db_sql_scripts/
+│   │       ├── TMP_DF8.sql
+│   │       ├── TMP_DF8_create.sql
+│   │       ├── TMP_DF9.sql
+│   │       ├── TMP_DF9_create.sql
+│   │       ├── TMP_DF10.sql
+│   │       ├── TMP_DF10_create.sql
+│   │       ├── TMP_REAN_DF2.sql
+│   │       └── TMP_REAN_DF2_create.sql
+│   └── docker/
+├── large_files_for_dropbox_download/
+│   └── raster_tiles_millon_space/
+│       ├── architectural/
+│       └── topographic/
+├── tests/
+├── outputs/
+│   ├── figures/
+│   ├── metadata_sidecars/
+│   └── reports/
+└── reports/
+    ├── drafts/
+    ├── appendices/
+    └── figures/
+```
+
 | Folder | Purpose |
 |--------|---------|
 | `phases/01_LegacyDB/` | Database analysis tools, PostgreSQL migration scripts, schema profiling |
