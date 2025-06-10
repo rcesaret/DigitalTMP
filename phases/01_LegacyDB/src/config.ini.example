@@ -1,0 +1,87 @@
+# ============================================================================
+#         Configuration File for Digital TMP Phase 1 Scripts
+# ============================================================================
+# This file centralizes all environment-specific settings for the project.
+# It allows scripts to be run in different environments without code changes.
+#
+# Note: It is critical to add this file to your .gitignore to prevent
+# committing sensitive information like database passwords to version control.
+# ============================================================================
+
+
+[postgresql]
+# ----------------------------------------------------------------------------
+# This section contains the connection details for your local PostgreSQL
+# server. These settings are used by SQLAlchemy and Psycopg2 to connect to
+# your databases.
+# ----------------------------------------------------------------------------
+
+; The hostname or IP address of the PostgreSQL server. For a local installation,
+; this is almost always 'localhost'.
+host = localhost
+
+; The port number the PostgreSQL server is listening on. The default is 5432.
+port = 5432
+
+; The PostgreSQL user role that the scripts will use to connect.
+; This user must have privileges to create new databases.
+; The default superuser is 'postgres'.
+user = postgres
+
+; The password for the specified PostgreSQL user.
+; THIS IS A SENSITIVE VALUE. Ensure this file is not tracked by Git.
+password = __YOUR_POSTGRES_PASSWORD__
+
+; The name of the root or default database on your server. The scripts will
+; connect to this database initially in order to run CREATE DATABASE commands
+; for the new legacy and benchmark databases. 'postgres' is the standard default.
+root_db = postgres
+
+
+[databases]
+# ----------------------------------------------------------------------------
+# This section defines the names of all databases that the scripts will
+# create, interact with, and profile. Using a list here makes the scripts
+# easily extensible if another database is added later.
+# ----------------------------------------------------------------------------
+
+; A comma-separated list of the four legacy database names that will be
+; created by the 00_setup_databases.py script.
+legacy_dbs = TMP_DF8, TMP_DF9, TMP_DF10, TMP_REAN_DF2
+
+; The name of the single legacy database that will be used as the source
+; for creating the flattened, wide-format benchmark databases.
+; As planned, TMP_DF9 is the most complex and therefore the best candidate.
+benchmark_source_db = TMP_DF9
+
+; A comma-separated list of the names for the two new benchmark databases
+; that will be created by the 01_create_benchmark_dbs.py script.
+benchmark_dbs = tmp_benchmark_wide_numeric, tmp_benchmark_wide_text
+
+
+[paths]
+# ----------------------------------------------------------------------------
+# This section defines the relative file paths to input and output
+# directories and files.
+# IMPORTANT: All paths are relative to the `src/` directory, as that is
+# where the Python scripts will be executed from.
+# ----------------------------------------------------------------------------
+
+; Path to the directory containing the source .sql dump files for the
+; legacy databases.
+sql_dump_dir = ../../../infrastructure/db/legacy_db_sql_scripts/
+
+; Path to the .sql file that will contain the canonical queries used for
+; performance benchmarking.
+sql_benchmark_queries = ../sql/canonical_queries.sql
+
+; Path to the output directory where generated ERD .svg files will be saved.
+output_erds = ../outputs/erds/
+
+; Path to the output directory where intermediate profiling metric
+; files (.csv, .json) will be saved.
+output_metrics = ../outputs/metrics/
+
+; Path to the output directory where the final aggregated reports
+; (.csv, .md) will be saved.
+output_reports = ../outputs/reports/
