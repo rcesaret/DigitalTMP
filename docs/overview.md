@@ -1,9 +1,9 @@
-# Digital TMP - Project Overview (Draft v2.0 -- 6/3/2025)
+# Digital TMP - Project Overview (Draft v2.1 -- 6/11/2025)
 
 ---
 **Author:** Rudolf Cesaretti
 **Affiliation:** ASU Teotihuacan Research Laboratory
-**Date:** June 3, 2025
+**Date:** June 11, 2025
 **Project Environment:** TMP_geo_db (Conda)
 ---
 
@@ -266,9 +266,10 @@ The Digital TMP project architecture represents a comprehensive data modernizati
 
 ### 5.2.1. Data Foundation (Phases 1-2)
 
-**Phase 1 – Database Analysis** establishes the analytical groundwork through rigorous evaluation of legacy MS Access databases (TMP_DF8, TMP_DF9, TMP_DF10, and TMP_REAN_DF2). This phase implements database profiling, schema optimization, and produces actionable insights into the quality, complexity, and suitability of the legacy schemas for downstream analytical workflows. Through automated database profiling, structural visualization, and quantitative schema analysis, this phase produces reproducible PostgreSQL versions of all legacy databases, automated Entity-Relationship Diagrams (ERDs), and a comprehensive denormalization white paper with schema optimization recommendations.
+**Phase 1 – Legacy Database Analysis & Architectural Recommendation.** This initial phase involves a rigorous, quantitative evaluation of all major legacy TMP databases (TMP_DF8, TMP_DF9, TMP_DF10, and TMP_REAN_DF2). The workflow establishes a reproducible pipeline to profile the structure, content, and relational complexity of each legacy schema. Crucially, it creates denormalized, wide-format benchmark databases to quantitatively measure the performance trade-offs of different architectural models. This phase implements schema optimization, and produces actionable insights into the quality, complexity, and suitability of the legacy schemas for downstream analytical workflows. Through automated database profiling, structural visualization, and quantitative schema analysis, this phase produces reproducible PostgreSQL versions of all legacy databases, automated Entity-Relationship Diagrams (ERDs), and a comprehensive denormalization white paper with schema optimization recommendations. The key deliverable is a technical white paper that uses this evidence to formally recommend a unified target schema, justified by direct performance benchmarks and data modeling best practices.
 
-**Phase 2 – Database Transformation** follows with systematic ETL processes that produce clean, analysis-ready datasets. This comprehensive transformation process consolidates complementary information from three versions of the legacy database (DF8, DF9, DF10) to produce a provisional consolidated dataset (DF11), cleans and validates the REANs database to produce REANs DF3, and then undertakes intensive, variable-by-variable redesign to produce the final DF12 and REAN DF4 datasets. The phase implements controlled vocabulary standardization and automated validation frameworks to ensure data quality and analytical coherence.
+**Phase 2 – Legacy Database Transformation & Unification.** Building on the recommendations from Phase 1, this phase implements the full-scale Extract, Transform, and Load (ETL) pipeline to migrate data from the legacy TMP databases into the newly designed unified schema. This comprehensive transformation process consolidates complementary information from three versions of the legacy database (DF8, DF9, DF10) to produce a provisional consolidated dataset (DF11), cleans and validates the REANs database to produce REANs DF3, and then undertakes intensive, variable-by-variable redesign to produce the final DF12 and REAN DF4 datasets. The phase implements controlled vocabulary standardization and automated validation frameworks to ensure data quality and analytical coherence. This involves developing robust data mapping and validation rules to ensure referential integrity, resolve data type inconsistencies, and consolidate redundant or conflicting information. The outcome is a single, clean, and well-structured master database that serves as the foundation for all subsequent spatial integration.
+
 
 ### 5.2.2. Spatial Data Creation (Phases 3-4)
 
@@ -327,7 +328,7 @@ Each phase culminates in one or more clearly defined deliverables that serve as 
 
 | Phase | Description | Inputs | Outputs |
 |-------|-------------|--------|---------|
-| Phase 1: Database Analysis | Systematic evaluation and profiling of legacy MS Access databases to inform optimal schema design and transformation strategies | 4 MS Access DBs, historical documentation | PostgreSQL migration, ERDs, schema profiling reports, denormalization white paper |
+| Phase 1: Database Analysis | Systematic evaluation and profiling of legacy TMP databases to inform optimal schema design and transformation strategies | 4 MS Access DBs, historical documentation | PostgreSQL migration, ERDs, schema profiling reports, denormalization white paper |
 | Phase 2: Database Transformation | Comprehensive ETL and feature engineering to produce analysis-ready tabular datasets with standardized vocabularies | PostgreSQL tables, controlled vocabularies | TMP_DF12, TMP_REANs_DF4, transformation logs, validation reports |
 | Phase 3: GIS Digitization | Manual digitization of archaeological, environmental, and modern features from historical raster maps | Raster basemaps, legacy documentation | Digitized vector layers, provisional attribute schemas, digitization metadata |
 | Phase 4: Georeferencing | High-precision georeferencing using custom NTv2 transformations and spatial accuracy validation | Digitized vectors, GCPs, raster tiles | Spatially-aligned datasets, transformation grids, accuracy assessments |
@@ -432,7 +433,7 @@ The project employs a strategic, phase-specific approach to technology selection
 
 | Phase | Core Technologies | Specialized Tools & Libraries |
 |-------|-------------------|-------------------------------|
-| **Phase 1: Database Analysis** | **PostgreSQL 17, Python 3.11+** | SQLAlchemy, psycopg2, Pandas, SQLParse (schema parsing), Graphviz (ERD generation), Jupyter Notebooks |
+| **Phase 1: Database Analysis** | **PostgreSQL 17, Python 3.11+** | SQLAlchemy, psycopg2, Pandas, Graphviz (ERD generation), Plotly (visualization), Jupyter Notebooks |
 | **Phase 2: Database Transformation** | **PostgreSQL 17, Python 3.11+** | Pandas, GeoPandas, SQLAlchemy, Great Expectations (validation), dbt (optional), Jupyter Notebooks, regex libraries |
 | **Phase 3: GIS Digitization** | **QGIS 3.40.5** | QGIS Topology Checker, Geometry Validation tools, Python (GeoPandas, Shapely) for QA/visualization |
 | **Phase 4: Georeferencing** | **QGIS 3.40.5, GDAL 3.6+ (tested on 3.6.2 ▼ †), PROJ 9.0+** | QGIS Georeferencer, gdal\_warp, gdal\_translate, pyproj, custom NTv2 grid tools, spatial statistics libraries (R/Python) |
