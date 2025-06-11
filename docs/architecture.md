@@ -242,11 +242,11 @@ Phase 2 focuses on the systematic consolidation and transformation of the legacy
 #### Workflow 2.1. Legacy Dataset Integration (DF8, DF9, DF10 → DF11; REAN DF2 → REAN DF3)
 
 **Overview:**
-This workflow performs the integration of complementary information from the three legacy TMP database versions into a unified, provisional dataset (DF11). The process resolves schema inconsistencies, harmonizes attribute naming conventions, and ensures relational integrity across previously disparate datasets. This provisional dataset provides a coherent structural foundation for the subsequent redesign and analytical enhancement workflows.
+This workflow performs the integration of complementary information from the three core legacy TMP database versions into a unified, provisional dataset (DF11). The process resolves schema inconsistencies, harmonizes attribute naming conventions, and ensures relational integrity across previously disparate datasets. This provisional dataset provides a coherent structural foundation for the subsequent redesign and analytical enhancement workflows.
 
 **Tasks:**
 
-- Conduct schema alignment by analyzing discrepancies between DF8, DF9, and DF10 using profiling reports and ER diagrams from Phase 1.
+- Conduct schema alignment by analyzing discrepancies between DF8, DF9, and DF10 using recommendations, profiling reports and ER diagrams from Phase 1.
 - Flatten multi-table structures into unified, wide-format tables
 - Clean and validate REANs_DF2 → output REANs_DF3
 - Develop attribute crosswalk tables to standardize variable names, data types, and categorical value formats across legacy datasets using metadata tables.
