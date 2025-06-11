@@ -6,6 +6,8 @@ from typing import Any, Dict, List
 from sqlalchemy import text
 from sqlalchemy.engine import Engine
 
+import pandas as pd
+
 from .base import get_table_names
 
 
