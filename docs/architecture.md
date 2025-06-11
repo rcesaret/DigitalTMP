@@ -1,10 +1,10 @@
 
-# Digital TMP - Project Architecture (Draft v1.2 -- 5/23/2025)
+# Digital TMP - Project Architecture (Draft v1.3 -- 6/11/2025)
 
 ---
 **Author:** Rudolf Cesaretti
 **Affiliation:** ASU Teotihuacan Research Laboratory
-**Date:** May 23, 2025
+**Date:** June 11, 2025
 ---
 
 This project uses a modular structure based on three tiers:
@@ -43,7 +43,7 @@ The architecture incorporates modern data science principles throughout, includi
 
 | Phase | Description | Inputs | Outputs |
 |-------|-------------|--------|---------|
-| Phase 1: Database Analysis | Systematic evaluation and profiling of legacy MS Access databases to inform optimal schema design and transformation strategies | 4 SQL Database Dumpt files written from comprehensive analysis of the original MS Access DBs | PostgreSQL migration, ERDs, schema profiling reports, denormalization white paper |
+| Phase 1: Database Analysis | Systematic evaluation and profiling of legacy TMP databases to inform optimal schema design and transformation strategies | 4 SQL Database Dumpt files written from comprehensive analysis of the original MS Access DBs | PostgreSQL migration, ERDs, schema profiling reports, denormalization white paper |
 | Phase 2: Database Transformation | Comprehensive ETL and feature engineering to produce analysis-ready tabular datasets with standardized vocabularies | PostgreSQL tables, controlled vocabularies | TMP_DF12, TMP_REANs_DF4, transformation logs, validation reports |
 | Phase 3: GIS Digitization | Manual digitization of archaeological, environmental, and modern features from historical raster maps | Raster basemaps, legacy documentation | Digitized vector layers, provisional attribute schemas, digitization metadata |
 | Phase 4: Georeferencing | High-precision georeferencing using custom NTv2 transformations and spatial accuracy validation | Digitized vectors, GCPs, raster tiles | Spatially-aligned datasets, transformation grids, accuracy assessments |
@@ -115,79 +115,97 @@ The project leverages a comprehensive technology stack combining industry-standa
 
 ---
 
-### Phase 1: Legacy Database Profiling & Analysis
+### Phase 1: Legacy Database Profiling & Architectural Analysis
 
 **Description:**
-This phase focuses on the systematic evaluation of the legacy TMP databases to inform their eventual transformation and integration into a modern relational and geospatial data architecture. Through automated database profiling, structural visualization, and quantitative schema analysis, this phase produces actionable insights into the quality, complexity, and suitability of the legacy schemas for downstream analytical workflows. The outcomes directly inform schema redesign decisions, guide denormalization strategies, and establish a reproducible baseline for validating future data transformations in Phases 2 and 7.
+This foundational phase focuses on the systematic, quantitative evaluation of the four legacy TMP databases (`DF8`, `DF9`, `DF10`, `REAN_DF2`) to produce actionable, data-driven insights that will inform their eventual transformation and integration. The architecture for this phase is organized into four distinct, sequential workflows that move from initial setup and data generation to final analysis and recommendation.
 
-****NOTE:*** *This evaluation recommends a unified, denormalized structure optimized for analysis and integration with geospatial data. In the present draft of this report, I argue that A) each of the databases can be represented as a single tabular wide-format dataframe, 2) that this denormalized wide-format is optimal given that the data needs no pivoting or updating, and 3) that the desired TMP database should be fully denormalized for analysis and geospatial integration. Thus, the analysis of the databases serves as the basis for planning Phase 2.*
+Through an automated pipeline, this phase performs deep database profiling, generates structural visualizations, and conducts a rigorous quantitative analysis of the legacy schemas. The primary objective is to produce a defensible, evidence-based argument for the optimal target architecture for Phase 2. The outcomes directly inform schema redesign decisions, justify the project's denormalization strategy, and establish a reproducible technical baseline for validating all future data transformations. The final deliverable is a white paper that presents this evidence and formally recommends a unified, wide-format, analysis-ready database structure.
 
 **Inputs:**
 
-- Legacy TMP Databases: `TMP_DF8`, `TMP_DF9`, `TMP_DF10`, and `TMP_REAN_DF2`.
-- SQL DDL and data scripts for each database.
-- Historical documentation and data dictionaries associated with each legacy database.
+- **Legacy Database Dumps**: Complete SQL dump scripts for `TMP_DF8`, `TMP_DF9`, `TMP_DF10`, and `TMP_REAN_DF2`.
+- **Corrected ETL Queries**: Two hand-authored SQL scripts (`flatten_df9.sql`, `flatten_df9_text_nulls.sql`) for transforming the `TMP_DF9` database into wide-format benchmarks.
+- **Historical Documentation**: Any existing data dictionaries or notes associated with each legacy database.
 
 **Outputs:**
-- Reproducibly instantiated PostgreSQL versions of all legacy databases.
-- Automated Entity-Relationship Diagrams (ERDs) for each legacy schema.
-- Quantitative schema and content profiling reports, persisted to the `tmp_db_metrics` schema.
-- Denormalization White Paper, including performance benchmarks and schema optimization recommendations.
+- **PostgreSQL Databases**: Six fully instantiated local PostgreSQL databases (4 legacy, 2 benchmark).
+- **Entity-Relationship Diagrams**: A set of high-quality SVG diagrams, including full-schema ERDs for all databases and focused, subsystem-level ERDs for the complex `TMP_DF9`.
+- **Raw Quantitative Metrics**: A comprehensive set of granular metric files (~40 files) detailing every aspect of the databases, from table sizes to column-level data profiles. Persisted to `outputs/metrics/`.
+- **Aggregated Summary Reports**: A machine-readable `comparison_matrix.csv` and a human-readable `comparison_report.md` that synthesize all raw metrics.
+- **Executed Analytical Notebooks**: A set of six individual and one comparative Jupyter Notebooks containing all charts, tables, and analysis.
+- **Denormalization White Paper (v3)**: The final narrative report presenting the quantitative justification for the recommended schema redesign.
 
 **Tools & Techniques:**
-- PostgreSQL and PostGIS.
-- Python: `setup_databases.py` (database instantiation), `profile_db.py` (schema and data profiling), `schema_viz.py` (ERD generation).
-- SQLAlchemy, Pandas, and SQLParse for automated data handling.
-- Graphviz for schema visualization.
+- **Databases**: PostgreSQL (v17+)
+- **Programming**: Python 3.11+
+- **Core Python Libraries**: Pandas, SQLAlchemy, Psycopg2
+- **Pipeline Scripts**: A suite of five orchestrator scripts (`00_` to `04_`) and a modular `profiling_modules` package.
+- **Schema Visualization**: Graphviz
+- **Analysis Environment**: Jupyter Notebooks with Plotly for interactive visualizations.
 
 ---
 
-#### Workflow 1.1. Legacy Database Instantiation & Validation
+#### Workflow 1.1: Environment & Database Setup
 
 **Overview:**
-This workflow establishes a reproducible pipeline for creating and populating PostgreSQL versions of the legacy TMP databases. It ensures that all subsequent schema evaluations are conducted on validated, consistent database instances. This process leverages automated tooling to streamline database creation, data loading, and initial validation, forming the foundation for systematic profiling and analysis.
+This initial workflow establishes the controlled, reproducible environment for the entire analytical phase. It automates the creation of PostgreSQL instances for all four legacy databases and, critically, generates two denormalized "benchmark" databases from the most complex legacy schema (`TMP_DF9`). These benchmarks serve as the performance baseline against which the legacy structures are quantitatively measured, forming the core of the argument for denormalization.
 
 **Tasks:**
-
-- Configure PostgreSQL connection and environment variables using `.env` files to ensure secure and reproducible execution.
-- Execute `setup_databases.py` to automate the creation of target databases and populate them with legacy data using structured SQL scripts.
-- Generate automated ERDs for each database using `schema_viz.py`, providing visual documentation of relational structures.
-- Run `profile_db.py` to extract schema and content metrics, including table cardinalities, data type distributions, null value frequencies, and key constraint evaluations.
-- Persist profiling outputs into the dedicated `tmp_db_metrics` schema for longitudinal analysis and phase validation.
+- **Design & Author SQL**: Design and author the complex ETL queries (`flatten_df9.sql`, `flatten_df9_text_nulls.sql`) required to transform the `TMP_DF9` schema into analysis-ready wide-format tables.
+- **Develop Python Scripts**: Develop, document, and refine the robust, idempotent Python orchestration scripts (`00_setup_databases.py`, `01_create_benchmark_dbs.py`) responsible for automating all database creation and population tasks.
+- **Configure Environment**: Configure the `src/config.ini` file with the correct local PostgreSQL credentials and file paths for all inputs and outputs.
+- **Execute Database Instantiation**: Execute the `00_setup_databases.py` script to automatically create and populate the four legacy TMP databases from their source `.sql` dump files.
+- **Execute Benchmark Creation**: Execute the `01_create_benchmark_dbs.py` script to run the flattening queries and create the two wide-format benchmark databases (`tmp_benchmark_wide_numeric`, `tmp_benchmark_wide_text_nulls`).
+- **Develop Test Suite**: Implement a formal `pytest` suite to unit-test the logic of the setup scripts, with a focus on configuration parsing and error handling.
+- **Validate Environment**: Conduct post-execution validation using a database client (e.g., `psql`) to confirm the successful creation and population of all six databases and their constituent tables.
 
 ---
 
-#### Workflow 1.2. Schema Analysis, Profiling, and Denormalization Evaluation
+#### Workflow 1.2: Metric & Artifact Generation
 
 **Overview:**
-This workflow conducts a detailed structural and performance evaluation of the legacy TMP database schemas, applying quantitative metrics and database normalization theory to assess the potential benefits and trade-offs of schema denormalization. Results from this analysis inform the optimal design of the unified database architecture and its suitability for analytical workloads.
+This workflow is the primary automated data-gathering engine of Phase 1. Using a modular and extensible `profiling_modules` package, a single orchestrator script connects to each of the six databases and executes a comprehensive suite of profiling tasks. This process gathers a rich dataset covering every aspect of the databases, from high-level statistics to granular, column-level data profiles. In parallel, a dedicated script generates visual diagrams of each schema.
 
 **Tasks:**
-1. Execute comprehensive schema profiling using `profile_db.py` to collect metrics on table cardinality, column distributions, key constraint integrity, and missing data prevalence.
-2. Generate ERDs for all major schema versions (DF8, DF9, DF10) and perform a comparative structural analysis to document schema evolution.
-3. Validate the integrity of relational constraints, including primary key uniqueness, foreign key orphans, and referential consistency.
-4. Compute Join-Dependency Index (JDI) and Lookup Inflation Factor (LIF) to quantitatively assess the performance and complexity implications of the current normalized schemas.
-5. Prototype candidate denormalized schemas using controlled flattening strategies. Evaluate query performance differences through benchmarking with `EXPLAIN ANALYZE`, tracking execution times for representative analytical queries.
-6. Prepare a Denormalization White Paper summarizing schema performance profiles, denormalization trade-offs, and final design recommendations for downstream database integration.
+- **Define Metrics**: Compile the exhaustive **Master List of Profiling Metrics** by synthesizing project requirements, data engineering best practices, and the specific analytical goals of the denormalization argument.
+- **Develop Profiling Engine**: Develop the modular `profiling_modules` Python package, creating distinct, testable modules for each category of metric (basic, schema, profile, interop, performance).
+- **Develop Orchestration Scripts**: Develop and document the main pipeline orchestrator (`02_run_profiling_pipeline.py`) and the enhanced ERD generation script (`03_generate_erds.py`), including logic for strategic, focused ERD creation.
+- **Configure Dependencies**: Populate the `sql/canonical_queries.sql` file with representative queries for benchmarking and ensure the external `Graphviz` dependency is installed and accessible in the system PATH.
+- **Execute Profiling Pipeline**: Execute the `02_run_profiling_pipeline.py` script to systematically run all profiling functions against all six databases, generating the full set of raw metric files in `outputs/metrics/`.
+- **Execute ERD Generation**: Execute the `03_generate_erds.py` script to produce all full-schema and focused, subsystem-level ERD diagrams in SVG format.
+- **Develop Test Suite**: Implement a comprehensive `pytest` suite for the `profiling_modules` package, using a temporary test database fixture to validate the correctness of each metric calculation function.
+- **Validate Outputs**: Verify the successful creation of all expected raw metric files (~40) and ERD diagrams (9) in their respective `outputs/` subdirectories.
 
-**OLD TASKS TEXT (KEEP THIS HERE!!!):**
-```
-Metadata report on each database (`TMP_DF8`, `TMP_DF9`, `TMP_DF10`, and `TMP_REAN_DF2`)
-1. Analysis and reporting for each individual database, involving:
-  - Analytics of databases + metadata review via Python/SQL, producing a well-structured technical report supported by tables and figures
-  - Figures = beautiful, professional and easy to digest schema diagrams
-  - Tables = summaries of key database dimensions/metrics + metadata)
-  - [NEED TO DETERMINE WHAT INFORMATION TO REPORT ABOUT EACH DATABASE, INCLUDING STANDARD METADATA + SUMMARY INFO PLUS METRICS THAT ANTICIPATE THE SUBSEQUENT COMPARISON OF THE DATABASES]
- Comparative analysis of the database schemas + tables structure, involving:
-2. Comparative analytics of databases + metadata review via Python/SQL, producing a well-structured written comparative analysis supported by tables (and possibly figures)
-  - [NEED TO DETERMINE THEORETICALLY-INFORMED AND CONTEXT-APPROPRIATE METRICS + KEY DIMENSIONS OF COMPARISON FOR DATABASE REPORTS]
-  - The written analysis should include narrative explanation of the database evolution from DF8 to DF9 to DF10 in terms of schema/organizational differences, variable changes and variable name changes between database versions (complete with supporting database analytics)
-  - This written analysis is supposed to lead up to the subsequent database redesign proposal/plan, anticipating it by providing key quantitative metrics that justify its conclusions (see below)
-3. Recommendation report justifying the denormalized wide-format schema in light of project goals, objectives and desired outputs (with reference to database theory and methods)
-  - Need to revise, edit and expand the draft of the TMP database redesign proposal/plan, which argues for denormalization of the TMP database.
-  - At present, the denormalization decision rationale is argued purely qualitatively, lacking quantitative metrics. We need to determine what quant metrics to use and employ to persuasively argue for wide-format denormalization -- ideally, drawing on metrics already laid out in the preceeding parts of Workflow 1.2. Included in these metrics should be strategic project design concerns such as scalability, size and speed of the database.
-  - In addition, we need to come up with a plan for how to connect the core TMP databases (`TMP_DF8`, `TMP_DF9`, `TMP_DF10`) with the ceramic reanalysis database (`TMP_REAN_DF2`) based on approximate ceramic type associations between the two. On the other hand, the core TMP databases and the REANs database both share the same primary key (SSN) and structure (SSNs == collection units == rows), so the matter of the equivalence between the core db's ceramic variables and the REANs db's ceramic variables may not be relevant at this stage(?)
-```
+---
+
+#### Workflow 1.3: Aggregation & Synthesis
+
+**Overview:**
+This workflow addresses the challenge of information overload by taking the dozens of granular metric files produced in the previous workflow and synthesizing them into concise, high-level reports. A discovery-driven script automatically finds and processes all available metric data, ensuring that the final reports are always synchronized with the generated data. This stage transforms the raw data into a format suitable for high-level comparison and analysis.
+
+**Tasks:**
+- **Design Aggregation Strategy**: Design a dynamic, discovery-driven aggregation strategy to synthesize numerous raw metric files into a cohesive summary, mapping detailed metrics (e.g., row counts per table) to high-level reportable items (e.g., "Total Estimated Rows").
+- **Develop Synthesizer Script**: Develop and document the `04_run_comparison.py` script to automatically load, process, aggregate all generated metrics, and resiliently handle any missing metric files from a partial pipeline run.
+- **Execute Aggregation**: Execute the `04_run_comparison.py` script to process all files in `outputs/metrics/`.
+- **Generate Summary Reports**: The execution will produce the two key summary deliverables: `comparison_matrix.csv` (machine-readable) and `comparison_report.md` (human-readable).
+- **Develop Test Suite**: Implement a `pytest` suite using a temporary file system fixture (`tmp_path`) to create fake input metric files and validate that the aggregation logic is correct and that the output reports are generated as expected.
+- **Validate Reports**: Manually and programmatically inspect the generated `comparison_matrix.csv` and `comparison_report.md` files to ensure correctness, completeness, and proper formatting.
+
+---
+
+#### Workflow 1.4: Analysis, Reporting, & Recommendation
+
+**Overview:**
+This is the final, human-in-the-loop workflow where all the generated data, artifacts, and reports are brought together for interpretation and synthesis. Using a set of powerful Jupyter Notebook templates, the analyst performs deep-dive and comparative analyses to build the final, evidence-based argument and formal recommendation for the white paper.
+
+**Tasks:**
+- **Design Notebook Templates**: Design and develop two comprehensive Jupyter Notebook templates (`template_individual_db_analysis.ipynb`, `template_comparative_analysis.ipynb`) with pre-built data loading, advanced interactive visualizations (e.g., radar plots, performance factor charts), and guided analytical prompts.
+- **Execute Individual Analyses**: Utilize the individual analysis template by creating six copies and running each one to produce a detailed, standardized analytical report for each of the six databases.
+- **Execute Comparative Analysis**: Utilize the comparative analysis template to conduct the final cross-database comparison, synthesizing all results into a single, persuasive narrative.
+- **Perform Smoke Tests**: Implement automated "smoke tests" using `nbconvert` or `papermill` to ensure the notebook templates can execute from top to bottom without error against the real data.
+- **Synthesize Final Recommendation**: Perform the final human-in-the-loop analysis to interpret the generated visualizations, answer the analytical prompts in the notebooks, and formulate the final, data-driven recommendation for the Phase 2 architecture.
+- **Draft Final White Paper**: Synthesize all quantitative findings, visualizations, and analytical narratives from the executed notebooks into a revised and expanded `Phase1_WhitePaper_v3.md`, solidifying the final architectural recommendation.
 
 ---
 
