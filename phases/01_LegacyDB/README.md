@@ -80,6 +80,7 @@ phases/01_LegacyDB/                                 # Main directory containing 
 │   ├── 03_generate_erds.py                         # Orchestrator: Generates ERD SVGs for all 6 databases.
 │   ├── 04_run_comparison.py                        # Orchestrator: Aggregates all raw metric files into final summary reports.
 │   ├── config.ini                                  # Centralized configuration for database connections, file paths, etc.
+│   ├── config.ini.example                          # Template configuration; duplicate as config.ini and fill in your credentials.
 │   └── profiling_modules/                          # Python package containing all reusable metric calculation logic.
 │       ├── __init__.py                             # Makes the directory a Python package.
 │       ├── base.py                                 # Shared utility functions for discovering DB objects (e.g., table names).
@@ -264,6 +265,7 @@ The following metrics are systematically collected by the profiling pipeline.
 ## 7. How to Execute Phase 1
 
 To run the entire automated analysis pipeline, execute the scripts in the `src/` directory in the following sequence. This sequence follows the four major workflows defined in the architecture. Ensure the environment is configured first as detailed in the script-specific notes.
+At a minimum, copy `src/config.ini.example` to `src/config.ini` and update the connection details before running any scripts.
 
 1.  **Execute Workflow 1: Environment & Database Setup**
     * Run `python 00_setup_databases.py` to create the four legacy databases.
