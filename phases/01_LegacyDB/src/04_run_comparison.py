@@ -103,6 +103,8 @@ def load_all_metrics(input_dir: Path) -> Dict[str, Dict[str, Any]]:
         "interop_metrics",
         "performance_benchmarks",
     ]
+    # Sort suffixes by descending length to ensure more specific matches first
+    metric_suffixes.sort(key=len, reverse=True)
 
     for file_path in metric_files:
         try:
@@ -120,10 +122,13 @@ def load_all_metrics(input_dir: Path) -> Dict[str, Dict[str, Any]]:
                     break
 
             if metric_name is None:
-                # Fallback to legacy parsing if suffix didn't match
-                parts = stem.split("_")
-                db_name = parts[0]
-                metric_name = "_".join(parts[1:])
+                # Fallback uses stem.rsplit("_", 1) to split only on the last underscore and preserve the full database name
+                parts = stem.rsplit("_", 1)
+                if len(parts) == 2:
+                    db_name, metric_name = parts
+                else:
+                    db_name = stem
+                    metric_name = ""
                 logging.warning(
                     f"Unrecognized metric suffix for file '{file_path.name}'. "
                     "Using legacy parsing logic."
@@ -135,7 +140,7 @@ def load_all_metrics(input_dir: Path) -> Dict[str, Dict[str, Any]]:
                 with open(file_path, "r", encoding="utf-8") as f:
                     all_data[db_name][metric_name] = json.load(f)
         except Exception as e:
-            logging.error(f"Failed to load or parse file '{file_path.name}': {e}")
+            logging.exception(f"Failed to load or parse file '{file_path.name}': {e}")
 
     return dict(all_data)
 
@@ -277,7 +282,10 @@ def main() -> None:
     # 2. Calculate summary metrics for each database
     all_db_summaries = []
     for db_name, db_data in sorted(all_loaded_data.items()):
-        logging.info(f"--> Aggregating metrics for '{db_name}'...")
+        # Pivot for easy comparison, aggregating duplicates with mean
+        pivot_perf = perf_df.pivot_table(
+            index="query_name", columns="database", values="latency_ms", aggfunc="mean"
+        )
         summary = calculate_summary_metrics(db_name, db_data)
         all_db_summaries.append(summary)
 
