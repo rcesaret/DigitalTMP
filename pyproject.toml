@@ -46,10 +46,9 @@ line-length = 88
 preview = true
 
 
-[tool.sqlfluff]
+[tool.sqlfluff.core]
 # SQLFluff configuration: https://docs.sqlfluff.com/en/stable/configuration.html
 # This configures the SQL linter/formatter for all .sql files in your project.
-core]
 # Based on your use of psycopg2 and postgres-related scripts.
 dialect = "postgres"
 # Specify the file extensions to lint.
