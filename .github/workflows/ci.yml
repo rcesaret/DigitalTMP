@@ -19,7 +19,7 @@ jobs:
         uses: conda-incubator/setup-miniconda@v3
         with:
           # Use the environment file from your repository
-          environment-file: envs/base_project_env.yml
+          environment-file: envs/ci_env.yml
           # Auto-activate the base environment for subsequent steps
           auto-activate-base: true
           # Cache dependencies to speed up future runs
