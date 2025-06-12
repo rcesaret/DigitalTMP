@@ -34,7 +34,8 @@ def get_all_column_profiles(engine: Engine, schema_name: str) -> List[Dict[str, 
 
     # Alternative (faster) approach using pg_stats
     # This is much faster but relies on ANALYZE having been run recently.
-    pg_stats_query = text("""
+    pg_stats_query = text(
+        """
         SELECT
             schemaname || '.' || tablename AS fq_table_name,
             tablename,
@@ -43,11 +44,14 @@ def get_all_column_profiles(engine: Engine, schema_name: str) -> List[Dict[str, 
             n_distinct AS distinct_values_estimate
         FROM pg_stats
         WHERE schemaname = :schema;
-    """)
+    """
+    )
 
     try:
         with engine.connect() as connection:
-            df_stats = pd.read_sql_query(pg_stats_query, connection, params={"schema": schema_name})
+            df_stats = pd.read_sql_query(
+                pg_stats_query, connection, params={"schema": schema_name}
+            )
 
         # Augment with exact counts (the slow part)
         total_rows_map = {}
@@ -59,23 +63,38 @@ def get_all_column_profiles(engine: Engine, schema_name: str) -> List[Dict[str, 
                     )
                     total_rows_map[table] = row_count_result.scalar_one()
             except Exception as e:
-                logging.error(f"Could not get row count for '{schema_name}.{table}': {e}")
+                logging.error(
+                    "Could not get row count for '%s.%s': %s",
+                    schema_name,
+                    table,
+                    e,
+                )
                 total_rows_map[table] = 0
 
         # Now, create the final list from the pg_stats DataFrame
-        for record in df_stats.to_dict('records'):
-            table_name = record['tablename']
+        for record in df_stats.to_dict("records"):
+            table_name = record["tablename"]
             total_rows = total_rows_map.get(table_name, 0)
             if total_rows > 0:
-                record['null_count_estimate'] = int(total_rows * (record['null_percent'] / 100.0))
+                record["null_count_estimate"] = int(
+                    total_rows * (record["null_percent"] / 100.0)
+                )
             else:
-                record['null_count_estimate'] = 0
+                record["null_count_estimate"] = 0
             all_profiles.append(record)
-            
-        logging.info(f"Successfully generated column profiles for {len(all_profiles)} columns in schema '{schema_name}' using pg_stats.")
+
+        logging.info(
+            "Successfully generated column profiles for %s columns in schema '%s' using pg_stats.",
+            len(all_profiles),
+            schema_name,
+        )
 
     except Exception as e:
-        logging.error(f"An error occurred during full column profiling for schema '{schema_name}': {e}")
+        logging.error(
+            "An error occurred during full column profiling for schema '%s': %s",
+            schema_name,
+            e,
+        )
         # Fallback or return empty might be needed here
         return []
 

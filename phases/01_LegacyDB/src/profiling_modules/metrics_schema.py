@@ -29,7 +29,8 @@ def get_table_level_metrics(engine: Engine, schema_name: str) -> List[Dict[str, 
         return []
 
     # This is a standard, community-vetted query for table-level stats & bloat.
-    query = text("""
+    query = text(
+        """
         WITH constants AS (
             SELECT current_setting('block_size')::numeric AS bs, 23 AS hdr, 4 AS ma
         ),
@@ -74,32 +75,45 @@ def get_table_level_metrics(engine: Engine, schema_name: str) -> List[Dict[str, 
         JOIN pg_namespace ns ON ns.oid = tbl.relnamespace
         WHERE ns.nspname = :schema AND tbl.relkind = 'r'
         ORDER BY pg_total_relation_size(tbl.oid) DESC;
-    """)
+    """
+    )
 
     try:
         with engine.connect() as connection:
             df = pd.read_sql_query(query, connection, params={"schema": schema_name})
-        
+
         # Calculate bloat in Python for clarity
-        df['bloat_bytes'] = df['actual_size_b'] - df['expected_size_b']
-        df['bloat_percent'] = round(
-            (df['bloat_bytes'] / df['actual_size_b'].replace(0, 1)) * 100, 2
+        df["bloat_bytes"] = df["actual_size_b"] - df["expected_size_b"]
+        df["bloat_percent"] = round(
+            (df["bloat_bytes"] / df["actual_size_b"].replace(0, 1)) * 100, 2
         )
-        df['bloat_size'] = df['bloat_bytes'].apply(lambda x: f"{round(x / 1024**2, 2)} MB" if x > 0 else "0 MB")
+        df["bloat_size"] = df["bloat_bytes"].apply(
+            lambda x: f"{round(x / 1024**2, 2)} MB" if x > 0 else "0 MB"
+        )
 
         # Drop helper columns before returning
-        df = df.drop(columns=['expected_size_b', 'actual_size_b'])
-        
-        table_metrics = df.to_dict('records')
-        logging.info(f"Successfully calculated table-level metrics for {len(table_metrics)} tables in schema '{schema_name}'.")
+        df = df.drop(columns=["expected_size_b", "actual_size_b"])
+
+        table_metrics = df.to_dict("records")
+        logging.info(
+            "Successfully calculated table-level metrics for %s tables in schema '%s'.",
+            len(table_metrics),
+            schema_name,
+        )
 
     except Exception as e:
-        logging.error(f"Failed to get table-level metrics for schema '{schema_name}': {e}")
+        logging.error(
+            "Failed to get table-level metrics for schema '%s': %s",
+            schema_name,
+            e,
+        )
 
     return table_metrics
 
 
-def get_column_structural_metrics(engine: Engine, schema_name: str) -> List[Dict[str, Any]]:
+def get_column_structural_metrics(
+    engine: Engine, schema_name: str
+) -> List[Dict[str, Any]]:
     """
     Retrieves structural details for every column in a schema.
 
@@ -110,7 +124,8 @@ def get_column_structural_metrics(engine: Engine, schema_name: str) -> List[Dict
     Returns:
         A list of dictionaries, each representing a column's structural info.
     """
-    query = text("""
+    query = text(
+        """
         SELECT
             table_name,
             column_name,
@@ -124,13 +139,22 @@ def get_column_structural_metrics(engine: Engine, schema_name: str) -> List[Dict
         FROM information_schema.columns
         WHERE table_schema = :schema
         ORDER BY table_name, ordinal_position;
-    """)
+    """
+    )
     try:
         with engine.connect() as connection:
             df = pd.read_sql_query(query, connection, params={"schema": schema_name})
-        column_metrics = df.to_dict('records')
-        logging.info(f"Successfully retrieved structural metrics for {len(column_metrics)} columns in schema '{schema_name}'.")
+        column_metrics = df.to_dict("records")
+        logging.info(
+            "Successfully retrieved structural metrics for %s columns in schema '%s'.",
+            len(column_metrics),
+            schema_name,
+        )
         return column_metrics
     except Exception as e:
-        logging.error(f"Failed to get column structural metrics for schema '{schema_name}': {e}")
+        logging.error(
+            "Failed to get column structural metrics for schema '%s': %s",
+            schema_name,
+            e,
+        )
         return []

@@ -45,7 +45,7 @@ BENCHMARK_TABLE_NAME = "wide_format_data"
 # This makes the script's logic clear and easily extensible.
 BENCHMARK_DB_TO_SQL_MAP = {
     "tmp_benchmark_wide_numeric": "flatten_df9.sql",
-    "tmp_benchmark_wide_text_nulls": "flatten_df9_text_nulls.sql"
+    "tmp_benchmark_wide_text_nulls": "flatten_df9_text_nulls.sql",
 }
 
 
@@ -56,9 +56,9 @@ def setup_logging(log_path: Path) -> None:
         level=logging.INFO,
         format="%(asctime)s [%(levelname)-7s] %(message)s",
         handlers=[
-            logging.FileHandler(log_path, mode='w'), # Overwrite log on each run
-            logging.StreamHandler(sys.stdout)
-        ]
+            logging.FileHandler(log_path, mode="w"),  # Overwrite log on each run
+            logging.StreamHandler(sys.stdout),
+        ],
     )
 
 
@@ -72,7 +72,7 @@ def parse_arguments() -> argparse.Namespace:
         "--config",
         type=str,
         default="config.ini",
-        help="Path to the configuration file (default: config.ini)"
+        help="Path to the configuration file (default: config.ini)",
     )
     return parser.parse_args()
 
@@ -80,17 +80,19 @@ def parse_arguments() -> argparse.Namespace:
 # --- Database Operations ---
 def create_database(db_config: Dict, db_name: str) -> bool:
     """Creates a new PostgreSQL database if it doesn't already exist."""
-    logging.info(f"Attempting to create database: '{db_name}'...")
+    logging.info("Attempting to create database: '%s'...", db_name)
     try:
         with psycopg2.connect(**db_config) as conn:
             conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
             with conn.cursor() as cur:
-                cur.execute(sql.SQL("CREATE DATABASE {}").format(sql.Identifier(db_name)))
-                logging.info(f"Database '{db_name}' created successfully.")
+                cur.execute(
+                    sql.SQL("CREATE DATABASE {}").format(sql.Identifier(db_name))
+                )
+                logging.info("Database '%s' created successfully.", db_name)
     except psycopg2.errors.DuplicateDatabase:
-        logging.warning(f"Database '{db_name}' already exists. Skipping creation.")
+        logging.warning("Database '%s' already exists. Skipping creation.", db_name)
     except psycopg2.Error as e:
-        logging.error(f"Failed to create database '{db_name}'. Error: {e}")
+        logging.error("Failed to create database '%s'. Error: %s", db_name, e)
         return False
     return True
 
@@ -104,50 +106,63 @@ def get_sqlalchemy_engine(db_config: Dict, db_name: str) -> Engine:
         )
         return create_engine(db_url)
     except Exception as e:
-        logging.critical(f"Failed to create SQLAlchemy engine for '{db_name}'. Error: {e}")
+        logging.critical(
+            "Failed to create SQLAlchemy engine for '%s'. Error: %s", db_name, e
+        )
         sys.exit(1)
 
 
 def extract_transform_data(engine: Engine, query_path: Path) -> pd.DataFrame | None:
     """Loads and transforms data from the source DB using a specific SQL query."""
     if not query_path.is_file():
-        logging.critical(f"SQL query file not found at: {query_path}")
+        logging.critical("SQL query file not found at: %s", query_path)
         return None
-    
-    logging.info(f"Reading query from '{query_path.name}'...")
-    with open(query_path, 'r', encoding='utf-8') as f:
+
+    logging.info("Reading query from '%s'...", query_path.name)
+    with open(query_path, "r", encoding="utf-8") as f:
         query = f.read()
 
-    logging.info("Executing query against source database (this may take several minutes)...")
+    logging.info(
+        "Executing query against source database (this may take several minutes)..."
+    )
     try:
         with engine.connect() as connection:
             df = pd.read_sql_query(sql=text(query), con=connection)
-        logging.info(f"Successfully extracted data into DataFrame with shape: {df.shape}")
+        logging.info(
+            "Successfully extracted data into DataFrame with shape: %s", df.shape
+        )
         return df
     except Exception as e:
-        logging.critical(f"Failed to execute query from '{query_path.name}'. Error: {e}")
+        logging.critical(
+            "Failed to execute query from '%s'. Error: %s", query_path.name, e
+        )
         return None
 
 
 def write_to_database(df: pd.DataFrame, engine: Engine) -> bool:
     """Writes a DataFrame to the specified database."""
     db_name = engine.url.database
-    logging.info(f"Writing {df.shape[0]} rows to table '{BENCHMARK_TABLE_NAME}' in database '{db_name}'...")
+    logging.info(
+        "Writing %s rows to table '%s' in database '%s'...",
+        df.shape[0],
+        BENCHMARK_TABLE_NAME,
+        db_name,
+    )
     try:
         # Using method='multi' is crucial for bulk insert performance.
         # chunksize helps manage memory for extremely large datasets.
         df.to_sql(
             name=BENCHMARK_TABLE_NAME,
             con=engine,
-            if_exists='replace',
+            if_exists="replace",
             index=False,
-            method='multi',
-            chunksize=1000
+            method="multi",
+            chunksize=1000,
         )
-        logging.info(f"Successfully wrote data to '{db_name}'.")
+        logging.info("Successfully wrote data to '%s'.", db_name)
         return True
     except Exception as e:
-        logging.error(f"Failed to write DataFrame to '{db_name}'. Error: {e}")
+        logging.error("Failed to write DataFrame to '%s'. Error: %s", db_name, e)
         return False
 
 
@@ -156,13 +171,13 @@ def main() -> None:
     """Main function to orchestrate the benchmark database creation."""
     args = parse_arguments()
     config_path = Path(args.config)
-    
+
     log_file_path = Path(__file__).parent / LOG_FILE_NAME
     setup_logging(log_file_path)
 
     logging.info("Reading configuration...")
     if not config_path.is_file():
-        logging.critical(f"Configuration file not found: {config_path}")
+        logging.critical("Configuration file not found: %s", config_path)
         sys.exit(1)
 
     config = configparser.ConfigParser()
@@ -176,15 +191,18 @@ def main() -> None:
         sql_dir = Path(config.get("paths", "sql_queries_dir"))
 
     except (configparser.NoSectionError, configparser.NoOptionError) as e:
-        logging.critical(f"Config file is missing a required section or option: {e}")
+        logging.critical("Config file is missing a required section or option: %s", e)
         sys.exit(1)
-        
+
     logging.info("Starting benchmark database creation process...")
 
     # 1. Create the empty benchmark databases first
     for db_name in benchmark_dbs:
         if not create_database(db_config_root, db_name):
-            logging.critical(f"Halting: failed to create prerequisite database '{db_name}'.")
+            logging.critical(
+                "Halting: failed to create prerequisite database '%s'.",
+                db_name,
+            )
             sys.exit(1)
 
     # 2. Establish connection to the source database
@@ -192,20 +210,20 @@ def main() -> None:
 
     # 3. Loop through the map, execute the correct SQL, and load the correct DB
     for db_name, sql_filename in BENCHMARK_DB_TO_SQL_MAP.items():
-        logging.info(f"--- Processing benchmark database: {db_name} ---")
+        logging.info("--- Processing benchmark database: %s ---", db_name)
         query_path = sql_dir / sql_filename
-        
+
         # Extract and Transform using the specified SQL query
         df = extract_transform_data(source_engine, query_path)
         if df is None:
-            logging.error(f"Halting: data extraction failed for {db_name}.")
-            continue # Try the next one, but this is a critical failure
+            logging.error("Halting: data extraction failed for %s.", db_name)
+            continue  # Try the next one, but this is a critical failure
 
         # Load data into the target benchmark database
         target_engine = get_sqlalchemy_engine(db_config_root, db_name)
         if not write_to_database(df, target_engine):
-            logging.error(f"Halting: failed to load data into {db_name}.")
-            
+            logging.error("Halting: failed to load data into %s.", db_name)
+
     logging.info("--- Benchmark database creation process complete. ---")
 
 

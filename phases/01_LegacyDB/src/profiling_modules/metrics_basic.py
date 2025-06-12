@@ -27,14 +27,19 @@ def get_basic_db_metrics(engine: Engine) -> Dict[str, Any]:
             metrics["database_name"] = db_name_result.scalar_one()
 
             # Get database size
-            db_size_query = text("SELECT pg_catalog.pg_database_size(current_database()) / (1024 * 1024);")
+            db_size_query = text(
+                "SELECT pg_catalog.pg_database_size(current_database()) / (1024 * 1024);"
+            )
             db_size_result = connection.execute(db_size_query)
             metrics["database_size_mb"] = round(db_size_result.scalar_one(), 2)
-            
-            logging.info(f"Successfully retrieved basic metrics for DB '{metrics['database_name']}'.")
+
+            logging.info(
+                "Successfully retrieved basic metrics for DB '%s'.",
+                metrics["database_name"],
+            )
 
     except Exception as e:
-        logging.error(f"Failed to retrieve basic DB metrics: {e}")
+        logging.error("Failed to retrieve basic DB metrics: %s", e)
 
     return metrics
 
@@ -57,10 +62,14 @@ def get_schema_object_counts(engine: Engine, schema_name: str) -> Dict[str, Any]
         "function_count": 0,
         "sequence_count": 0,
     }
-    
+
     queries = {
-        "function_count": text("SELECT COUNT(*) FROM information_schema.routines WHERE routine_schema = :schema;"),
-        "sequence_count": text("SELECT COUNT(*) FROM information_schema.sequences WHERE sequence_schema = :schema;")
+        "function_count": text(
+            "SELECT COUNT(*) FROM information_schema.routines WHERE routine_schema = :schema;"
+        ),
+        "sequence_count": text(
+            "SELECT COUNT(*) FROM information_schema.sequences WHERE sequence_schema = :schema;"
+        ),
     }
 
     try:
@@ -68,8 +77,15 @@ def get_schema_object_counts(engine: Engine, schema_name: str) -> Dict[str, Any]
             for key, query in queries.items():
                 result = connection.execute(query, {"schema": schema_name})
                 metrics[key] = result.scalar_one()
-        logging.info(f"Successfully counted objects for schema '{schema_name}'.")
+        logging.info(
+            "Successfully counted objects for schema '%s'.",
+            schema_name,
+        )
     except Exception as e:
-        logging.error(f"Failed to count objects for schema '{schema_name}': {e}")
+        logging.error(
+            "Failed to count objects for schema '%s': %s",
+            schema_name,
+            e,
+        )
 
     return metrics

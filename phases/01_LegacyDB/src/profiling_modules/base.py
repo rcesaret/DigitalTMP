@@ -30,8 +30,13 @@ def get_table_names(engine: Engine, schema_name: str) -> List[str]:
             result = connection.execute(query, {"schema": schema_name})
             return [row[0] for row in result]
     except Exception as e:
-        logging.error(f"Failed to get table names for schema '{schema_name}': {e}")
+        logging.error(
+            "Failed to get table names for schema '%s': %s",
+            schema_name,
+            e,
+        )
         return []
+
 
 def get_view_names(engine: Engine, schema_name: str) -> List[str]:
     """
@@ -56,5 +61,9 @@ def get_view_names(engine: Engine, schema_name: str) -> List[str]:
             result = connection.execute(query, {"schema": schema_name})
             return [row[0] for row in result]
     except Exception as e:
-        logging.error(f"Failed to get view names for schema '{schema_name}': {e}")
+        logging.error(
+            "Failed to get view names for schema '%s': %s",
+            schema_name,
+            e,
+        )
         return []
