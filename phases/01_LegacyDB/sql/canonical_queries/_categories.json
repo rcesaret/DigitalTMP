@@ -1,0 +1,24 @@
+{
+  "categories": {
+    "baseline": {
+      "name": "Baseline Performance",
+      "description": "Tests raw I/O performance with full table scans"
+    },
+    "join_performance": {
+      "name": "Join Performance", 
+      "description": "Tests efficiency of multi-table joins and aggregations"
+    },
+    "complex_filtering": {
+      "name": "Complex Filtering & Aggregation",
+      "description": "Tests filtering with multiple conditions and aggregations"
+    }
+  },
+  "database_mappings": {
+    "tmp_df8": "canonical_queries_df8.sql",
+    "tmp_df9": "canonical_queries_df9.sql",
+    "tmp_df10": "canonical_queries_df10.sql",
+    "tmp_rean_df2": "canonical_queries_rean_df2.sql",
+    "tmp_benchmark_wide_numeric": "canonical_queries_benchmark.sql",
+    "tmp_benchmark_wide_text_nulls": "canonical_queries_benchmark.sql"
+  }
+}
