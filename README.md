@@ -263,6 +263,20 @@ cp .env.example .env
 # Edit .env with your database credentials
 ```
 
+### Phase 1 Dependencies
+
+**Python packages**
+- pandas
+- SQLAlchemy
+- psycopg2
+- sqlalchemy-schemadisplay
+
+**External tools**
+- PostgreSQL (v17+)
+- Graphviz
+
+See [`envs/base_project_env.yml`](envs/base_project_env.yml) for the full conda environment.
+
 ### Data Download
 4. **External Datasets**: Follow instructions in `infrastructure/cloud_downloads.md` to download large raster files and legacy databases.
 5. **Validation**: Run checksum validation for all downloaded files.
