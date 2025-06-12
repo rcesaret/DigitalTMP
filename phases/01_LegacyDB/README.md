@@ -97,6 +97,13 @@ phases/01_LegacyDB/                                 # Main directory containing 
 │   ├── metrics/                                    # Stores raw, detailed metric data as intermediate CSV and JSON files.
 │   └── reports/                                    # Stores final, aggregated summary reports (comparison_matrix.csv and .md).
 ├── sql/                                            # Contains all SQL scripts used by the Python pipeline.
+│   ├── canonical_queries/                          # Performance benchmark queries
+│   │   ├── _categories.json                        # Query metadata and mappings
+│   │   ├── canonical_queries_df8.sql               # TMP_DF8 specific queries
+│   │   ├── canonical_queries_df9.sql               # TMP_DF9 specific queries
+│   │   ├── canonical_queries_df10.sql              # TMP_DF10 specific queries
+│   │   ├── canonical_queries_rean_df2.sql          # TMP_REAN_DF2 queries
+│   │   └── canonical_queries_benchmark.sql         # Benchmark database queries
 │   ├── canonical_queries.sql                       # A set of representative queries for performance benchmarking.
 │   ├── flatten_df9.sql                             # The complex query to flatten TMP_DF9 into a wide, numeric format.
 │   └── flatten_df9_text_nulls.sql                  # The query to flatten TMP_DF9 with text descriptions and proper NULLs.
@@ -131,8 +138,8 @@ This section details the purpose and function of each key file, organized by the
 
 * **`src/02_run_profiling_pipeline.py`**:
     * **Objective**: The main engine; orchestrates the execution of all profiling tasks.
-    * **Description**: Iterates through all six databases (4 legacy + 2 benchmark). For each one, it calls the various metric-gathering functions from the `profiling_modules` package and saves the output of each function to a distinct `.csv` or `.json` file in the `outputs/metrics/` directory.
-    * **Inputs**: `config.ini`, all six live databases, `profiling_modules/`, `sql/canonical_queries.sql`.
+    * **Description**: Iterates through all six databases (4 legacy + 2 benchmark). For each one, it calls the various metric-gathering functions from the `profiling_modules` package, passing database-specific context like schema name, and saves the output of each function to a distinct `.csv` or `.json` file in the `outputs/metrics/` directory.
+    * **Inputs**: `config.ini`, all six live databases, `profiling_modules/`, `sql/canonical_queries/` directory.
     * **Outputs**: A complete set of raw metric data files (~40 total) in `outputs/metrics/`.
 
 * **`src/03_generate_erds.py`**:
@@ -147,9 +154,11 @@ This section details the purpose and function of each key file, organized by the
     * **`metrics_schema.py`**: Gathers structural information about tables and columns (e.g., row counts, data types, bloat).
     * **`metrics_profile.py`**: Profiles the actual data content within columns (e.g., NULL percentages, cardinality) using the efficient `pg_stats` catalog.
     * **`metrics_interop.py`**: Calculates the custom, heuristic metrics for complexity and normalization (JDI, LIF, NF).
-    * **`metrics_performance.py`**: Executes and times the canonical queries to benchmark performance.
+    * **`metrics_performance.py`**: Implements a sophisticated, metadata-driven benchmark runner. It dynamically selects a set of hand-optimized SQL queries specific to the database being profiled, executes them, and records categorized latency metrics. This ensures a fair and powerful comparison of performance across different database schemas.
 
-* **`sql/canonical_queries.sql`**: Contains a set of representative analytical SQL queries. This file is used by the performance profiling module to run standardized benchmarks against each database, providing a consistent measure of query latency.
+* **`sql/canonical_queries/`**: This directory contains the database-specific, categorized queries for performance benchmarking.
+    * **`_categories.json`**: A metadata file that maps database names (e.g., `tmp_df9`) to their corresponding SQL query files (e.g., `canonical_queries_df9.sql`) and defines descriptive categories for the queries (e.g., `baseline`, `join_performance`).
+    * **`canonical_queries_*.sql`**: A series of SQL files, each containing queries hand-tuned for a specific database schema. This allows the performance benchmarks to accurately test the architectural trade-offs of each design.
 
 ### 3.3 Workflow 3: Assets for Aggregation & Synthesis
 
@@ -245,10 +254,22 @@ The following metrics are systematically collected by the profiling pipeline.
 | Most Common Freqs | Data Profile | Frequencies corresponding to the most common values. | `pg_stats.most_common_freqs` |
 | Histogram Bounds | Data Profile | Array of values that divide the column's data into equal-frequency bins. | `pg_stats.histogram_bounds` |
 
-### Part D: Performance Metrics
+#### 5.3.4. Part D: Performance Metrics
+
+The performance benchmarking system generates additional metrics that enable direct comparison of query efficiency across different database architectures:
+
 | Metric Name | Category | Description | Source |
 | :--- | :--- | :--- | :--- |
 | Canonical Query Latency | Performance | Execution time (in milliseconds) for a set of predefined, representative queries. | Custom SQL script (`sql/canonical_queries.sql`) executed via Python. |
+| Query Category | Performance | Functional classification of the benchmark query (baseline/join_performance/complex_filtering) | Query metadata in `sql/canonical_queries/_categories.json` |
+| Database-Specific Query ID | Performance | Unique identifier for tracking equivalent queries across schemas (e.g., "1.1", "2.1", "3.1") | Query headers in database-specific SQL files |
+| Schema Efficiency Factor | Performance | Relative performance comparing normalized vs. denormalized schemas for the same analytical task | Calculated: (normalized_latency / denormalized_latency) |
+| Join Complexity Impact | Performance | Performance degradation caused by multi-table joins compared to baseline scans | Calculated: (join_query_latency / baseline_query_latency) |
+| Query Success Rate | Performance | Percentage of benchmark queries that execute successfully for each database | Calculated from status field: (successful_queries / total_queries) × 100 |
+| Performance Improvement Factor | Performance | Percentage improvement of wide-format over normalized schemas | Calculated: ((normalized_latency - denormalized_latency) / normalized_latency) × 100 |
+
+These comparative metrics are essential for the Phase 1 white paper's quantitative argument for database denormalization. The performance differences between highly normalized schemas (like TMP_DF9 with its 18 core tables and 45 lookup tables) and the wide-format benchmark databases provide empirical evidence for the proposed architectural changes.
+
 
 ---
 
