@@ -1,0 +1,54 @@
+name: digital_tmp_base
+channels:
+  - defaults
+  - https://repo.anaconda.com/pkgs/main
+  - https://repo.anaconda.com/pkgs/r
+  - https://repo.anaconda.com/pkgs/msys2
+dependencies:
+  - pandas
+  - dash-leaflet
+  - pre-commit
+  - proj[version='>=9.0.*']
+  - dash
+  - gdal[version='>=3.6.*']
+  - seaborn
+  - scikit-learn
+  - geos
+  - pytest
+  - matplotlib
+  - nbstripout
+  - python-dotenv
+  - plotly
+  - dash-bootstrap-components
+  - geoalchemy2
+  - pyproj
+  - uvicorn
+  - rasterio
+  - waitress
+  - python=3.11
+  - python-graphviz
+  - rasterstats
+  - graphviz
+  - pip
+  - libpysal
+  - great-expectations
+  - scipy
+  - rtree
+  - sqlfluff
+  - ruff
+  - shapely
+  - dbt-postgres
+  - fiona
+  - folium
+  - sqlalchemy
+  - numpy
+  - psycopg2
+  - sqlalchemy-utils
+  - geopandas
+  - dbt-core
+  - pyodbc
+  - jupyterlab
+  - mamba
+  - fastapi
+  - pykrige
+prefix: C:\ProgramData\anaconda3\envs\digital_tmp_base

@@ -1,0 +1,79 @@
+# ===================================================================
+# Digital TMP: Production-Grade Project Environment (v3.0)
+# ===================================================================
+# This file defines the complete, portable Conda environment for all
+# project phases, from data analysis and ETL to geospatial processing,
+# metadata generation, API deployment, and interactive dashboards.
+#
+# Based on a deep analysis of architecture.md and methods.md.
+#
+name: digital_tmp_base
+channels:
+  - conda-forge        # single channel ⇒ ABI-safe
+  - nodefaults         # optional: enforce purity
+dependencies:
+  # Core
+  - python=3.11
+  - pip
+  - mamba              # fast solver inside env
+  - pandas             # pulls numpy
+  - numpy
+  - scipy
+  - scikit-learn
+  - matplotlib
+  - seaborn
+  - plotly
+
+  # Geospatial
+  - gdal>=3.6.*
+  - proj>=9.0.*
+  - geos
+  - shapely
+  - rasterio
+  - fiona                # explicit to keep versions aligned
+  - geopandas
+  - pyproj
+  - rtree
+  - libpysal
+  - pykrige
+  - rasterstats
+
+  # Databases & ETL
+  - sqlalchemy
+  - sqlalchemy-utils
+  - psycopg2
+  - geoalchemy2
+  - pyodbc
+  - great-expectations
+  - dbt-core
+  - dbt-postgres
+
+  # Web & APIs (core)
+  - fastapi              # extras via pip
+  - uvicorn              # extras via pip
+  - python-dotenv
+  - waitress
+
+  # Dev / QA
+  - jupyterlab
+  - pytest
+  - ruff
+  - sqlfluff
+  - nbstripout
+  - pre-commit
+  - graphviz
+  - python-graphviz
+
+  # Dashboards
+  - dash
+  - dash-bootstrap-components
+  - dash-leaflet
+  - folium
+
+  # Anything not on conda-forge
+  - pip:
+      - uvicorn[standard]
+      - fastapi[all]
+      - detect-secrets
+      - radon
+      - docker
