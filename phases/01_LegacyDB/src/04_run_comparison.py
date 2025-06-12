@@ -78,19 +78,24 @@ def load_all_metrics(input_dir: Path) -> Dict[str, Dict[str, Any]]:
         A nested dictionary mapping: db_name -> metric_name -> data,
         where data is a DataFrame (for CSVs) or a dict (for JSONs).
     """
-    logging.info(f"Scanning for metric files in: {input_dir}")
+    logging.info("Scanning for metric files in: %s", input_dir)
     all_data = defaultdict(dict)
 
     if not input_dir.is_dir():
-        logging.error(f"Input metrics directory not found: {input_dir}")
+        logging.error("Input metrics directory not found: %s", input_dir)
         return {}
 
     metric_files = list(input_dir.glob("*.csv")) + list(input_dir.glob("*.json"))
-    logging.info(f"Found {len(metric_files)} metric files to process.")
+    logging.info("Found %s metric files to process.", len(metric_files))
 
     metric_suffixes = [
-        "basic_metrics", "schema_counts", "table_metrics", "column_structure",
-        "column_profiles", "interop_metrics", "performance_benchmarks",
+        "basic_metrics",
+        "schema_counts",
+        "table_metrics",
+        "column_structure",
+        "column_profiles",
+        "interop_metrics",
+        "performance_benchmarks",
     ]
     metric_suffixes.sort(key=len, reverse=True)
 
@@ -103,9 +108,11 @@ def load_all_metrics(input_dir: Path) -> Dict[str, Dict[str, Any]]:
                     metric_name = suffix
                     db_name = stem.rsplit(f"_{suffix}", 1)[0]
                     break
-            
+
             if not db_name:
-                logging.warning(f"Could not determine database name for '{file_path.name}'. Skipping.")
+                logging.warning(
+                    f"Could not determine database name for '{file_path.name}'. Skipping."
+                )
                 continue
 
             if file_path.suffix == ".csv":
@@ -115,7 +122,7 @@ def load_all_metrics(input_dir: Path) -> Dict[str, Dict[str, Any]]:
                     all_data[db_name][metric_name] = json.load(f)
         except Exception as e:
             logging.exception(f"Failed to load or parse file '{file_path.name}': {e}")
-    
+
     return dict(all_data)
 
 
@@ -129,11 +136,11 @@ def calculate_summary_metrics(db_name: str, db_data: Dict[str, Any]) -> Dict[str
 
     Returns:
         A flat dictionary of aggregated metrics.
-    
+
     This preserves the original summary logic.
     """
     summary = {"Database": db_name}
-    
+
     # Helper to safely get data and log if missing
     def get_metric_data(key, default=None):
         data = db_data.get(key)
@@ -165,7 +172,9 @@ def calculate_summary_metrics(db_name: str, db_data: Dict[str, Any]) -> Dict[str
     return summary
 
 
-def calculate_comparative_performance_metrics(all_data: Dict[str, Dict[str, Any]]) -> pd.DataFrame:
+def calculate_comparative_performance_metrics(
+    all_data: Dict[str, Dict[str, Any]],
+) -> pd.DataFrame:
     """
     Calculates advanced, comparative performance metrics using the new architecture.
     """
@@ -182,52 +191,101 @@ def calculate_comparative_performance_metrics(all_data: Dict[str, Dict[str, Any]
         return pd.DataFrame()
 
     df = pd.concat(perf_data, ignore_index=True)
-    if df.empty or 'status' not in df.columns or df[df['status'] == 'Success'].empty:
-        logging.warning("Performance DataFrame is empty or contains no successful queries.")
+    if df.empty or "status" not in df.columns or df[df["status"] == "Success"].empty:
+        logging.warning(
+            "Performance DataFrame is empty or contains no successful queries."
+        )
         return pd.DataFrame()
 
-    df['latency_ms'] = pd.to_numeric(df['latency_ms'], errors='coerce')
-    df_success = df[df['status'] == 'Success'].copy()
+    df["latency_ms"] = pd.to_numeric(df["latency_ms"], errors="coerce")
+    df_success = df[df["status"] == "Success"].copy()
 
-    denormalized_dbs = [db for db in df_success['database'].unique() if 'benchmark' in db]
+    denormalized_dbs = [
+        db for db in df_success["database"].unique() if "benchmark" in db
+    ]
     if not denormalized_dbs:
         logging.error("No benchmark/denormalized databases found for comparison base.")
         return df
 
-    baseline_latency = df_success[df_success['database'].isin(denormalized_dbs)] \
-        .groupby('query_id')['latency_ms'].min().rename('baseline_latency_ms')
+    baseline_latency = (
+        df_success[df_success["database"].isin(denormalized_dbs)]
+        .groupby("query_id")["latency_ms"]
+        .min()
+        .rename("baseline_latency_ms")
+    )
 
-    df_success = pd.merge(df_success, baseline_latency, on='query_id', how='left')
+    df_success = pd.merge(df_success, baseline_latency, on="query_id", how="left")
 
-    df_success['schema_efficiency_factor'] = (df_success['latency_ms'] / df_success['baseline_latency_ms']).round(2)
-    df_success['performance_improvement_factor'] = (((df_success['latency_ms'] - df_success['baseline_latency_ms']) / df_success['latency_ms']) * 100).round(2)
-    df_success.loc[df_success['database'].isin(denormalized_dbs), 'performance_improvement_factor'] = 0.0
+    df_success["schema_efficiency_factor"] = (
+        df_success["latency_ms"] / df_success["baseline_latency_ms"]
+    ).round(2)
+    df_success["performance_improvement_factor"] = (
+        (
+            (df_success["latency_ms"] - df_success["baseline_latency_ms"])
+            / df_success["latency_ms"]
+        )
+        * 100
+    ).round(2)
+    df_success.loc[
+        df_success["database"].isin(denormalized_dbs), "performance_improvement_factor"
+    ] = 0.0
 
     logging.info("Successfully calculated comparative performance metrics.")
     return df_success
 
 
-def generate_markdown_report(summary_df: pd.DataFrame, perf_summary_df: pd.DataFrame, output_path: Path) -> None:
+def generate_markdown_report(
+    summary_df: pd.DataFrame, perf_summary_df: pd.DataFrame, output_path: Path
+) -> None:
     """Generates a rich, multi-section markdown report, now enhanced with new performance insights."""
-    logging.info(f"Generating comprehensive markdown report to: {output_path}")
-    report_parts = [f"# Database Comparison Report", f"_Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}_"]
+    logging.info(
+        "Generating comprehensive markdown report to: %s",
+        output_path,
+    )
+    report_parts = [
+        f"# Database Comparison Report",
+        f"_Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}_",
+    ]
 
     report_parts.append("\n## 1. Executive Summary")
-    summary_cols = ["Database", "Database Size (MB)", "Table Count", "Total Estimated Rows", "JDI (Join Dependency Index)", "NF (Normalization Factor)"]
+    summary_cols = [
+        "Database",
+        "Database Size (MB)",
+        "Table Count",
+        "Total Estimated Rows",
+        "JDI (Join Dependency Index)",
+        "NF (Normalization Factor)",
+    ]
     report_parts.append(summary_df[summary_cols].to_markdown(index=False))
 
     report_parts.append("\n## 2. Performance Benchmark Comparison")
-    if not perf_summary_df.empty and 'schema_efficiency_factor' in perf_summary_df.columns:
-        report_parts.append("### At-a-Glance: Schema Efficiency Factor (Lower is Better)")
-        report_parts.append("This table shows how many times slower each database is compared to the fastest benchmark database for each query category. A value of 1.0 means it is as fast as the benchmark.")
-        pivot_efficiency = perf_summary_df.pivot_table(index='database', columns='category', values='schema_efficiency_factor', aggfunc='mean').round(2)
+    if (
+        not perf_summary_df.empty
+        and "schema_efficiency_factor" in perf_summary_df.columns
+    ):
+        report_parts.append(
+            "### At-a-Glance: Schema Efficiency Factor (Lower is Better)"
+        )
+        report_parts.append(
+            "This table shows how many times slower each database is compared to the fastest benchmark database for each query category. A value of 1.0 means it is as fast as the benchmark."
+        )
+        pivot_efficiency = perf_summary_df.pivot_table(
+            index="database",
+            columns="category",
+            values="schema_efficiency_factor",
+            aggfunc="mean",
+        ).round(2)
         report_parts.append(pivot_efficiency.to_markdown())
-        
+
         report_parts.append("\n### Detailed Latency Breakdown (ms)")
-        pivot_latency = perf_summary_df.pivot_table(index=['category', 'query_id'], columns='database', values='latency_ms').round(2)
+        pivot_latency = perf_summary_df.pivot_table(
+            index=["category", "query_id"], columns="database", values="latency_ms"
+        ).round(2)
         report_parts.append(pivot_latency.to_markdown())
     else:
-        report_parts.append("No performance benchmark data was found or could be calculated.")
+        report_parts.append(
+            "No performance benchmark data was found or could be calculated."
+        )
 
     report_parts.append("\n## 3. Run Metadata")
     report_parts.append(f"- **Databases Processed**: {summary_df['Database'].tolist()}")
@@ -237,7 +295,7 @@ def generate_markdown_report(summary_df: pd.DataFrame, perf_summary_df: pd.DataF
             f.write("\n\n".join(report_parts))
         logging.info("Successfully wrote markdown report.")
     except Exception as e:
-        logging.error(f"Failed to write markdown report: {e}")
+        logging.error("Failed to write markdown report: %s", e)
 
 
 # --- Main Orchestrator ---
@@ -249,10 +307,10 @@ def main() -> None:
     log_dir = Path(__file__).parent
     setup_logging(log_dir)
     logging.info("--- Starting Comparison & Aggregation Script ---")
-    logging.info(f"Reading configuration from: {config_path}")
+    logging.info("Reading configuration from: %s", config_path)
 
     if not config_path.is_file():
-        logging.critical(f"Configuration file not found: {config_path}")
+        logging.critical("Configuration file not found: %s", config_path)
         sys.exit(1)
 
     config = configparser.ConfigParser()
@@ -265,7 +323,8 @@ def main() -> None:
         output_dir.mkdir(parents=True, exist_ok=True)
     except (configparser.NoSectionError, configparser.NoOptionError) as e:
         logging.critical(
-            f"Configuration file is missing a required section or option: {e}"
+            "Configuration file is missing a required section or option: %s",
+            e,
         )
         sys.exit(1)
 
@@ -276,7 +335,10 @@ def main() -> None:
         sys.exit(1)
 
     # 2. Calculate ORIGINAL summary metrics for each database
-    all_db_summaries = [calculate_summary_metrics(db_name, db_data) for db_name, db_data in sorted(all_loaded_data.items())]
+    all_db_summaries = [
+        calculate_summary_metrics(db_name, db_data)
+        for db_name, db_data in sorted(all_loaded_data.items())
+    ]
     summary_df = pd.DataFrame(all_db_summaries)
 
     # 3. Calculate NEW advanced performance metrics
@@ -286,18 +348,31 @@ def main() -> None:
     # ORIGINAL: machine-readable comparison matrix
     matrix_path = output_dir / "comparison_matrix.csv"
     summary_df.set_index("Database").T.to_csv(matrix_path)
-    logging.info(f"Successfully saved original comparison matrix to {matrix_path.name}")
+    logging.info(
+        "Successfully saved original comparison matrix to %s", matrix_path.name
+    )
 
     # NEW: detailed performance summary
     perf_summary_path = output_dir / "report_performance_summary_detailed.csv"
     perf_summary_df.to_csv(perf_summary_path, index=False)
-    logging.info(f"Saved detailed performance summary report to: {perf_summary_path}")
+    logging.info("Saved detailed performance summary report to: %s", perf_summary_path)
 
     # NEW: high-level performance pivot
-    if not perf_summary_df.empty and 'schema_efficiency_factor' in perf_summary_df.columns:
+    if (
+        not perf_summary_df.empty
+        and "schema_efficiency_factor" in perf_summary_df.columns
+    ):
         pivot_path = output_dir / "report_performance_pivot_efficiency.csv"
-        perf_summary_df.pivot_table(index='database', columns='category', values='schema_efficiency_factor', aggfunc='mean').round(2).to_csv(pivot_path)
-        logging.info(f"Saved performance efficiency pivot table to: {pivot_path}")
+        perf_summary_df.pivot_table(
+            index="database",
+            columns="category",
+            values="schema_efficiency_factor",
+            aggfunc="mean",
+        ).round(2).to_csv(pivot_path)
+        logging.info(
+            "Saved performance efficiency pivot table to: %s",
+            pivot_path,
+        )
 
     # ENHANCED ORIGINAL: human-readable markdown report
     report_path = output_dir / "comparison_report.md"

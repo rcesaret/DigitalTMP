@@ -8,7 +8,9 @@ from sqlalchemy import text
 from sqlalchemy.engine import Engine
 
 
-def calculate_interoperability_metrics(engine: Engine, schema_name: str) -> Dict[str, Any]:
+def calculate_interoperability_metrics(
+    engine: Engine, schema_name: str
+) -> Dict[str, Any]:
     """
     Calculates a suite of custom interoperability and complexity metrics.
 
@@ -23,43 +25,51 @@ def calculate_interoperability_metrics(engine: Engine, schema_name: str) -> Dict
     Returns:
         A dictionary containing the calculated interoperability metrics.
     """
-    metrics = {
-        "schema_name": schema_name,
-        "jdi": None,
-        "lif": None,
-        "nf": None
-    }
-    
+    metrics = {"schema_name": schema_name, "jdi": None, "lif": None, "nf": None}
+
     # --- JDI Calculation ---
-    fk_query = text("""
+    fk_query = text(
+        """
         SELECT COUNT(*)
         FROM information_schema.table_constraints
         WHERE constraint_type = 'FOREIGN KEY' AND table_schema = :schema;
-    """)
-    table_count_query = text("""
+    """
+    )
+    table_count_query = text(
+        """
         SELECT COUNT(*)
         FROM information_schema.tables
         WHERE table_schema = :schema AND table_type = 'BASE TABLE';
-    """)
+    """
+    )
 
     try:
         with engine.connect() as connection:
-            fk_count = connection.execute(fk_query, {"schema": schema_name}).scalar_one()
-            table_count = connection.execute(table_count_query, {"schema": schema_name}).scalar_one()
+            fk_count = connection.execute(
+                fk_query, {"schema": schema_name}
+            ).scalar_one()
+            table_count = connection.execute(
+                table_count_query, {"schema": schema_name}
+            ).scalar_one()
 
         if table_count > 1:
             # Formula: Number of FKs / Max possible non-redundant FKs
             jdi = fk_count / (table_count * (table_count - 1) / 2)
             metrics["jdi"] = round(jdi, 4)
         else:
-            metrics["jdi"] = 0.0 # A single table has no internal joins
+            metrics["jdi"] = 0.0  # A single table has no internal joins
     except Exception as e:
-        logging.error(f"Failed to calculate JDI for schema '{schema_name}': {e}")
+        logging.error(
+            "Failed to calculate JDI for schema '%s': %s",
+            schema_name,
+            e,
+        )
 
     # --- LIF Calculation ---
     # Heuristic: Count pairs of columns with the same name but in different tables.
     # A more advanced version would check for compatible data types.
-    lif_query = text("""
+    lif_query = text(
+        """
         WITH column_counts AS (
             SELECT column_name
             FROM information_schema.columns
@@ -68,13 +78,20 @@ def calculate_interoperability_metrics(engine: Engine, schema_name: str) -> Dict
             HAVING COUNT(DISTINCT table_name) > 1
         )
         SELECT COUNT(*) FROM column_counts;
-    """)
+    """
+    )
     try:
         with engine.connect() as connection:
-            lif_count = connection.execute(lif_query, {"schema": schema_name}).scalar_one()
+            lif_count = connection.execute(
+                lif_query, {"schema": schema_name}
+            ).scalar_one()
         metrics["lif"] = lif_count
     except Exception as e:
-        logging.error(f"Failed to calculate LIF for schema '{schema_name}': {e}")
+        logging.error(
+            "Failed to calculate LIF for schema '%s': %s",
+            schema_name,
+            e,
+        )
 
     # --- NF Calculation ---
     # Heuristic: Composite score based on JDI and table count.
@@ -86,5 +103,8 @@ def calculate_interoperability_metrics(engine: Engine, schema_name: str) -> Dict
         nf = (0.7 * metrics["jdi"]) + (0.3 * normalized_table_score)
         metrics["nf"] = round(nf, 4)
 
-    logging.info(f"Successfully calculated interoperability metrics for schema '{schema_name}'.")
+    logging.info(
+        "Successfully calculated interoperability metrics for schema '%s'.",
+        schema_name,
+    )
     return metrics

@@ -21,7 +21,7 @@ def load_query_metadata(queries_dir: Path) -> Dict[str, Any]:
         with open(metadata_path, "r", encoding="utf-8") as f:
             return json.load(f)
     except json.JSONDecodeError as e:
-        logging.error(f"Failed to decode JSON from {metadata_path}: {e}")
+        logging.error("Failed to decode JSON from %s: %s", metadata_path, e)
         return {"categories": {}, "database_mappings": {}}
 
 
@@ -75,7 +75,6 @@ def parse_categorized_queries(sql_content: str) -> List[Tuple[str, str, str]]:
         if current_entry is not None and (line and not line.startswith("--")):
             current_entry["sql_lines"].append(line)
 
-
     # Finalize the last query block if present.
     if current_entry is not None:
         sql = " ".join(current_entry["sql_lines"]).strip()
@@ -122,7 +121,7 @@ def run_performance_benchmarks(
 
     query_file_path = sql_queries_dir / query_filename
     if not query_file_path.exists():
-        logging.error(f"Query file not found: {query_file_path}")
+        logging.error("Query file not found: %s", query_file_path)
         return benchmarks
 
     # Read and parse queries
@@ -130,14 +129,21 @@ def run_performance_benchmarks(
         with open(query_file_path, "r", encoding="utf-8") as f:
             sql_content = f.read()
     except IOError as e:
-        logging.error(f"Could not read query file '{query_file_path}': {e}")
+        logging.error(
+            "Could not read query file '%s': %s",
+            query_file_path,
+            e,
+        )
         return benchmarks
 
     # Parse categorized queries
     queries = parse_categorized_queries(sql_content)
 
     logging.info(
-        f"Running {len(queries)} benchmark queries for '{db_name}' from '{query_filename}'..."
+        "Running %s benchmark queries for '%s' from '%s'...",
+        len(queries),
+        db_name,
+        query_filename,
     )
 
     with engine.connect() as connection:
@@ -164,10 +170,10 @@ def run_performance_benchmarks(
 
                 result_entry["latency_ms"] = round((end_time - start_time) * 1000, 2)
                 result_entry["status"] = "Success"
-                logging.info(f"  {query_name}: {result_entry['latency_ms']} ms")
+                logging.info("  %s: %s ms", query_name, result_entry["latency_ms"])
 
             except Exception as e:
-                logging.exception(f"  Query '{query_name}' failed: {e}")
+                logging.exception("  Query '%s' failed: %s", query_name, e)
                 result_entry["error_message"] = str(e)
 
             benchmarks.append(result_entry)
@@ -182,17 +188,21 @@ def run_legacy_benchmarks(
     # Original implementation for backward compatibility
     benchmarks = []
     if not sql_queries_path.is_file():
-        logging.error(f"Benchmark SQL file not found: {sql_queries_path}")
+        logging.error("Benchmark SQL file not found: %s", sql_queries_path)
         return benchmarks
 
     try:
         with open(sql_queries_path, "r", encoding="utf-8") as f:
             queries = [q.strip() for q in f.read().split(";") if q.strip()]
     except IOError as e:
-        logging.error(f"Could not read benchmark file '{sql_queries_path}': {e}")
+        logging.error(
+            "Could not read benchmark file '%s': %s",
+            sql_queries_path,
+            e,
+        )
         return benchmarks
 
-    logging.info(f"Running {len(queries)} legacy benchmark queries...")
+    logging.info("Running %s legacy benchmark queries...", len(queries))
 
     with engine.connect() as connection:
         for i, query in enumerate(queries):
@@ -210,10 +220,10 @@ def run_legacy_benchmarks(
 
                 result_entry["latency_ms"] = round((end_time - start_time) * 1000, 2)
                 result_entry["status"] = "Success"
-                logging.info(f"  {query_name}: {result_entry['latency_ms']} ms")
+                logging.info("  %s: %s ms", query_name, result_entry["latency_ms"])
 
             except Exception as e:
-                logging.error(f"  Benchmark query '{query_name}' failed: {e}")
+                logging.error("  Benchmark query '%s' failed: %s", query_name, e)
                 result_entry["error_message"] = str(e)
 
             benchmarks.append(result_entry)

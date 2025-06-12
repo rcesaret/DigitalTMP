@@ -55,8 +55,8 @@ def setup_logging(log_dir: Path) -> None:
         level=logging.INFO,
         format="%(asctime)s [%(levelname)-7s] %(name)s: %(message)s",
         handlers=[
-            logging.FileHandler(log_path, mode='w'),
-            logging.StreamHandler(sys.stdout)
+            logging.FileHandler(log_path, mode="w"),
+            logging.StreamHandler(sys.stdout),
         ],
     )
 
@@ -67,8 +67,10 @@ def parse_arguments() -> argparse.Namespace:
         description="Run the full database profiling pipeline."
     )
     parser.add_argument(
-        "--config", type=str, default="config.ini",
-        help="Path to the configuration file (default: config.ini)"
+        "--config",
+        type=str,
+        default="config.ini",
+        help="Path to the configuration file (default: config.ini)",
     )
     return parser.parse_args()
 
@@ -82,7 +84,11 @@ def get_sqlalchemy_engine(db_config: Dict[str, Any], db_name: str) -> Engine | N
         )
         return create_engine(db_url)
     except Exception as e:
-        logging.error(f"Failed to create SQLAlchemy engine for '{db_name}': {e}")
+        logging.error(
+            "Failed to create SQLAlchemy engine for '%s': %s",
+            db_name,
+            e,
+        )
         return None
 
 
@@ -90,11 +96,13 @@ def save_results(
     data: List[Dict[str, Any]] | Dict[str, Any],
     db_name: str,
     metric_name: str,
-    output_dir: Path
+    output_dir: Path,
 ) -> None:
     """Saves profiling data to a CSV or JSON file."""
     if not data:
-        logging.warning(f"No data to save for metric '{metric_name}' on db '{db_name}'.")
+        logging.warning(
+            f"No data to save for metric '{metric_name}' on db '{db_name}'."
+        )
         return
 
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -103,20 +111,28 @@ def save_results(
     try:
         if isinstance(data, dict):
             # Save single dictionary as JSON
-            output_path = file_path_base.with_suffix('.json')
-            with open(output_path, 'w', encoding='utf-8') as f:
+            output_path = file_path_base.with_suffix(".json")
+            with open(output_path, "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=4)
         elif isinstance(data, list):
             # Save list of dictionaries as CSV
-            output_path = file_path_base.with_suffix('.csv')
+            output_path = file_path_base.with_suffix(".csv")
             pd.DataFrame(data).to_csv(output_path, index=False)
         else:
-            logging.error(f"Unsupported data type for saving: {type(data)}")
+            logging.error("Unsupported data type for saving: %s", type(data))
             return
-            
-        logging.info(f"Successfully saved '{metric_name}' results to {output_path.name}")
+
+        logging.info(
+            "Successfully saved '%s' results to %s",
+            metric_name,
+            output_path.name,
+        )
     except Exception as e:
-        logging.error(f"Failed to save results for metric '{metric_name}': {e}")
+        logging.error(
+            "Failed to save results for metric '%s': %s",
+            metric_name,
+            e,
+        )
 
 
 # --- Main Orchestrator ---
@@ -124,16 +140,16 @@ def main() -> None:
     """Main function to orchestrate the entire profiling pipeline."""
     args = parse_arguments()
     config_path = Path(args.config)
-    
+
     # Assume log directory is relative to script location
     log_dir = Path(__file__).parent
     setup_logging(log_dir)
 
     logging.info("--- Starting Database Profiling Pipeline ---")
 
-    logging.info(f"Reading configuration from: {config_path}")
+    logging.info("Reading configuration from: %s", config_path)
     if not config_path.is_file():
-        logging.critical(f"Configuration file not found: {config_path}")
+        logging.critical("Configuration file not found: %s", config_path)
         sys.exit(1)
 
     config = configparser.ConfigParser()
@@ -141,96 +157,155 @@ def main() -> None:
 
     try:
         db_config_root = dict(config["postgresql"])
-        legacy_dbs = [db.strip() for db in config.get("databases", "legacy_dbs").split(',')]
-        benchmark_dbs = [db.strip() for db in config.get("databases", "benchmark_dbs").split(',')]
+        legacy_dbs = [
+            db.strip() for db in config.get("databases", "legacy_dbs").split(",")
+        ]
+        benchmark_dbs = [
+            db.strip() for db in config.get("databases", "benchmark_dbs").split(",")
+        ]
         all_dbs_to_profile = legacy_dbs + benchmark_dbs
-        
+
         # Define paths relative to the project structure
         project_root = Path(__file__).parent.parent
         output_dir = project_root / OUTPUT_METRICS_DIR
         sql_queries_dir = project_root / config.get("paths", "sql_queries_dir")
 
     except (configparser.NoSectionError, configparser.NoOptionError) as e:
-        logging.critical(f"Config file is missing a required section or option: {e}")
+        logging.critical(
+            "Config file is missing a required section or option: %s",
+            e,
+        )
         sys.exit(1)
 
     for i, db_name in enumerate(all_dbs_to_profile, 1):
-        logging.info("="*80)
-        logging.info(f"Processing Database {i}/{len(all_dbs_to_profile)}: {db_name}")
-        logging.info("="*80)
+        logging.info("=" * 80)
+        logging.info(
+            "Processing Database %s/%s: %s",
+            i,
+            len(all_dbs_to_profile),
+            db_name,
+        )
+        logging.info("=" * 80)
 
         engine = get_sqlalchemy_engine(db_config_root, db_name)
         if not engine:
-            logging.error(f"Skipping database '{db_name}' due to connection failure.")
+            logging.error("Skipping database '%s' due to connection failure.", db_name)
             continue
-            
+
         # Determine schema name (legacy dbs have matching schema, benchmarks use public)
-        schema_name = db_name if db_name in legacy_dbs else 'public'
-        logging.info(f"Target schema for '{db_name}' is '{schema_name}'.")
+        schema_name = db_name if db_name in legacy_dbs else "public"
+        logging.info(
+            "Target schema for '%s' is '%s'.",
+            db_name,
+            schema_name,
+        )
 
         # --- Execute Profiling Modules ---
-        
+
         try:
             logging.info("--> Running: Basic DB Metrics")
             basic_metrics = metrics_basic.get_basic_db_metrics(engine)
             save_results(basic_metrics, db_name, "basic_metrics", output_dir)
         except Exception as e:
-            logging.error(f"CRITICAL ERROR in Basic DB Metrics for '{db_name}': {e}", exc_info=True)
+            logging.error(
+                "CRITICAL ERROR in Basic DB Metrics for '%s': %s",
+                db_name,
+                e,
+                exc_info=True,
+            )
 
         try:
             logging.info("--> Running: Schema Object Counts")
             schema_counts = metrics_basic.get_schema_object_counts(engine, schema_name)
             save_results(schema_counts, db_name, "schema_counts", output_dir)
         except Exception as e:
-            logging.error(f"CRITICAL ERROR in Schema Object Counts for '{db_name}': {e}", exc_info=True)
+            logging.error(
+                "CRITICAL ERROR in Schema Object Counts for '%s': %s",
+                db_name,
+                e,
+                exc_info=True,
+            )
 
         try:
             logging.info("--> Running: Table Level Metrics")
             table_metrics = metrics_schema.get_table_level_metrics(engine, schema_name)
             save_results(table_metrics, db_name, "table_metrics", output_dir)
         except Exception as e:
-            logging.error(f"CRITICAL ERROR in Table Level Metrics for '{db_name}': {e}", exc_info=True)
+            logging.error(
+                "CRITICAL ERROR in Table Level Metrics for '%s': %s",
+                db_name,
+                e,
+                exc_info=True,
+            )
 
         try:
             logging.info("--> Running: Column Structural Metrics")
-            column_structure = metrics_schema.get_column_structural_metrics(engine, schema_name)
+            column_structure = metrics_schema.get_column_structural_metrics(
+                engine, schema_name
+            )
             save_results(column_structure, db_name, "column_structure", output_dir)
         except Exception as e:
-            logging.error(f"CRITICAL ERROR in Column Structural Metrics for '{db_name}': {e}", exc_info=True)
+            logging.error(
+                "CRITICAL ERROR in Column Structural Metrics for '%s': %s",
+                db_name,
+                e,
+                exc_info=True,
+            )
 
         try:
             logging.info("--> Running: Column Data Profiles (pg_stats)")
-            column_profiles = metrics_profile.get_all_column_profiles(engine, schema_name)
+            column_profiles = metrics_profile.get_all_column_profiles(
+                engine, schema_name
+            )
             save_results(column_profiles, db_name, "column_profiles", output_dir)
         except Exception as e:
-            logging.error(f"CRITICAL ERROR in Column Data Profiles for '{db_name}': {e}", exc_info=True)
+            logging.error(
+                "CRITICAL ERROR in Column Data Profiles for '%s': %s",
+                db_name,
+                e,
+                exc_info=True,
+            )
 
         try:
             # Interoperability metrics only make sense for schemas with multiple tables
-            if schema_name != 'public':
+            if schema_name != "public":
                 logging.info("--> Running: Interoperability Metrics")
-                interop_metrics = metrics_interop.calculate_interoperability_metrics(engine, schema_name)
+                interop_metrics = metrics_interop.calculate_interoperability_metrics(
+                    engine, schema_name
+                )
                 save_results(interop_metrics, db_name, "interop_metrics", output_dir)
             else:
-                logging.info("--> Skipping: Interoperability Metrics (not applicable to single-table schema).")
+                logging.info(
+                    "--> Skipping: Interoperability Metrics (not applicable to single-table schema)."
+                )
         except Exception as e:
-            logging.error(f"CRITICAL ERROR in Interoperability Metrics for '{db_name}': {e}", exc_info=True)
+            logging.error(
+                "CRITICAL ERROR in Interoperability Metrics for '%s': %s",
+                db_name,
+                e,
+                exc_info=True,
+            )
 
         try:
             logging.info("--> Running: Performance Benchmarks")
             perf_benchmarks = metrics_performance.run_performance_benchmarks(
-                engine, 
+                engine,
                 db_name,
                 schema_name,
-                sql_queries_dir / "canonical_queries"  # Point to queries directory
+                sql_queries_dir / "canonical_queries",  # Point to queries directory
             )
             save_results(perf_benchmarks, db_name, "performance_benchmarks", output_dir)
         except Exception as e:
-            logging.error(f"CRITICAL ERROR in Performance Benchmarks for '{db_name}': {e}", exc_info=True)
-            
-        logging.info(f"--- Finished processing {db_name} ---")
+            logging.error(
+                "CRITICAL ERROR in Performance Benchmarks for '%s': %s",
+                db_name,
+                e,
+                exc_info=True,
+            )
 
-    logging.info("="*80)
+        logging.info("--- Finished processing %s ---", db_name)
+
+    logging.info("=" * 80)
     logging.info("--- Database Profiling Pipeline Finished ---")
 
 
