@@ -18,7 +18,7 @@ jobs:
         uses: conda-incubator/setup-miniconda@v3
         with:
           # Point to the CI-specific environment file.
-          environment-file: envs/digital_tmp_base_env.yml
+          environment-file: envs/environment.yml
           # Activate the environment specified by the 'name:' field in the YAML file.
           activate-environment: digital_tmp_base
           use-mamba: true
