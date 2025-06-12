@@ -17,8 +17,12 @@ def load_query_metadata(queries_dir: Path) -> Dict[str, Any]:
         logging.warning(f"Query metadata not found at {metadata_path}")
         return {"categories": {}, "database_mappings": {}}
 
-    with open(metadata_path, "r", encoding="utf-8") as f:
-        return json.load(f)
+    try:
+        with open(metadata_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except json.JSONDecodeError as e:
+        logging.error(f"Failed to decode JSON from {metadata_path}: {e}")
+        return {"categories": {}, "database_mappings": {}}
 
 
 def parse_categorized_queries(sql_content: str) -> List[Tuple[str, str, str]]:
