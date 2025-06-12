@@ -168,7 +168,7 @@ def run_performance_benchmarks(
                 logging.info(f"  {query_name}: {result_entry['latency_ms']} ms")
 
             except Exception as e:
-                logging.error(f"  Query '{query_name}' failed: {e}")
+                logging.exception(f"  Query '{query_name}' failed: {e}")
                 result_entry["error_message"] = str(e)
 
             benchmarks.append(result_entry)
