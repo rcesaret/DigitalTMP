@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """Base utility functions for database object discovery."""
+
 import logging
-from typing import Any, Dict, List
+from typing import List
 
 from sqlalchemy import text
 from sqlalchemy.engine import Engine

@@ -18,6 +18,7 @@ Usage:
     $ python 00_setup_databases.py --config config.ini
 
 """
+
 import argparse
 import configparser
 import logging
@@ -33,6 +34,8 @@ LOG_FILE_NAME = "00_setup_databases.log"
 
 
 # --- Logging Setup ---
+
+
 def setup_logging(log_path: Path) -> None:
     """Configures logging to both console and a file."""
     logging.basicConfig(
@@ -43,6 +46,8 @@ def setup_logging(log_path: Path) -> None:
 
 
 # --- Argument Parsing ---
+
+
 def parse_arguments() -> argparse.Namespace:
     """Parses command-line arguments."""
     parser = argparse.ArgumentParser(
@@ -58,6 +63,8 @@ def parse_arguments() -> argparse.Namespace:
 
 
 # --- Database Operations ---
+
+
 def create_database(db_config: dict, db_name: str) -> bool:
     """
     Creates a new database in PostgreSQL if it doesn't already exist.
@@ -134,6 +141,8 @@ def populate_database(db_config: dict, db_name: str, sql_file_path: Path) -> boo
 
 
 # --- Main Orchestrator ---
+
+
 def main() -> None:
     """Main function to orchestrate database setup."""
     args = parse_arguments()

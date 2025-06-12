@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 """Functions for calculating custom interoperability metrics."""
+
 import logging
 from typing import Any, Dict
-
-import pandas as pd
 from sqlalchemy import text
 from sqlalchemy.engine import Engine
 

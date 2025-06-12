@@ -16,6 +16,7 @@ not connect to any databases. Instead, it performs the following steps:
     d) `report_performance_pivot_efficiency.csv`: A pivot table for at-a-glance
        comparison of schema efficiency.
 """
+
 import argparse
 import configparser
 import json
@@ -35,6 +36,8 @@ OUTPUT_REPORTS_DIR = "outputs/reports"
 
 
 # --- Setup Functions ---
+
+
 def setup_logging(log_dir: Path) -> None:
     """Configures logging to both console and a file."""
     log_dir.mkdir(exist_ok=True)
@@ -64,6 +67,8 @@ def parse_arguments() -> argparse.Namespace:
 
 
 # --- Core Logic ---
+
+
 def load_all_metrics(input_dir: Path) -> Dict[str, Dict[str, Any]]:
     """
      Discovers and loads all metric files from the input directory.
@@ -111,7 +116,8 @@ def load_all_metrics(input_dir: Path) -> Dict[str, Dict[str, Any]]:
 
             if not db_name:
                 logging.warning(
-                    "Could not determine database name for '%s'. Skipping.", file_path.name
+                    "Could not determine database name for '%s'. Skipping.",
+                    file_path.name,
                 )
                 continue
 
@@ -243,7 +249,7 @@ def generate_markdown_report(
         output_path,
     )
     report_parts = [
-        f"# Database Comparison Report",
+        "# Database Comparison Report",
         f"_Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}_",
     ]
 
@@ -299,6 +305,8 @@ def generate_markdown_report(
 
 
 # --- Main Orchestrator ---
+
+
 def main() -> None:
     """Main function to orchestrate the comparison and aggregation process."""
     args = parse_arguments()

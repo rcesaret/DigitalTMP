@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Functions for calculating basic database and schema-level metrics."""
+
 import logging
 from typing import Any, Dict
 

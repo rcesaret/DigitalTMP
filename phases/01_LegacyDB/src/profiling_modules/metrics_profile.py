@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Functions for profiling the data content within columns."""
+
 import logging
 from typing import Any, Dict, List
 

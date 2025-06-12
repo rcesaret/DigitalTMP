@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Functions for calculating structural schema, table, and column metrics."""
+
 import logging
 from typing import Any, Dict, List
 

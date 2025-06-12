@@ -21,6 +21,7 @@ Usage:
     $ python 02_run_profiling_pipeline.py --config config.ini
 
 """
+
 import argparse
 import configparser
 import json
@@ -34,7 +35,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 
 # Import all our profiling functions
-from profiling_modules import base
 from profiling_modules import metrics_basic
 from profiling_modules import metrics_schema
 from profiling_modules import metrics_profile
@@ -47,6 +47,8 @@ OUTPUT_METRICS_DIR = "outputs/metrics"
 
 
 # --- Setup Functions ---
+
+
 def setup_logging(log_dir: Path) -> None:
     """Configures logging to both console and a file."""
     log_dir.mkdir(exist_ok=True)
@@ -138,6 +140,8 @@ def save_results(
 
 
 # --- Main Orchestrator ---
+
+
 def main() -> None:
     """Main function to orchestrate the entire profiling pipeline."""
     args = parse_arguments()
