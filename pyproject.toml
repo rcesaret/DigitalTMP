@@ -8,8 +8,8 @@
 # Ruff configuration: https://docs.astral.sh/ruff/configuration/
 # Set the Python version to target. This is based on your `base_project_env.yml`.
 target-version = "py311"
-# Match Black's default line length
 line-length = 88
+# Match Black's default line length
 
 # Define the set of rules to use.
 # E/W = pycodestyle errors/warnings
