@@ -74,28 +74,44 @@ def create_database(db_config: dict, db_name: str) -> bool:
         db_name: The name of the database to create.
 
     Returns:
-        True if the operation was successful (or DB already existed),
-        False otherwise.
+        True if the database was created or already exists, False otherwise.
     """
     logging.info("Attempting to create database: '%s'...", db_name)
+    conn = None
     try:
-        # Connect to the root database to perform CREATE DATABASE
-        with psycopg2.connect(**db_config) as conn:
-            conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-            with conn.cursor() as cur:
-                # Use psycopg2.sql to safely quote the identifier
-                cur.execute(
-                    sql.SQL("CREATE DATABASE {}").format(sql.Identifier(db_name))
-                )
-                logging.info("Database '%s' created successfully.", db_name)
+        # Connect to default database (e.g., 'postgres') to create a new one
+        conn = psycopg2.connect(**db_config)
+        conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 
-    except psycopg2.errors.DuplicateDatabase:
-        logging.warning("Database '%s' already exists. Skipping creation.", db_name)
+        with conn.cursor() as cur:
+            # Check if database already exists
+            cur.execute(
+                sql.SQL("SELECT 1 FROM pg_database WHERE datname = %s"), [db_name]
+            )
+            if cur.fetchone():
+                logging.info(
+                    "Database '%s' already exists. Skipping creation.", db_name
+                )
+                return True
+
+            # If not, create it
+            # IMPORTANT: CREATE DATABASE cannot run inside a transaction block.
+            # The connection needs to be in autocommit mode.
+            cur.execute(sql.SQL("CREATE DATABASE {}").format(sql.Identifier(db_name)))
+            logging.info("Database '%s' created successfully.", db_name)
+        # conn.commit() # Not needed with autocommit for CREATE DATABASE
+        return True
     except psycopg2.Error as e:
+        # No need to rollback if autocommit was set & error is from CREATE DATABASE
+        # as individual statements are committed/rolled back automatically.
+        # But if other things were done b4 autocommit, rollback might be relevant.
+        # For this specific function, conn.rollback() might not be necessary if
+        # the error occurs after setting autocommit.
         logging.error("Failed to create database '%s'. Error: %s", db_name, e)
         return False
-
-    return True
+    finally:
+        if conn:
+            conn.close()
 
 
 def populate_database(db_config: dict, db_name: str, sql_file_path: Path) -> bool:
