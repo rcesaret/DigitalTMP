@@ -148,7 +148,7 @@ def main() -> None:
         # Define paths relative to the project structure
         project_root = Path(__file__).parent.parent
         output_dir = project_root / OUTPUT_METRICS_DIR
-        sql_queries_path = project_root / config.get("paths", "sql_queries_dir") / "canonical_queries.sql"
+        sql_queries_dir = project_root / config.get("paths", "sql_queries_dir")
 
     except (configparser.NoSectionError, configparser.NoOptionError) as e:
         logging.critical(f"Config file is missing a required section or option: {e}")
@@ -218,7 +218,12 @@ def main() -> None:
 
         try:
             logging.info("--> Running: Performance Benchmarks")
-            perf_benchmarks = metrics_performance.run_performance_benchmarks(engine, sql_queries_path)
+            perf_benchmarks = metrics_performance.run_performance_benchmarks(
+                engine, 
+                db_name,
+                schema_name,
+                sql_queries_dir / "canonical_queries"  # Point to queries directory
+            )
             save_results(perf_benchmarks, db_name, "performance_benchmarks", output_dir)
         except Exception as e:
             logging.error(f"CRITICAL ERROR in Performance Benchmarks for '{db_name}': {e}", exc_info=True)
