@@ -253,8 +253,8 @@ git clone <repository-url>
 ```
 2. **Python Environment**:
 ```bash
-conda env create -f environment.yml
-conda activate TMP_geo_db
+conda env create -f digital_tmp_base_env.yml
+conda activate digital_tmp_base
 ```
 3. **Database Setup**:
 ```bash
@@ -296,8 +296,8 @@ docker-compose up -d
 
 ## 👤 Author & Attribution
 
-**Rudolf Cesaretti**  
-PhD, ASU Teotihuacan Research Laboratory  
+**Rudolf Cesaretti**
+PhD, ASU Teotihuacan Research Laboratory
 - Email: Rudolf.Cesaretti@asu.edu
 - Website: [rcesaret.github.io](https://rcesaret.github.io/)
 - LinkedIn: [rudolf-cesaretti](https://www.linkedin.com/in/rudolf-cesaretti)
