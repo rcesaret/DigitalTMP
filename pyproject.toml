@@ -8,6 +8,8 @@
 # Ruff configuration: https://docs.astral.sh/ruff/configuration/
 # Set the Python version to target. This is based on your `base_project_env.yml`.
 target-version = "py311"
+# Match Black's default line length
+line-length = 88
 
 # Define the set of rules to use.
 # E/W = pycodestyle errors/warnings
@@ -41,7 +43,6 @@ exclude = [
 [tool.ruff.format]
 # Ruff formatter configuration (replaces Black)
 # Use a line length of 88, which is the standard for Black.
-line-length = 88
 # Enables preview mode for new formatting features.
 preview = true
 
