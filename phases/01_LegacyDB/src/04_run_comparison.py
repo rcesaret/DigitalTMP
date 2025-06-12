@@ -244,14 +244,30 @@ def generate_markdown_report(summary_df: pd.DataFrame, perf_summary_df: pd.DataF
 def main() -> None:
     """Main function to orchestrate the comparison and aggregation process."""
     args = parse_arguments()
+    config_path = Path(args.config)
+
     log_dir = Path(__file__).parent
     setup_logging(log_dir)
     logging.info("--- Starting Comparison & Aggregation Script ---")
+    logging.info(f"Reading configuration from: {config_path}")
 
-    project_root = Path(__file__).parent.parent
-    input_dir = project_root / INPUT_METRICS_DIR
-    output_dir = project_root / OUTPUT_REPORTS_DIR
-    output_dir.mkdir(parents=True, exist_ok=True)
+    if not config_path.is_file():
+        logging.critical(f"Configuration file not found: {config_path}")
+        sys.exit(1)
+
+    config = configparser.ConfigParser()
+    config.read(config_path)
+
+    try:
+        project_root = Path(__file__).parent.parent
+        input_dir = project_root / config.get("paths", "output_metrics")
+        output_dir = project_root / config.get("paths", "output_reports")
+        output_dir.mkdir(parents=True, exist_ok=True)
+    except (configparser.NoSectionError, configparser.NoOptionError) as e:
+        logging.critical(
+            f"Configuration file is missing a required section or option: {e}"
+        )
+        sys.exit(1)
 
     # 1. Load all raw metric data from files
     all_loaded_data = load_all_metrics(input_dir)
