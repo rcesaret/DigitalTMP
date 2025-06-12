@@ -72,10 +72,9 @@ def parse_categorized_queries(sql_content: str) -> List[Tuple[str, str, str]]:
             }
             continue
 
-        if current_entry is not None:
-            # Ignore comments within the SQL blocks and collect non-empty lines.
-            if line and not line.startswith("--"):
-                current_entry["sql_lines"].append(line)
+        if current_entry is not None and (line and not line.startswith("--")):
+            current_entry["sql_lines"].append(line)
+
 
     # Finalize the last query block if present.
     if current_entry is not None:
