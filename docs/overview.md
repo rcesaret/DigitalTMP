@@ -4,7 +4,7 @@
 **Author:** Rudolf Cesaretti
 **Affiliation:** ASU Teotihuacan Research Laboratory
 **Date:** June 11, 2025
-**Project Environment:** TMP_geo_db (Conda)
+**Project Environment:** digital_tmp_base (Conda)
 ---
 
 ## Abstract
@@ -504,9 +504,9 @@ The project employs a strategic, phase-specific approach to technology selection
 
 ## 7.3. Technology Stack Rationale
 
-### 7.3.0. Project Environment - TMP_geo_db
+### 7.3.0. Project Environment - digital_tmp_base
 
-The Digital TMP project utilizes a dedicated Conda environment named **TMP_geo_db** to ensure reproducibility and consistent dependency management across all development workstations. This environment is defined in the project's `environment.yml` file and includes all necessary Python packages, geospatial libraries, and analytical tools required for the project's eight-phase workflow.
+The Digital TMP project utilizes a dedicated Conda environment named **digital_tmp_base** to ensure reproducibility and consistent dependency management across all development workstations. This environment is defined in the project's `environment.yml` file and includes all necessary Python packages, geospatial libraries, and analytical tools required for the project's eight-phase workflow.
 
 **Key Features:**
 - Python 3.11+ with extensive geospatial and data science packages
