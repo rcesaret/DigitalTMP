@@ -120,7 +120,7 @@ The project leverages a comprehensive technology stack combining industry-standa
 **Description:**
 This foundational phase focuses on the systematic, quantitative evaluation of the four legacy TMP databases (`DF8`, `DF9`, `DF10`, `REAN_DF2`) to produce actionable, data-driven insights that will inform their eventual transformation and integration. The architecture for this phase is organized into four distinct, sequential workflows that move from initial setup and data generation to final analysis and recommendation.
 
-Through an automated pipeline, this phase performs deep database profiling, generates structural visualizations, and conducts a rigorous quantitative analysis of the legacy schemas. The primary objective is to produce a defensible, evidence-based argument for the optimal target architecture for Phase 2. The outcomes directly inform schema redesign decisions, justify the project's denormalization strategy, and establish a reproducible technical baseline for validating all future data transformations. The final deliverable is a white paper that presents this evidence and formally recommends a unified, wide-format, analysis-ready database structure.
+Through an automated pipeline with database-specific performance benchmarking capabilities, this phase performs deep database profiling, generates structural visualizations, and conducts a rigorous quantitative analysis of the legacy schemas. The primary objective is to produce a defensible, evidence-based argument for the optimal target architecture for Phase 2. The outcomes directly inform schema redesign decisions, justify the project's denormalization strategy, and establish a reproducible technical baseline for validating all future data transformations. The final deliverable is a white paper that presents this evidence and formally recommends a unified, wide-format, analysis-ready database structure.
 
 **Inputs:**
 
@@ -140,7 +140,7 @@ Through an automated pipeline, this phase performs deep database profiling, gene
 - **Databases**: PostgreSQL (v17+)
 - **Programming**: Python 3.11+
 - **Core Python Libraries**: Pandas, SQLAlchemy, Psycopg2
-- **Pipeline Scripts**: A suite of five orchestrator scripts (`00_` to `04_`) and a modular `profiling_modules` package.
+- **Pipeline Scripts**: A suite of five orchestrator scripts (`00_` to `04_`) and a modular `profiling_modules` package with enhanced database-specific performance benchmarking.
 - **Schema Visualization**: Graphviz
 - **Analysis Environment**: Jupyter Notebooks with Plotly for interactive visualizations.
 
@@ -171,7 +171,7 @@ This workflow is the primary automated data-gathering engine of Phase 1. Using a
 - **Define Metrics**: Compile the exhaustive **Master List of Profiling Metrics** by synthesizing project requirements, data engineering best practices, and the specific analytical goals of the denormalization argument.
 - **Develop Profiling Engine**: Develop the modular `profiling_modules` Python package, creating distinct, testable modules for each category of metric (basic, schema, profile, interop, performance).
 - **Develop Orchestration Scripts**: Develop and document the main pipeline orchestrator (`02_run_profiling_pipeline.py`) and the enhanced ERD generation script (`03_generate_erds.py`), including logic for strategic, focused ERD creation.
-- **Configure Dependencies**: Populate the `sql/canonical_queries.sql` file with representative queries for benchmarking and ensure the external `Graphviz` dependency is installed and accessible in the system PATH.
+- **Configure Dependencies**: Populate the `sql/canonical_queries/` directory with a metadata-driven set of database-specific benchmark queries. This schema-aware approach ensures fair and representative performance testing across disparate database structures. Ensure the external `Graphviz` dependency is installed and accessible in the system PATH.
 - **Execute Profiling Pipeline**: Execute the `02_run_profiling_pipeline.py` script to systematically run all profiling functions against all six databases, generating the full set of raw metric files in `outputs/metrics/`.
 - **Execute ERD Generation**: Execute the `03_generate_erds.py` script to produce all full-schema and focused, subsystem-level ERD diagrams in SVG format.
 - **Develop Test Suite**: Implement a comprehensive `pytest` suite for the `profiling_modules` package, using a temporary test database fixture to validate the correctness of each metric calculation function.
