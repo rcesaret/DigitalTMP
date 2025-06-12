@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Enhanced functions for running database-specific performance benchmarks."""
+
 import json
 import logging
 import time
@@ -206,7 +207,7 @@ def run_legacy_benchmarks(
 
     with engine.connect() as connection:
         for i, query in enumerate(queries):
-            query_name = f"Query {i+1}"
+            query_name = f"Query {i + 1}"
             result_entry = {
                 "query_name": query_name,
                 "sql_query": query,

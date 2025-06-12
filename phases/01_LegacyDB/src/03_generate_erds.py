@@ -26,6 +26,7 @@ Usage:
     $ python 03_generate_erds.py --config config.ini
 
 """
+
 import argparse
 import configparser
 import logging
@@ -90,6 +91,8 @@ TMP_DF9_SUBSYSTEMS = {
 
 
 # --- Setup Functions ---
+
+
 def setup_logging(log_dir: Path) -> None:
     """Configures logging to both console and a file."""
     log_dir.mkdir(exist_ok=True)
@@ -141,6 +144,8 @@ def get_schema_for_db(db_name: str, legacy_dbs: List[str]) -> str:
 
 
 # --- Core Graphing Logic ---
+
+
 def generate_and_save_erd(
     metadata: MetaData,
     output_path: Path,
@@ -187,6 +192,8 @@ def generate_and_save_erd(
 
 
 # --- Main Orchestrator ---
+
+
 def main() -> None:
     """Main function to orchestrate ERD generation for all databases."""
     args = parse_arguments()
@@ -270,7 +277,6 @@ def main() -> None:
         if db_name == "tmp_df9":
             logging.info("Generating focused ERDs for '%s'...", db_name)
             for subsystem_name, table_list in TMP_DF9_SUBSYSTEMS.items():
-
                 # Filter the reflected tables to only those in our subsystem list
                 tables_to_include = [
                     table

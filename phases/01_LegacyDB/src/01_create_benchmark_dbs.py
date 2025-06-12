@@ -23,6 +23,7 @@ Usage:
     $ python 01_create_benchmark_dbs.py --config config.ini
 
 """
+
 import argparse
 import configparser
 import logging
@@ -50,6 +51,8 @@ BENCHMARK_DB_TO_SQL_MAP = {
 
 
 # --- Logging Setup ---
+
+
 def setup_logging(log_path: Path) -> None:
     """Configures logging to both console and a file."""
     logging.basicConfig(
@@ -63,6 +66,8 @@ def setup_logging(log_path: Path) -> None:
 
 
 # --- Argument Parsing ---
+
+
 def parse_arguments() -> argparse.Namespace:
     """Parses command-line arguments."""
     parser = argparse.ArgumentParser(
@@ -78,6 +83,8 @@ def parse_arguments() -> argparse.Namespace:
 
 
 # --- Database Operations ---
+
+
 def create_database(db_config: Dict, db_name: str) -> bool:
     """Creates a new PostgreSQL database if it doesn't already exist."""
     logging.info("Attempting to create database: '%s'...", db_name)
@@ -167,6 +174,8 @@ def write_to_database(df: pd.DataFrame, engine: Engine) -> bool:
 
 
 # --- Main Orchestrator ---
+
+
 def main() -> None:
     """Main function to orchestrate the benchmark database creation."""
     args = parse_arguments()
