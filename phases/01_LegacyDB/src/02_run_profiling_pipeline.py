@@ -101,7 +101,9 @@ def save_results(
     """Saves profiling data to a CSV or JSON file."""
     if not data:
         logging.warning(
-            f"No data to save for metric '{metric_name}' on db '{db_name}'."
+            "No data to save for metric '%s' on db '%s'.",
+            metric_name,
+            db_name,
         )
         return
 
