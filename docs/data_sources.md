@@ -17,8 +17,8 @@ The Digital TMP project integrates multiple generations of archaeological datase
 | Dataset | Source | Format | Size | Time Span | Use Case |
 |---------|--------|--------|------|-----------|----------|
 | **TMP_DF8** | ASU Teo Lab | SQL dump (.sql) | ~15 MB | 1975-1977 | First stable electronic representation, 5,050 cases, 291 variables |
-| **TMP_DF9** | ASU Teo Lab (Ian Robertson & Angela Huster) | SQL dump (.sql) | ~18 MB | 1990s | Relational database version with GIS integration capabilities |
-| **TMP_DF10** | ASU Teo Lab (Anne Sherfield) | SQL dump (.sql) | ~20 MB | 2022-present | Most recent database with structural improvements and issue documentation |
+| **TMP_DF9** | ASU Teo Lab (Ian Robertson & Angela Huster) | SQL dump (.sql) | ~18 MB | 1990s | Updated relational database version with more complex structure |
+| **TMP_DF10** | ASU Teo Lab (Anne Sherfield) | SQL dump (.sql) | ~20 MB | 2022-present | Most recent database with major structural changes |
 | **TMP_REAN_DF2** | ASU Teo Lab (Ian Robertson & Angela Huster) | SQL dump (.sql) | ~12 MB | 1973-1983 | Ceramic reanalysis with enhanced typological detail |
 
 ### Spatial Data Sources
