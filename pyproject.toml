@@ -1,0 +1,67 @@
+# ===================================================================
+# Python Project Tooling Configuration
+# ===================================================================
+# Centralized configuration for linters, formatters, and testing tools.
+# For more information on pyproject.toml: https://pip.pypa.io/en/stable/reference/build-system/pyproject-toml/
+
+[tool.ruff]
+# Ruff configuration: https://docs.astral.sh/ruff/configuration/
+# Set the Python version to target. This is based on your `base_project_env.yml`.
+target-version = "py311"
+
+# Define the set of rules to use.
+# E/W = pycodestyle errors/warnings
+# F = Pyflakes
+# I = isort (import sorting)
+# N = pep8-naming
+# B = flake8-bugbear
+select = ["E", "F", "W", "I", "N", "B"]
+
+# Exclude common directories from linting.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+]
+
+[tool.ruff.format]
+# Ruff formatter configuration (replaces Black)
+# Use a line length of 88, which is the standard for Black.
+line-length = 88
+# Enables preview mode for new formatting features.
+preview = true
+
+
+[tool.sqlfluff]
+# SQLFluff configuration: https://docs.sqlfluff.com/en/stable/configuration.html
+# This configures the SQL linter/formatter for all .sql files in your project.
+core]
+# Based on your use of psycopg2 and postgres-related scripts.
+dialect = "postgres"
+# Specify the file extensions to lint.
+sql_file_exts = [".sql"]
+
+[tool.pytest.ini_options]
+# Pytest configuration: https://docs.pytest.org/en/latest/reference/reference.html#ini-options-ref
+# Define the directory where your tests will live.
+testpaths = [
+    "tests"
+]
+# Default options for running pytest.
+# -s: Show output from print statements
+# -v: Verbose mode
+addopts = "-sv"
