@@ -85,21 +85,35 @@ def parse_arguments() -> argparse.Namespace:
 # --- Database Operations ---
 
 
-def create_database(db_config: Dict, db_name: str) -> bool:
-    """Creates a new PostgreSQL database if it doesn't already exist."""
-    logging.info("Attempting to create database: '%s'...", db_name)
+def create_database(db_conn_params: Dict, db_name_to_create: str) -> bool:
+    """Creates a new database if it doesn't already exist."""
+    logging.info("Attempting to create database: '%s'...", db_name_to_create)
+    conn = None
+
+    # Prepare connection parameters for creating a database
+    # We need to connect to an existing database
+    # (like 'postgres') to issue CREATE DATABASE
+    connect_params = db_conn_params.copy()
+    if "root_db" in connect_params:
+        connect_params["dbname"] = connect_params.pop("root_db")
+    # Remove any other non-standard psycopg2 parameters if necessary,
+    # though 'root_db' is the known issue
+
     try:
-        with psycopg2.connect(**db_config) as conn:
-            conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-            with conn.cursor() as cur:
-                cur.execute(
-                    sql.SQL("CREATE DATABASE {}").format(sql.Identifier(db_name))
-                )
-                logging.info("Database '%s' created successfully.", db_name)
+        # Connect to the default/maintenance database
+        conn = psycopg2.connect(**connect_params)  # Use modified connect_params
+        conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        with conn.cursor() as cur:
+            cur.execute(
+                sql.SQL("CREATE DATABASE {}").format(sql.Identifier(db_name_to_create))
+            )
+        logging.info("Database '%s' created successfully.", db_name_to_create)
     except psycopg2.errors.DuplicateDatabase:
-        logging.warning("Database '%s' already exists. Skipping creation.", db_name)
+        logging.warning(
+            "Database '%s' already exists. Skipping creation.", db_name_to_create
+        )
     except psycopg2.Error as e:
-        logging.error("Failed to create database '%s'. Error: %s", db_name, e)
+        logging.error("Failed to create database '%s'. Error: %s", db_name_to_create, e)
         return False
     return True
 
