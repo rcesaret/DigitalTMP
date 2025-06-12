@@ -111,7 +111,7 @@ def load_all_metrics(input_dir: Path) -> Dict[str, Dict[str, Any]]:
 
             if not db_name:
                 logging.warning(
-                    f"Could not determine database name for '{file_path.name}'. Skipping."
+                    "Could not determine database name for '%s'. Skipping.", file_path.name
                 )
                 continue
 
