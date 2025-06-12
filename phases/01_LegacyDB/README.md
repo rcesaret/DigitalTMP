@@ -123,13 +123,13 @@ This section details the purpose and function of each key file, organized by the
 * **`src/00_setup_databases.py`**:
     * **Objective**: To create and populate the four legacy TMP databases.
     * **Description**: Connects to the local PostgreSQL server, creates four new empty databases, and executes the corresponding `.sql` dump scripts (`TMP_DF8.sql`, etc.) to build the schemas and load the data. It is idempotent and will not fail if the databases already exist.
-    * **Inputs**: `config.ini`, `.sql` dump files.
+    * **Inputs**: `phases/01_LegacyDB/src/config.ini`, `.sql` dump files.
     * **Outputs**: Four populated PostgreSQL databases.
 
 * **`src/01_create_benchmark_dbs.py`**:
     * **Objective**: To create the two wide-format benchmark databases.
     * **Description**: Executes the two `flatten_df9...` SQL queries against the live `TMP_DF9` database, loads the results into pandas DataFrames, creates two new databases, and writes the flattened data into them.
-    * **Inputs**: `config.ini`, live `TMP_DF9` database, `sql/flatten_df9*.sql` files.
+    * **Inputs**: `phases/01_LegacyDB/src/config.ini`, live `TMP_DF9` database, `sql/flatten_df9*.sql` files.
     * **Outputs**: Two populated benchmark PostgreSQL databases.
 
 * **`sql/flatten_df9.sql` & `sql/flatten_df9_text_nulls.sql`**: These two powerful, hand-crafted SQL scripts perform the complex ETL process of transforming the highly normalized `TMP_DF9` database into a single, wide-format table. They are used by `01_create_benchmark_dbs.py` to create the two performance benchmark databases.
@@ -139,13 +139,13 @@ This section details the purpose and function of each key file, organized by the
 * **`src/02_run_profiling_pipeline.py`**:
     * **Objective**: The main engine; orchestrates the execution of all profiling tasks.
     * **Description**: Iterates through all six databases (4 legacy + 2 benchmark). For each one, it calls the various metric-gathering functions from the `profiling_modules` package, passing database-specific context like schema name, and saves the output of each function to a distinct `.csv` or `.json` file in the `outputs/metrics/` directory.
-    * **Inputs**: `config.ini`, all six live databases, `profiling_modules/`, `sql/canonical_queries/` directory.
+    * **Inputs**: `phases/01_LegacyDB/src/config.ini`, all six live databases, `profiling_modules/`, `sql/canonical_queries/` directory.
     * **Outputs**: A complete set of raw metric data files (~40 total) in `outputs/metrics/`.
 
 * **`src/03_generate_erds.py`**:
     * **Objective**: To automatically generate schema visualizations.
     * **Description**: Iterates through all six databases, reflects their schemas, and uses `Graphviz` to render and save high-quality ERDs as SVG files. For the complex `tmp_df9`, it also generates several smaller, focused ERDs of specific data subsystems.
-    * **Inputs**: `config.ini`, all six live databases.
+    * **Inputs**: `phases/01_LegacyDB/src/config.ini`, all six live databases.
     * **Outputs**: A set of SVG files in `outputs/erds/`.
 
 * **`src/profiling_modules/` (The Profiling Engine)**: This Python package is the analytical core of the pipeline. It contains a library of functions, organized by theme, each responsible for calculating a specific set of metrics.
@@ -176,7 +176,7 @@ This section details the purpose and function of each key file, organized by the
 
 ### 3.5 General Configuration
 
-* **`src/config.ini`**: The central configuration file for the entire pipeline. It defines PostgreSQL connection credentials and file paths for all inputs and outputs, allowing the system to run in any environment without code modification.
+* **`phases/01_LegacyDB/src/config.ini`**: The central configuration file for the entire pipeline. It defines PostgreSQL connection credentials and file paths for all inputs and outputs, allowing the system to run in any environment without code modification. Paths within this file are relative to `phases/01_LegacyDB/src/`.
 
 ---
 
@@ -286,7 +286,7 @@ These comparative metrics are essential for the Phase 1 white paper's quantitati
 ## 7. How to Execute Phase 1
 
 To run the entire automated analysis pipeline, execute the scripts in the `src/` directory in the following sequence. This sequence follows the four major workflows defined in the architecture. Ensure the environment is configured first as detailed in the script-specific notes.
-At a minimum, copy `src/config.ini.example` to `src/config.ini` and update the connection details before running any scripts.
+At a minimum, copy `src/config.ini.example` to `phases/01_LegacyDB/src/config.ini` and update the connection details before running any scripts.
 
 1.  **Execute Workflow 1: Environment & Database Setup**
     * Run `python 00_setup_databases.py` to create the four legacy databases.
@@ -301,3 +301,12 @@ At a minimum, copy `src/config.ini.example` to `src/config.ini` and update the c
 
 ---
 
+## 4. Project Setup & Execution
+
+### 4.1 Configuration (`config.ini`)
+
+For Phase 1, the primary configuration file is `config.ini`, located within the `phases/01_LegacyDB/src/` directory. Python scripts in `phases/01_LegacyDB/src/` expect to find it here. This file centralizes all environment-specific settings (database credentials, file paths, etc.), allowing scripts to be run in different environments without code modification. It is **critical** to add `config.ini` to your `.gitignore` file to prevent committing sensitive information like database passwords to version control. A `config.ini.example` is provided as a template.
+
+All paths defined within this `config.ini` (e.g., for SQL dumps, output directories) are relative to the `phases/01_LegacyDB/src/` directory.
+
+**Key Configuration Sections:**
