@@ -427,4 +427,3 @@ dependencies:
       - pydantic-settings==2.9.1
       - radon==6.0.1
       - ujson==5.10.0
-prefix: C:\ProgramData\anaconda3\envs\digital_tmp_base
