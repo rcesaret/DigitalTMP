@@ -1,6 +1,53 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
 repos:
+  # --- Foundational hooks for all file types ---
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-added-large-files
+        args: ["--maxkb=1024"] # Fail if a file > 1MB is added
+
+  # --- Python Linting & Formatting with Ruff ---
+  # Ruff is extremely fast and replaces black, isort, and flake8.
+  # This builds upon your existing configuration.
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.4.5
     hooks:
+      # Lints and automatically fixes import sorting, syntax errors, etc.
       - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+      # Formats code to the black standard.
       - id: ruff-format
+
+  # --- Jupyter Notebook Output Stripping ---
+  # Based on your use of .ipynb files like 'template_comparative_analysis.ipynb'.
+  # This strips output cells to keep your git history clean and reduce file size.
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.7.1
+    hooks:
+      - id: nbstripout
+
+  # --- SQL Formatting ---
+  # Your project has a large number of .sql files. This will enforce a
+  # consistent style and catch syntax errors.
+  - repo: https://github.com/sqlfluff/sqlfluff
+    rev: 3.0.7
+    hooks:
+      - id: sqlfluff-fix
+        # Assuming postgres dialect based on your use of psycopg2.
+        # This will auto-format your SQL files.
+        args: [--dialect, postgres]
+
+  # --- Security: Detect Hardcoded Secrets ---
+  # A crucial security check for any project.
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        # To establish a baseline of "known" secrets (including false positives),
+        # run `detect-secrets scan . > .secrets.baseline` and uncomment the next line.
+        # args: ['--baseline', '.secrets.baseline']
