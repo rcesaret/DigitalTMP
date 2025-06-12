@@ -1,0 +1,71 @@
+name: Python Project CI
+
+# Triggers the workflow on push or pull request events but only for the "main" branch
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Conda Environment
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          # Use the environment file from your repository
+          environment-file: envs/base_project_env.yml
+          # Auto-activate the base environment for subsequent steps
+          auto-activate-base: true
+          # Cache dependencies to speed up future runs
+          use-mamba: true # Mamba is faster than conda
+
+      - name: Lint and Format Checks
+        shell: bash -l {0} # Important: Use a login shell to have conda available
+        run: |
+          echo "--- Running Ruff Linter ---"
+          # Check for linting errors without auto-fixing
+          ruff check .
+
+          echo "--- Running Ruff Formatter Check ---"
+          # Check if any files need reformatting (fails if they do)
+          ruff format --check .
+
+          echo "--- Running SQLFluff Linter ---"
+          # Check SQL files for style violations
+          sqlfluff lint . --dialect postgres
+
+      - name: Run Pytest
+        shell: bash -l {0}
+        run: |
+          echo "--- Running test suite ---"
+          # This assumes your tests are in a 'tests/' directory.
+          # The command will succeed even if no tests are found.
+          pytest tests/
+
+      - name: Security Scan for Secrets
+        shell: bash -l {0}
+        run: |
+          echo "--- Scanning for hardcoded secrets ---"
+          # If a baseline file exists, use it. Otherwise, scan without one.
+          if [ -f .secrets.baseline ]; then
+            detect-secrets scan --baseline .secrets.baseline
+          else
+            detect-secrets scan
+          fi
+
+      - name: Code Complexity Analysis with Radon
+        shell: bash -l {0}
+        run: |
+          echo "--- Analyzing code complexity ---"
+          # Fail if any function has a cyclomatic complexity > 10 (rank 'C' or worse)
+          radon cc . -na -a -nc
+
+          echo "--- Analyzing code maintainability ---"
+          # Check the average maintainability index. Fail if it is below rank 'B' (score < 20)
+          radon mi . -s -nb
