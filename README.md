@@ -6,13 +6,11 @@
 
 ## 📌 Overview
 
-This project modernizes and unifies the legacy datasets of the **Teotihuacan Mapping Project (TMP)**, originally led by René Millon in the 1960s. The TMP represents the only full-surface archaeological survey ever conducted for the ancient city of Teotihuacan, encompassing over 5,000 surface collection units across approximately 37.5 square kilometers. Despite its legacy as the empirical foundation of decades of Mesoamerican research, the TMP dataset remains fragmented across obsolete file formats, incompatible schemas, and spatial systems that prevent integration with modern digital tools.
+The **Digital TMP** Integration Initiative is a comprehensive data science and engineering project aimed at modernizing and unifying the legacy datasets of the landmark **Teotihuacan Mapping Project (TMP)**, originally led by René Millon in the 1960s.  The TMP represents the only full-surface archaeological survey ever conducted for the ancient city of Teotihuacan, encompassing over 5,000 surface collection units across approximately 37.5 square kilometers. Despite its legacy as the empirical foundation of decades of Mesoamerican research, the TMP dataset remains fragmented across obsolete file formats, incompatible schemas, and spatial systems that prevent integration with modern digital tools.
 
-The Digital TMP Project executes a structured, eight-phase digital transformation pipeline that systematically converts analog archives and legacy software outputs into a unified PostgreSQL/PostGIS platform. The outcome is a modular, reproducible, and open-access geospatial database supporting SQL-based queries, modern GIS formats, and spatial analyses across artifact, architectural, and typological datasets.
+This initiative transforms the TMP's fragmented analog and digital records—spanning over 50 years of research and multiple database generations—into a unified, reproducible, accurate, well-documented, and open-access geospatial research infrastructure. To accomplish this, the Digital TMP project executes a structured, eight-phase digital transformation pipeline that systematically converts analog archives and legacy software outputs into a unified PostgreSQL/PostGIS platform. The outcome is a modular, reproducible, and open-access geospatial database supporting SQL-based queries, modern GIS formats, and spatial analyses across artifact, architectural, and typological datasets. By systematically analyzing, transforming, integrating, and archiving the TMP's diverse digital assets, this project seeks to unlock their full scholarly potential for future generations of researchers, enabling new forms of data-driven inquiry into the urbanism, society, and history of one of the ancient world's most significant cities.
 
----
-
-## 🎯 Objectives
+## 🎯 Key Objectives
 
 - **Integrate Legacy Datasets**: Merge disparate TMP databases (DF8, DF9, DF10, REANS2) into a unified spatial database with schema harmonization and entity key alignment.
 - **Complete Spatial Digitization**: Digitize and georeference all archaeological, environmental, and modern features from 1:2,000 TMP base maps using high-precision georeferencing workflows.
@@ -23,31 +21,25 @@ The Digital TMP Project executes a structured, eight-phase digital transformatio
 - **Establish Extensible Infrastructure**: Create a scalable platform for integrating future TMP excavations, drone photogrammetry, and INAH archival datasets.
 - **Enhance Digital Scholarship**: Produce curated datasets and reproducible workflows supporting teaching in archaeology, GIS, and digital humanities.
 
----
+## 📑 Navigating the Documentation
+
+This repository contains a comprehensive suite of documentation. To find what you need, please consult the following guide:
+
+- **`README.md` (This file):** For a high-level project summary and immediate setup instructions.
+- **`PLANNING.md`:** For the detailed, phase-by-phase operational plan intended for execution by the Windsurf "Cascade" AI agent.
+- **`docs/overview.md`:** For a complete understanding of the project's vision, goals, scope, and requirements (The Project's PRD).
+- **`docs/architecture.md`:** For the high-level system blueprint, including component diagrams, data flow, and non-functional architecture (Security, Performance).
+- **`docs/technical_specs.md`:** For granular technical details, including the full technology stack, design patterns, and implementation specifications.
+- **`docs/glossary.md`:** For definitions of all project-specific terminology, acronyms, and domain concepts.
+- **`docs/outputs_summary.md`:** For a quick, high-level summary of all final project deliverables.
 
 ## 🧱 Project Architecture
 
-This project systematically transforms legacy archaeological databases into a modern, integrated geospatial data infrastructure through eight methodologically distinct phases:
+This project systematically transforms legacy archaeological databases into a modern, integrated geospatial data infrastructure through an eight-phase pipeline. The data flows from legacy database analysis (Phase 1), through ETL (Phase 2), GIS digitization (Phase 3), georeferencing (Phase 4), integration (Phase 5), archival packaging (Phase 6), PostGIS deployment (Phase 7), to final dissemination via APIs and dashboards (Phase 8).
 
-### Data Foundation (Phases 1-2)
-1. **Database Analysis** – Systematic evaluation and profiling of legacy MS Access databases.
-2. **Database Transformation** – Comprehensive ETL and feature engineering to produce analysis-ready datasets.
-
-### Spatial Data Creation (Phases 3-4)
-3. **GIS Digitization** – Manual digitization of archaeological, environmental, and modern features.
-4. **Georeferencing** – High-precision georeferencing using custom NTv2 transformations.
-
-### Integration and Enhancement (Phase 5)
-5. **Geospatial Integration** – Integration of tabular and spatial data with advanced feature engineering.
-
-### Preservation and Distribution (Phases 6-8)
-6. **tDAR Outputs** – Preparation and packaging of archival-ready datasets for long-term preservation.
-7. **PostGIS Database** – Design and deployment of production-grade spatial database.
-8. **Tutorials & Dashboards** – Development of user-facing applications and comprehensive tutorials.
+Key architectural decisions include the use of a custom NTv2 transformation to precisely handle the non-standard local coordinate system ("Millon Space") and the strategic choice to use a denormalized schema for the final database to optimize for analytical performance.
 
 [View detailed architecture](docs/architecture.md)
-
----
 
 ## 📊 Data Sources
 
@@ -60,30 +52,84 @@ This project systematically transforms legacy archaeological databases into a mo
 - **Legacy Vector Data**: Robertson's digitized collection unit boundaries (MF2) and Sherfield's architectural polygons.
 - **Ground Control Points**: High-density GCP dataset for georeferencing from "Millon Space" to global coordinate systems.
 
-### External Resources
-- **Modern Reference Data**: Satellite imagery and aerial photography for georeferencing validation.
-- **Metadata and Provenance Records**: Comprehensive documentation and metadata in `docs/metadata.md` ensure transparency and long-term interpretability.
+[Full data source details](docs/architecture.md#31-data-sources-and-genealogy)
 
-[Full metadata and dictionary](docs/data_sources.md)
+## 🧑‍💻 Quick Start: Setup and Installation
 
----
+Follow these steps to set up the complete development environment on your local machine.
 
-## 🛠 Tools & Technologies
+### Prerequisites
+
+Ensure you have the following software installed and accessible from your command line:
+
+- [Git](https://git-scm.com/)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- [Conda](https://docs.conda.io/en/latest/miniconda.html) (Miniconda is recommended)
+
+### Step 1: Clone the Repository
+
+Clone this repository to your local machine using the following command:
+
+```bash
+git clone https://github.com/rcesaret/TeoMappingProject.git
+cd TeoMappingProject
+```
+
+### Step 2: Create and Activate the Conda Environment
+
+This project uses a specific set of Python and system libraries managed by Conda. Create the environment from the provided file:
+
+```bash
+conda env create -f envs/digital_tmp_base_env.yml
+```
+
+This command will create a new Conda environment named `digital_tmp_base` with all the necessary dependencies. Once the installation is complete, activate the environment:
+
+```bash
+conda activate digital_tmp_base
+```
+
+### Step 3: Initialize the PostgreSQL Database
+
+The project uses a containerized PostgreSQL/PostGIS database managed by Docker.
+
+1.  **Start the Database Service:** Navigate to the `infrastructure/db/` directory and use Docker Compose to start the database container in detached mode.
+
+    ```bash
+    cd infrastructure/db/
+    docker-compose up -d
+    ```
+
+    This will download the PostGIS image if necessary and start the database server in the background.
+
+2.  **Populate the Databases:** Run the provided Python script to create the necessary databases and load the legacy data from the SQL dumps. From the project's root directory, execute:
+
+    ```bash
+    python phases/01_LegacyDB/src/00_setup_databases.py
+    ```
+
+    This script will connect to the running Docker container and execute the necessary SQL to set up the project's foundational data.
+
+Your development environment is now fully configured.
+
+## 🛠 Technology Stack Summary
+
+This project leverages a powerful, open-source technology stack.
 
 ### Core Infrastructure
 - **Database**: PostgreSQL 17 + PostGIS 3.4
 - **Programming**: Python 3.11+ (GeoPandas, Shapely, SQLAlchemy, FastAPI) and R (sf, tidyverse, ggplot2, tmap)
 - **GIS Desktop**: QGIS 3.40.5
 - **Containerization**: Docker ensures consistent and reproducible development and deployment environments.
+- **AI-Assisted Development:** Windsurf IDE with MCP Servers
 
 ### Specialized Tools by Phase
 - **Database Analysis**: SQLAlchemy, psycopg2, Pandas, Graphviz (ERD generation)
-- **ETL & Validation**: Great Expectations, dbt (optional), regex libraries
+- **ETL & Validation**: Great Expectations
 - **Georeferencing**: GDAL 3.8+, PROJ 9.0+, custom NTv2 grid tools
 - **Web Services**: FastAPI, Leaflet.js for interactive dashboards
-- **Documentation**: LaTeX/Markdown with Pandoc, 7-Zip for archival packaging
 
----
+For a complete, categorized list of technologies and the rationale for their selection, please see `docs/technical_specs.md`.
 
 ## 📈 Key Outputs
 
@@ -95,23 +141,11 @@ This project systematically transforms legacy archaeological databases into a mo
 ### Archival and Distribution
 - **tDAR-Compliant Packages**: Archival-ready datasets with comprehensive metadata meeting long-term preservation standards.
 - **Multi-Format Exports**: GeoJSON, CSV, Shapefile, and GeoTIFF formats for diverse user needs.
-- **External Repository Integration**: High-resolution datasets hosted on Zenodo/Figshare with persistent DOIs.
-
-### Metadata and Documentation
-- **Controlled Vocabularies and Variable Glossaries**: Documented in human-readable (PDF) and machine-readable (CSV) formats for interoperability.
-- **Data Lineage and Provenance**: Version-controlled logs and structured documentation ensure full reproducibility of data transformations.
 
 ### Public Engagement Tools
 - **Interactive WebGIS Dashboard**: Public-facing visualization platform with spatial filtering and data download capabilities.
 - **RESTful API Services**: Programmatic access to curated datasets with automated documentation.
 - **Comprehensive Tutorial Suite**: Python, R, and QGIS tutorials supporting database setup and spatial analysis workflows.
-
-### Research Infrastructure
-- **Custom CRS Definitions**: PROJ-compatible transformations between "Millon Space" and global coordinate systems.
-- **Extensibility Framework**: Modular architecture supporting integration of future excavations, LiDAR, and geophysical surveys.
-- **Reproducible Workflows**: Version-controlled code and Docker containers ensuring long-term sustainability.
-
----
 
 ## 📂 Repository Structure
 
@@ -227,72 +261,20 @@ This project systematically transforms legacy archaeological databases into a mo
     └── figures/
 ```
 
+
 | Folder | Purpose |
 |--------|---------|
 | `phases/01_LegacyDB/` | Database analysis tools, PostgreSQL migration scripts, schema profiling |
 | `phases/02_TransformDB/` | ETL scripts, data validation, controlled vocabulary development |
 | `phases/03_DigitizeGIS/` | QGIS digitization templates, vector layer validation |
 | `phases/04_Georef/` | Georeferencing tools, NTv2 grid generation, accuracy assessment |
-| `phases/05_GeoDB/` | Spatial integration, feature engineering, architectural classification |
+| `phases/05_GeoIntegration/` | Spatial integration, feature engineering, architectural classification |
 | `phases/06_tDAR/` | Archival packaging, metadata preparation, documentation |
 | `phases/07_PostGIS/` | Database deployment, API development, Docker configuration |
 | `phases/08_Dashboards/` | WebGIS dashboard, tutorial development |
 | `docs/` | Project documentation (architecture, methods, data sources, metadata) |
 | `data/` | Raw, interim, processed, and external datasets |
 | `infrastructure/` | Database schemas, Docker files, cloud download scripts |
-| `outputs/` | Final deliverables, figures, and publication materials |
-
----
-
-## 🧑‍💻 Getting Started
-
-### Environment Setup
-1. **Clone Repository**:
-```bash
-git clone <repository-url>
-```
-2. **Python Environment**:
-```bash
-conda env create -f digital_tmp_base_env.yml
-conda activate digital_tmp_base
-```
-3. **Database Setup**:
-```bash
-# Configure PostgreSQL connection
-cp .env.example .env
-# Edit .env with your database credentials
-```
-
-### Phase 1 Dependencies
-
-**Python packages**
-- pandas
-- SQLAlchemy
-- psycopg2
-- sqlalchemy-schemadisplay
-
-**External tools**
-- PostgreSQL (v17+)
-- Graphviz
-
-See [`envs/base_project_env.yml`](envs/base_project_env.yml) for the full conda environment.
-
-### Data Download
-4. **External Datasets**: Follow instructions in `infrastructure/cloud_downloads.md` to download large raster files and legacy databases.
-5. **Validation**: Run checksum validation for all downloaded files.
-5b. **Metadata Review**: Consult `docs/metadata.md` to familiarize yourself with the data structures, variable definitions, and controlled vocabularies before conducting analyses.
-
-### Phase Execution
-6. **Database Migration**: Execute Phase 1 scripts to migrate legacy databases to PostgreSQL.
-7. **Sequential Processing**: Follow phase-by-phase workflows documented in each `phases/*/README.md`.
-
-### Docker Deployment (Phase 7)
-```bash
-cd phases/07_PostGIS/
-docker-compose up -d
-```
-
----
 
 ## 👤 Author & Attribution
 
@@ -312,10 +294,8 @@ PhD, ASU Teotihuacan Research Laboratory
 Please cite this project as:
 > Cesaretti, Rudolf. (2025). Digital TMP: Open Geospatial Integration of the Teotihuacan Mapping Project Data Files. ASU Teotihuacan Research Laboratory. DOI: [to be assigned]
 
----
+## License
 
-### Licensing
-
-This project is released under the MIT License. See [LICENSE](LICENSE) for details. Original TMP data remains subject to ASU Teotihuacan Research Laboratory stewardship policies.
+This project is licensed under the MIT License. See the `LICENSE` file for details. Original TMP data remains subject to ASU Teotihuacan Research Laboratory stewardship policies.
 
 ---
