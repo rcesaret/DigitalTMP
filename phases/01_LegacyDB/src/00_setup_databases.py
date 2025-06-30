@@ -26,7 +26,7 @@ from pathlib import Path
 from typing import List
 
 from sqlalchemy import create_engine, text
-from sqlalchemy.engine import Engine
+from sqlalchemy.engine import Connection, Engine
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -171,7 +171,7 @@ def get_engine(cfg: Config, *, dbname: str | None = None) -> Engine:
     return create_engine(url, echo=False, future=True)
 
 
-def database_exists(conn, db_name: str) -> bool:  # noqa: ANN001 – SA connection type
+def database_exists(conn: Connection, db_name: str) -> bool:
     """Return ``True`` if *db_name* is present on the server."""
     res = conn.execute(
         text("SELECT 1 FROM pg_database WHERE datname=:name"), {"name": db_name}
