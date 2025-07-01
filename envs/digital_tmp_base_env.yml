@@ -47,6 +47,7 @@ dependencies:
   - colour=0.1.5=pyhd8ed1ab_2
   - comm=0.2.2=pyhd8ed1ab_1
   - contourpy=1.3.2=py311h3257749_0
+  - coverage=7.6.9=py311h827c3e9_0
   - cpp-expected=1.1.0=hc790b64_1
   - cpython=3.11.13=py311hd8ed1ab_0
   - cryptography=45.0.4=py311hfd75b31_0
@@ -75,6 +76,7 @@ dependencies:
   - email_validator=2.2.0=hd8ed1ab_1
   - entrypoints=0.4=pyhd8ed1ab_1
   - exceptiongroup=1.3.0=pyhd8ed1ab_0
+  - execnet=2.1.1=pyhd3eb1b0_0
   - executing=2.2.0=pyhd8ed1ab_0
   - fastapi=0.115.12=pyh29332c3_0
   - fastapi-cli=0.0.7=pyhd8ed1ab_0
@@ -253,6 +255,7 @@ dependencies:
   - patsy=1.0.1=pyhd8ed1ab_1
   - pcre2=10.45=h99c9b8b_0
   - pendulum=3.1.0=py311h533ab2d_0
+  - pep8=1.7.1=py311haa95532_1
   - phonenumbers=9.0.7=pyhd8ed1ab_0
   - pickleshare=0.7.5=pyhd8ed1ab_1004
   - pillow=11.2.1=py311h43e43bb_0
@@ -285,6 +288,17 @@ dependencies:
   - pyside6=6.9.1=py311h5d1a980_0
   - pysocks=1.7.1=pyh09c184e_7
   - pytest=8.4.0=pyhd8ed1ab_0
+  - pytest-cache=1.0=pyhd3eb1b0_1
+  - pytest-console-scripts=1.4.1=py311haa95532_0
+  - pytest-cov=6.0.0=py311haa95532_0
+  - pytest-csv=3.0.0=py311haa95532_0
+  - pytest-dependency=0.5.1=py311haa95532_0
+  - pytest-doctestplus=1.3.0=py311h746a85d_0
+  - pytest-jupyter=0.10.1=py311haa95532_1
+  - pytest-jupyter-client=0.10.1=py311haa95532_1
+  - pytest-jupyter-server=0.10.1=py311haa95532_1
+  - pytest-metadata=3.0.0=py311haa95532_0
+  - pytest-pep8=1.0.6=py_2
   - python=3.11.13=h3f84c4b_0_cpython
   - python-dateutil=2.9.0.post0=pyhff2d567_1
   - python-dotenv=1.1.0=pyh29332c3_1
@@ -427,6 +441,8 @@ dependencies:
       - mando==0.7.1
       - pydantic-extra-types==2.10.5
       - pydantic-settings==2.9.1
+      - pydot==4.0.1
       - radon==6.0.1
+      - sqlalchemy-schemadisplay==2.0
       - ujson==5.10.0
 prefix: C:\ProgramData\anaconda3\envs\digital_tmp_base
