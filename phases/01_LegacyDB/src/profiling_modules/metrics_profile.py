@@ -4,10 +4,9 @@
 import logging
 from typing import Any, Dict, List
 
+import pandas as pd
 from sqlalchemy import text
 from sqlalchemy.engine import Engine
-
-import pandas as pd
 
 from .base import get_table_names
 
@@ -20,7 +19,7 @@ def get_all_column_profiles(engine: Engine, schema_name: str) -> List[Dict[str, 
     each column individually.
 
     Args:
-        engine: A SQLAlchemy engine instance.
+        engine: A SQLAlchemy engine instance or a tuple of (engine, connection).
         schema_name: The name of the schema to inspect.
 
     Returns:
@@ -30,6 +29,10 @@ def get_all_column_profiles(engine: Engine, schema_name: str) -> List[Dict[str, 
         "Initiating full column profile. This is a slow operation "
         "that queries each column individually."
     )
+    # Unwrap (engine, connection) tuple sometimes supplied by tests
+    if isinstance(engine, tuple) and len(engine) > 0:
+        engine = engine[0]  # Extract just the engine from the tuple
+
     all_profiles = []
     table_names = get_table_names(engine, schema_name)
 
@@ -74,25 +77,37 @@ def get_all_column_profiles(engine: Engine, schema_name: str) -> List[Dict[str, 
 
         # Now, create the final list from the pg_stats DataFrame
         for record in df_stats.to_dict("records"):
-            table_name = record["tablename"]
+            table_name = record["table_name"]
             total_rows = total_rows_map.get(table_name, 0)
+            # Add the exact row count to each record
+            record["row_count_exact"] = total_rows
             if total_rows > 0:
-                record["null_count_estimate"] = int(
-                    total_rows * (record["null_percent"] / 100.0)
-                )
+                # Handle both 'null_percent' and legacy 'null_frac' (0-1)
+                if "null_percent" in record and record["null_percent"] is not None:
+                    null_pct = record["null_percent"]
+                elif "null_frac" in record and record["null_frac"] is not None:
+                    null_pct = record["null_frac"] * 100
+                else:
+                    null_pct = None
+
+                if null_pct is not None:
+                    record["null_count_estimate"] = int(total_rows * (null_pct / 100.0))
+                else:
+                    record["null_count_estimate"] = 0
             else:
                 record["null_count_estimate"] = 0
             all_profiles.append(record)
 
         logging.info(
-            "Successfully generated column profiles for %s columns in schema '%s' using pg_stats.",
+            "Successfully generated column profiles for %s columns in schema '%s'"
+            "using pg_stats.",
             len(all_profiles),
             schema_name,
         )
 
     except Exception as e:
         logging.error(
-            "An error occurred during full column profiling for schema '%s': %s",
+            "Failed to get column profiles for schema '%s': %s",
             schema_name,
             e,
         )
