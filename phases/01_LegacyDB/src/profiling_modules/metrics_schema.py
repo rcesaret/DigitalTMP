@@ -35,47 +35,71 @@ def get_table_level_metrics(engine: Engine, schema_name: str) -> List[Dict[str, 
         WITH constants AS (
             SELECT current_setting('block_size')::numeric AS bs, 23 AS hdr, 4 AS ma
         ),
-        tables AS (
-            SELECT tbl.oid, tbl.reltuples, tbl.relname,
-                   (
-                       (reltuples - reltuples * pg_relation_size(tbl.oid) /
-                           ( (pg_relation_size(tbl.oid) - COALESCE(toast.relpages, 0) * bs) /
-                               NULLIF(reltuples, 0) )
-                       ) * 100
-                   )::numeric AS null_frac
+        no_toast AS (
+            SELECT
+                tbl.oid, tbl.relname, tbl.reltuples, tbl.relpages, hdr, ma, bs,
+                CASE WHEN tbl.reltoastrelid = 0 THEN tbl.relpages
+                     ELSE tbl.relpages - toast.relpages
+                END AS tbl_pages,
+                CASE WHEN tbl.reltoastrelid = 0 THEN 0
+                     ELSE toast.relpages
+                END AS toast_pages
             FROM pg_class tbl
             JOIN pg_namespace ns ON ns.oid = tbl.relnamespace
+            JOIN constants ON true
             LEFT JOIN pg_class toast ON tbl.reltoastrelid = toast.oid
             WHERE ns.nspname = :schema AND tbl.relkind = 'r'
+        ),
+        table_bytes AS (
+            SELECT
+                oid, relname, reltuples, relpages, tbl_pages, toast_pages, bs,
+                (
+                    tbl_pages - (
+                        CASE
+                            WHEN tbl_pages > 0 AND reltuples > 0
+                            THEN
+                                (reltuples * (hdr + ma + 4)) /
+                                (bs - hdr - ma - 4)
+                            ELSE 0
+                        END
+                    )
+                ) * bs AS real_data,
+                (
+                    CASE
+                        WHEN tbl_pages > 0 AND reltuples > 0
+                        THEN
+                            (
+                                tbl_pages -
+                                (reltuples * (hdr + ma + 4)) /
+                                (bs - hdr - ma - 4)
+                            ) *
+                            bs *
+                            (ma / (hdr + ma + 4))
+                        ELSE 0
+                    END
+                ) AS free_space
+            FROM no_toast
         )
         SELECT
-            tbl.relname AS table_name,
-            tbl.reltuples::bigint AS row_estimate,
+            relname AS table_name,
+            reltuples::bigint AS row_estimate,
             (
                 SELECT COUNT(*)
                 FROM information_schema.columns
-                WHERE table_schema = :schema AND table_name = tbl.relname
+                WHERE table_schema = :schema AND table_name = relname
             ) AS column_count,
-            pg_size_pretty(pg_relation_size(tbl.oid)) AS table_size,
-            pg_size_pretty(pg_indexes_size(tbl.oid)) AS index_size,
-            pg_size_pretty(pg_total_relation_size(tbl.oid)) AS total_size,
+            pg_size_pretty(pg_relation_size(oid)) AS table_size,
+            pg_size_pretty(pg_indexes_size(oid)) AS index_size,
+            pg_size_pretty(pg_total_relation_size(oid)) AS total_size,
             (
                 SELECT COUNT(*)
                 FROM pg_index i
-                WHERE i.indrelid = tbl.oid
+                WHERE i.indrelid = oid
             ) AS index_count,
-            CASE WHEN tbl.reltuples > 0 THEN
-                round(
-                    (
-                        (tbl.reltuples * (hdr + ma + 4) + (bs - hdr - ma - 4) * (tbl.reltuples/((bs - hdr - ma - 4)/ma) + 1)) / bs
-                    ) * bs
-                )
-            ELSE 0 END AS expected_size_b,
-            pg_relation_size(tbl.oid) AS actual_size_b
-        FROM pg_class tbl
-        JOIN pg_namespace ns ON ns.oid = tbl.relnamespace
-        WHERE ns.nspname = :schema AND tbl.relkind = 'r'
-        ORDER BY pg_total_relation_size(tbl.oid) DESC;
+            (real_data + free_space) AS expected_size_b,
+            pg_relation_size(oid) AS actual_size_b
+        FROM table_bytes
+        ORDER BY actual_size_b DESC;
     """
     )
 
@@ -85,9 +109,8 @@ def get_table_level_metrics(engine: Engine, schema_name: str) -> List[Dict[str, 
 
         # Calculate bloat in Python for clarity
         df["bloat_bytes"] = df["actual_size_b"] - df["expected_size_b"]
-        df["bloat_percent"] = round(
-            (df["bloat_bytes"] / df["actual_size_b"].replace(0, 1)) * 100, 2
-        )
+        bloat_ratio = df["bloat_bytes"] / df["actual_size_b"].replace(0, 1)
+        df["bloat_percent"] = round(bloat_ratio * 100, 2)
         df["bloat_size"] = df["bloat_bytes"].apply(
             lambda x: f"{round(x / 1024**2, 2)} MB" if x > 0 else "0 MB"
         )
