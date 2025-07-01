@@ -6,6 +6,7 @@ from typing import Any, Dict
 
 from sqlalchemy import text
 from sqlalchemy.engine import Engine
+from sqlalchemy.exc import SQLAlchemyError
 
 from .base import get_table_names, get_view_names
 
@@ -29,7 +30,8 @@ def get_basic_db_metrics(engine: Engine) -> Dict[str, Any]:
 
             # Get database size
             db_size_query = text(
-                "SELECT pg_catalog.pg_database_size(current_database()) / (1024 * 1024);"
+                "SELECT pg_catalog.pg_database_size(current_database()) / "
+                "(1024 * 1024);"
             )
             db_size_result = connection.execute(db_size_query)
             metrics["database_size_mb"] = round(db_size_result.scalar_one(), 2)
@@ -58,18 +60,29 @@ def get_schema_object_counts(engine: Engine, schema_name: str) -> Dict[str, Any]
     """
     metrics = {
         "schema_name": schema_name,
-        "table_count": len(get_table_names(engine, schema_name)),
-        "view_count": len(get_view_names(engine, schema_name)),
+        "table_count": 0,
+        "view_count": 0,
         "function_count": 0,
         "sequence_count": 0,
     }
 
+    # Safely retrieve table and view counts
+    try:
+        metrics["table_count"] = len(get_table_names(engine, schema_name))
+        metrics["view_count"] = len(get_view_names(engine, schema_name))
+    except SQLAlchemyError as e:
+        logging.error(
+            "Failed to retrieve object counts for schema '%s': %s", schema_name, e
+        )
+
     queries = {
         "function_count": text(
-            "SELECT COUNT(*) FROM information_schema.routines WHERE routine_schema = :schema;"
+            "SELECT COUNT(*) FROM information_schema.routines "
+            "WHERE routine_schema = :schema;"
         ),
         "sequence_count": text(
-            "SELECT COUNT(*) FROM information_schema.sequences WHERE sequence_schema = :schema;"
+            "SELECT COUNT(*) FROM information_schema.sequences "
+            "WHERE sequence_schema = :schema;"
         ),
     }
 
