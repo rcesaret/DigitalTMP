@@ -46,7 +46,7 @@ class Config:
     host: str
     port: str
     user: str
-    password: str
+    db_credential: str
     root_db: str
     legacy_dbs: List[str]
     dump_dir: Path
