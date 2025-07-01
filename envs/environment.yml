@@ -427,6 +427,8 @@ dependencies:
       - mando==0.7.1
       - pydantic-extra-types==2.10.5
       - pydantic-settings==2.9.1
+      - pydot==4.0.1
       - radon==6.0.1
+      - sqlalchemy-schemadisplay==2.0
       - ujson==5.10.0
 prefix: C:\ProgramData\anaconda3\envs\digital_tmp_base
