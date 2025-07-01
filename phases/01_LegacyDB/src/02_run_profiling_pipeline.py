@@ -31,15 +31,17 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 import pandas as pd
-from sqlalchemy import create_engine
-from sqlalchemy.engine import Engine
 
 # Import all our profiling functions
-from profiling_modules import metrics_basic
-from profiling_modules import metrics_schema
-from profiling_modules import metrics_profile
-from profiling_modules import metrics_interop
-from profiling_modules import metrics_performance
+from profiling_modules import (
+    metrics_basic,
+    metrics_interop,
+    metrics_performance,
+    metrics_profile,
+    metrics_schema,
+)
+from sqlalchemy import create_engine
+from sqlalchemy.engine import Engine
 
 # --- Constants ---
 LOG_FILE_NAME = "02_run_profiling_pipeline.log"
@@ -198,8 +200,12 @@ def main() -> None:
             logging.error("Skipping database '%s' due to connection failure.", db_name)
             continue
 
-        # Determine schema name (legacy dbs have matching schema, benchmarks use public)
-        schema_name = db_name if db_name in legacy_dbs else "public"
+        # Determine schema name. For legacy DBs, use lowercase schema name for
+        # reflection. For benchmark DBs, all tables reside in the 'public' schema.
+        if db_name in legacy_dbs:
+            schema_name = db_name.lower()
+        else:
+            schema_name = "public"
         logging.info(
             "Target schema for '%s' is '%s'.",
             db_name,
@@ -282,7 +288,8 @@ def main() -> None:
                 save_results(interop_metrics, db_name, "interop_metrics", output_dir)
             else:
                 logging.info(
-                    "--> Skipping: Interoperability Metrics (not applicable to single-table schema)."
+                    "--> Skipping: Interoperability Metrics "
+                    "(not applicable to single-table schema)."
                 )
         except Exception as e:
             logging.error(
