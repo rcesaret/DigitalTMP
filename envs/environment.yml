@@ -47,6 +47,7 @@ dependencies:
   - colour=0.1.5
   - comm=0.2.2
   - contourpy=1.3.2
+  - coverage=7.6.9
   - cpp-expected=1.1.0
   - cpython=3.11.13
   - cryptography=45.0.4
@@ -75,6 +76,7 @@ dependencies:
   - email_validator=2.2.0
   - entrypoints=0.4
   - exceptiongroup=1.3.0
+  - execnet=2.1.1
   - executing=2.2.0
   - fastapi=0.115.12
   - fastapi-cli=0.0.7
@@ -253,6 +255,7 @@ dependencies:
   - patsy=1.0.1
   - pcre2=10.45
   - pendulum=3.1.0
+  - pep8=1.7.1
   - phonenumbers=9.0.7
   - pickleshare=0.7.5
   - pillow=11.2.1
@@ -285,6 +288,17 @@ dependencies:
   - pyside6=6.9.1
   - pysocks=1.7.1
   - pytest=8.4.0
+  - pytest-cache=1.0
+  - pytest-console-scripts=1.4.1
+  - pytest-cov=6.0.0
+  - pytest-csv=3.0.0
+  - pytest-dependency=0.5.1
+  - pytest-doctestplus=1.3.0
+  - pytest-jupyter=0.10.1
+  - pytest-jupyter-client=0.10.1
+  - pytest-jupyter-server=0.10.1
+  - pytest-metadata=3.0.0
+  - pytest-pep8=1.0.6
   - python=3.11.13
   - python-dateutil=2.9.0.post0
   - python-dotenv=1.1.0
