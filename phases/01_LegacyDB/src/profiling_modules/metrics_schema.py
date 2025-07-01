@@ -115,8 +115,11 @@ def get_table_level_metrics(engine: Engine, schema_name: str) -> List[Dict[str, 
             lambda x: f"{round(x / 1024**2, 2)} MB" if x > 0 else "0 MB"
         )
 
-        # Drop helper columns before returning
-        df = df.drop(columns=["expected_size_b", "actual_size_b"])
+        # Drop helper columns before returning, but only if they exist
+        helper_columns = ["expected_size_b", "actual_size_b"]
+        columns_to_drop = [col for col in helper_columns if col in df.columns]
+        if columns_to_drop:
+            df = df.drop(columns=columns_to_drop)
 
         table_metrics = df.to_dict("records")
         logging.info(
