@@ -35,7 +35,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from sqlalchemy import create_engine, MetaData
+from sqlalchemy import MetaData, create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.schema import Table
 from sqlalchemy_schemadisplay import create_schema_graph
@@ -139,14 +139,21 @@ def get_sqlalchemy_engine(db_config: Dict[str, Any], db_name: str) -> Engine | N
 
 
 def get_schema_for_db(db_name: str, legacy_dbs: List[str]) -> str:
-    """Determines the correct schema name for a given database name."""
-    return db_name if db_name in legacy_dbs else "public"
+    """
+    Determines the correct schema name for a given database name.
+
+    Legacy databases use a schema named after the database, but in lowercase.
+    Benchmark databases use the default 'public' schema.
+
+    """
+    return db_name.lower() if db_name in legacy_dbs else "public"
 
 
 # --- Core Graphing Logic ---
 
 
 def generate_and_save_erd(
+    engine: Engine,
     metadata: MetaData,
     output_path: Path,
     tables_to_include: Optional[List[Table]] = None,
@@ -156,6 +163,7 @@ def generate_and_save_erd(
     Generates a single ERD using Graphviz and saves it as an SVG.
 
     Args:
+        engine: The SQLAlchemy engine to connect to the database.
         metadata: The SQLAlchemy MetaData object containing reflected tables.
         output_path: The full path where the SVG file will be saved.
         tables_to_include: If provided, only these tables will be in the ERD.
@@ -170,16 +178,18 @@ def generate_and_save_erd(
     try:
         # Graphviz attributes for improved readability
         graph = create_schema_graph(
+            engine=engine,
             metadata=metadata,
             tables=tables_to_include,
             show_datatypes=False,
             show_indexes=False,
             rankdir="LR",  # Left-to-Right layout
             concentrate=False,
-            graph_attr={"label": graph_title, "labelloc": "t", "fontsize": "20"},
-            node_attr={"fontname": "Helvetica", "fontsize": "10"},
-            edge_attr={"fontname": "Helvetica", "fontsize": "8"},
         )
+        # Set graph, node, and edge attributes using the pydot API
+        graph.set_graph_defaults(label=graph_title, labelloc="t", fontsize="20")
+        graph.set_node_defaults(fontname="Helvetica", fontsize="10")
+        graph.set_edge_defaults(fontname="Helvetica", fontsize="8")
         graph.write_svg(str(output_path))
         logging.info("Successfully generated SVG.")
     except Exception as e:
@@ -268,20 +278,23 @@ def main() -> None:
         # 1. Generate the full ERD for every database
         full_erd_path = output_dir / f"{db_name}_full_ERD_{timestamp}.svg"
         generate_and_save_erd(
+            engine=engine,
             metadata=metadata,
             output_path=full_erd_path,
             graph_title=f"Full ERD for {db_name}",
         )
 
         # 2. For tmp_df9, generate additional focused ERDs
-        if db_name == "tmp_df9":
+        if db_name == "TMP_DF9":
             logging.info("Generating focused ERDs for '%s'...", db_name)
             for subsystem_name, table_list in TMP_DF9_SUBSYSTEMS.items():
+                # Create a lowercase table list for case-insensitive matching
+                lowercase_table_list = [t.lower() for t in table_list]
                 # Filter the reflected tables to only those in our subsystem list
                 tables_to_include = [
                     table
                     for name, table in metadata.tables.items()
-                    if name.split(".")[-1] in table_list
+                    if name.split(".")[-1].lower() in lowercase_table_list
                 ]
 
                 if not tables_to_include:
@@ -294,6 +307,7 @@ def main() -> None:
                     output_dir / f"{db_name}_focused_{subsystem_name}_{timestamp}.svg"
                 )
                 generate_and_save_erd(
+                    engine=engine,
                     metadata=metadata,
                     output_path=focused_erd_path,
                     tables_to_include=tables_to_include,
