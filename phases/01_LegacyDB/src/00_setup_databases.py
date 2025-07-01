@@ -19,7 +19,9 @@ from __future__ import annotations
 import argparse
 import configparser
 import logging
+import os
 import re
+import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -46,7 +48,7 @@ class Config:
     host: str
     port: str
     user: str
-    db_credential: str
+    password: str
     root_db: str
     legacy_dbs: List[str]
     dump_dir: Path
@@ -78,62 +80,48 @@ def setup_logging(log_path: Path) -> None:
 # ---------------------------------------------------------------------------
 
 
-def _require(section: configparser.SectionProxy, key: str) -> str:
-    """Return *key* from *section* or raise *ConfigurationError*."""
-    try:
-        return section[key]
-    except KeyError as exc:  # pragma: no cover – clarity outweighs micro-benchmarks
-        raise ConfigurationError(
-            f"Missing required key '{key}' in section [{section.name}]."
-        ) from exc
+class ConfigurationError(Exception):
+    """Custom exception for configuration-related errors."""
 
 
-class ConfigurationError(RuntimeError):
-    """Raised when the configuration file is missing required values."""
-
-
-def load_config(path: Path) -> Config:
-    """Load and validate the ini configuration file.
+def load_config(config_path: Path) -> Config:
+    """Parse and validate the ``.ini`` configuration file.
 
     Args:
-        path: Path to ``config.ini``.
+        config_path: Path to the configuration file.
 
     Returns:
-        An immutable :class:`Config` instance populated with validated values.
+        A validated ``Config`` object.
 
     Raises:
-        ConfigurationError: If required sections/keys are absent.
+        ConfigurationError: If the config file is missing, malformed, or invalid.
     """
-    parser = configparser.ConfigParser()
-    if not path.is_file():
-        raise ConfigurationError(f"Config file not found: {path}")
+    if not config_path.is_file():
+        raise ConfigurationError(f"Config file not found: {config_path}")
 
-    try:
-        parser.read(path)
-    except configparser.Error as exc:
-        raise ConfigurationError(f"Invalid config file: {exc}") from exc
+    parser = configparser.ConfigParser()
+    parser.read(config_path)
 
     try:
         pg_section = parser["postgresql"]
         db_section = parser["databases"]
-    except KeyError as exc:
-        raise ConfigurationError(
-            "Required sections [postgresql] or [databases] missing."
-        ) from exc
+        path_section = parser["paths"]
+    except KeyError as e:
+        raise ConfigurationError(f"Missing required section in config: {e}") from e
 
-    legacy_dbs_raw = _require(db_section, "legacy_dbs")
+    legacy_dbs_raw = db_section.get("legacy_dbs", "")
     legacy_dbs = [db.strip() for db in legacy_dbs_raw.split(",") if db.strip()]
-    if not legacy_dbs:
-        raise ConfigurationError("No databases listed under [databases] legacy_dbs.")
+    for db_name in legacy_dbs:
+        _validate_identifier(db_name)
 
-    dump_dir = Path(db_section.get("dump_dir", "dumps")).resolve()
+    dump_dir = (config_path.parent / path_section.get("sql_dump_dir")).resolve()
 
     return Config(
-        host=_require(pg_section, "host"),
-        port=_require(pg_section, "port"),
-        user=_require(pg_section, "user"),
-        password=_require(pg_section, "password"),
-        root_db=_require(pg_section, "root_db"),
+        host=pg_section.get("host"),
+        port=pg_section.get("port"),
+        user=pg_section.get("user"),
+        password=pg_section.get("password"),
+        root_db=pg_section.get("root_db"),
         legacy_dbs=legacy_dbs,
         dump_dir=dump_dir,
     )
@@ -145,96 +133,144 @@ def load_config(path: Path) -> Config:
 
 
 def _validate_identifier(name: str) -> None:
-    """Ensure *name* is a valid PostgreSQL identifier to guard against injection."""
-    if not _VALID_IDENTIFIER_RE.fullmatch(name):
-        raise ValueError(f"'{name}' is not a valid PostgreSQL identifier.")
+    """Raise ValueError if *name* is not a valid SQL identifier."""
+    if not _VALID_IDENTIFIER_RE.match(name):
+        raise ValueError(f"Invalid identifier: '{name}'")
 
 
-def get_engine(cfg: Config, *, dbname: str | None = None) -> Engine:
-    """Create a SQLAlchemy engine using parameters from *cfg*.
-
-    Args:
-        cfg: Validated configuration container.
-        dbname: Optional database name override. Defaults to *cfg.root_db*.
-
-    Returns:
-        A lazily-initialised SQLAlchemy :class:`Engine`.
-    """
-    database = dbname or cfg.root_db
-    url = "postgresql+psycopg2://{user}:{password}@{host}:{port}/{db}".format(
-        user=cfg.user,
-        password=cfg.password,
-        host=cfg.host,
-        port=cfg.port,
-        db=database,
+def get_engine(cfg: Config, dbname: str | None = None) -> Engine:
+    """Return a new SQLAlchemy engine for the specified database."""
+    target_db = dbname or cfg.root_db
+    conn_str = (
+        f"postgresql+psycopg2://{cfg.user}:{cfg.password}@"
+        f"{cfg.host}:{cfg.port}/{target_db}"
     )
-    return create_engine(url, echo=False, future=True)
+    return create_engine(conn_str)
 
 
 def database_exists(conn: Connection, db_name: str) -> bool:
-    """Return ``True`` if *db_name* is present on the server."""
-    res = conn.execute(
-        text("SELECT 1 FROM pg_database WHERE datname=:name"), {"name": db_name}
+    """Return ``True`` if *db_name* exists."""
+    _validate_identifier(db_name)
+    result = conn.execute(
+        text("SELECT 1 FROM pg_database WHERE datname = :name"),
+        {"name": db_name},
     )
-    return res.scalar_one_or_none() is not None
+    return result.scalar() == 1
 
 
 def create_database(root_engine: Engine, db_name: str) -> None:
-    """Create *db_name* if it is absent.
-
-    The operation runs outside a transaction (`AUTOCOMMIT`) as PostgreSQL forbids
-    ``CREATE DATABASE`` inside one.
-    """
+    """Create a new database if it does not already exist."""
     _validate_identifier(db_name)
     with root_engine.connect().execution_options(isolation_level="AUTOCOMMIT") as conn:
         if database_exists(conn, db_name):
-            logging.info("Database '%s' already exists – skipping create.", db_name)
+            logging.info("Database '%s' already exists – skipping creation.", db_name)
             return
         conn.execute(text(f'CREATE DATABASE "{db_name}"'))
         logging.info("Created database '%s'.", db_name)
 
 
 def drop_database(root_engine: Engine, db_name: str) -> None:
-    """Drop *db_name* if it exists, terminating active connections first."""
+    """Drop a database if it exists, terminating active connections."""
     _validate_identifier(db_name)
     with root_engine.connect().execution_options(isolation_level="AUTOCOMMIT") as conn:
         if not database_exists(conn, db_name):
             logging.info("Database '%s' does not exist – skipping drop.", db_name)
             return
-        # Terminate connections to the target database (except current backend)
-        conn.execute(
-            text(
-                """
-                SELECT pg_terminate_backend(pid)
-                FROM pg_stat_activity
-                WHERE datname = :name AND pid <> pg_backend_pid();
-                """
-            ),
-            {"name": db_name},
+        try:
+            conn.execute(
+                text(
+                    """
+                    SELECT pg_terminate_backend(pid)
+                    FROM pg_stat_activity
+                    WHERE datname = :name AND pid <> pg_backend_pid();
+                    """
+                ),
+                {"name": db_name},
+            )
+            conn.execute(text(f'DROP DATABASE "{db_name}"'))
+            logging.info("Dropped database '%s'.", db_name)
+        except Exception as e:
+            handle_db_error(e, db_name)
+
+
+def handle_db_error(e: Exception, db_name: str) -> None:
+    """Log database-related errors with specific guidance."""
+    if "does not exist" in str(e):
+        logging.warning("Database '%s' does not exist, skipping drop.", db_name)
+    elif "is being accessed by other users" in str(e):
+        logging.error(
+            "Could not drop database '%s' because it is in use. "
+            "Please close all other connections to the database and try again.",
+            db_name,
         )
-        conn.execute(text(f'DROP DATABASE "{db_name}"'))
-        logging.info("Dropped database '%s'.", db_name)
+        raise e from e
+    else:
+        logging.error("An unexpected error occurred with database '%s': %s", db_name, e)
+        raise e from e
 
 
 def populate_database(cfg: Config, db_name: str, sql_file: Path) -> None:
-    """Run *sql_file* against *db_name*.
-
-    Args:
-        cfg: Project configuration container.
-        db_name: Target database to populate.
-        sql_file: Path to the ``.sql`` dump file.
-    """
-    if not sql_file.is_file():
-        logging.warning("SQL dump not found: %s – skipping population.", sql_file)
-        return
-
-    engine = get_engine(cfg, dbname=db_name)
+    """Populates a database from a SQL dump file using the psql utility."""
     try:
-        with engine.connect().execution_options(isolation_level="AUTOCOMMIT") as conn:
-            conn.exec_driver_sql(sql_file.read_text(encoding="utf-8"))
-            logging.info("Populated database '%s' using '%s'.", db_name, sql_file.name)
-    finally:
-        engine.dispose()
+        user = cfg.user
+        password = cfg.password
+        host = cfg.host
+        port = cfg.port
+
+        # Set the password via environment variable for security
+        env = os.environ.copy()
+        env["PGPASSWORD"] = password
+
+        command = [
+            "psql",
+            "-U",
+            user,
+            "-h",
+            host,
+            "-p",
+            port,
+            "-d",
+            db_name,
+            "-f",
+            str(sql_file),
+        ]
+
+        logging.info(
+            "Executing psql to populate database '%s' from '%s'...",
+            db_name,
+            sql_file.name,
+        )
+        result = subprocess.run(
+            command,
+            env=env,
+            check=True,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+        )
+        logging.info("Successfully populated database '%s'.", db_name)
+        if result.stdout:
+            logging.debug("psql stdout:\n%s", result.stdout)
+        if result.stderr:
+            logging.warning("psql stderr:\n%s", result.stderr)
+
+    except AttributeError as e:
+        logging.error("Configuration error for psql connection: %s", e)
+        raise
+    except FileNotFoundError:
+        logging.error(
+            "psql command not found. Is PostgreSQL installed and in the system's PATH?"
+        )
+        raise
+    except subprocess.CalledProcessError as e:
+        logging.error(
+            "Failed to populate database '%s'. psql exited with code %d.",
+            db_name,
+            e.returncode,
+        )
+        logging.error("psql stderr:\n%s", e.stderr)
+        logging.error("psql stdout:\n%s", e.stdout)
+        raise
 
 
 # ---------------------------------------------------------------------------
@@ -251,4 +287,50 @@ def parse_arguments() -> argparse.Namespace:
         default=Path("config.ini"),
         help="Path to the configuration file (default: ./config.ini)",
     )
+    parser.add_argument(
+        "--force-recreate",
+        action="store_true",
+        help="If specified, drop existing databases before creating them.",
+    )
     return parser.parse_args()
+
+
+def main() -> None:
+    """Orchestrate the database setup process."""
+    args = parse_arguments()
+    log_dir = Path(__file__).parent.parent / "logs"
+    log_dir.mkdir(exist_ok=True)
+    setup_logging(log_dir / LOG_FILE_NAME)
+
+    logging.info("--- Starting Legacy Database Setup ---")
+    root_engine = None
+    try:
+        cfg = load_config(args.config)
+        root_engine = get_engine(cfg)
+
+        logging.info("Processing %d legacy databases...", len(cfg.legacy_dbs))
+        for db_name in cfg.legacy_dbs:
+            sql_file = cfg.dump_dir / f"{db_name}.sql"
+
+            if args.force_recreate:
+                logging.info("Force-recreate enabled for '%s'.", db_name)
+                drop_database(root_engine, db_name)
+
+            create_database(root_engine, db_name)
+            populate_database(cfg, db_name, sql_file)
+
+        logging.info("--- Legacy Database Setup Complete ---")
+
+    except (ConfigurationError, ValueError) as e:
+        logging.error("Fatal error during setup: %s", e)
+        sys.exit(1)
+    except Exception as e:
+        logging.error("An unexpected error occurred: %s", e, exc_info=True)
+        sys.exit(1)
+    finally:
+        if root_engine:
+            root_engine.dispose()
+
+
+if __name__ == "__main__":
+    main()
