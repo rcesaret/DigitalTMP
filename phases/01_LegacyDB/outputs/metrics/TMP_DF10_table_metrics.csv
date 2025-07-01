@@ -1,0 +1,10 @@
+table_name,row_estimate,column_count,table_size,index_size,total_size,index_count,bloat_bytes,bloat_percent,bloat_size
+artifactTable,190870,7,9728 kB,15 MB,25 MB,9,5939445.930645755,59.62,5.66 MB
+codeTable,148579,5,8104 kB,9184 kB,17 MB,5,4623444.946452641,55.71,4.41 MB
+totalsTable,70798,5,3768 kB,2976 kB,6784 kB,3,2203074.8310256097,57.1,2.1 MB
+interpTable,62865,5,3296 kB,3712 kB,7048 kB,5,1956217.6792059797,57.96,1.87 MB
+archToSSN,7296,4,320 kB,592 kB,944 kB,3,227035.14177184168,69.29,0.22 MB
+provTable,5050,6,256 kB,128 kB,424 kB,1,157144.66364416125,59.95,0.15 MB
+artifactCodes,149,2,8192 bytes,16 kB,32 kB,1,4636.545521382183,56.6,0.0 MB
+codeCodes,107,2,8192 bytes,16 kB,32 kB,1,3329.5998039455953,40.64,0.0 MB
+interpCodes,83,2,8192 bytes,16 kB,32 kB,1,2582.7736796961162,31.53,0.0 MB

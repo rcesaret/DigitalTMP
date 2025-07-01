@@ -1,0 +1,2 @@
+table_name,row_estimate,column_count,table_size,index_size,total_size,index_count,bloat_bytes,bloat_percent,bloat_size
+wide_format_data,5050,337,19 MB,0 bytes,53 MB,0,28344320.0,142.98,27.03 MB
