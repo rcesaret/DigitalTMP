@@ -178,7 +178,7 @@ def generate_and_save_erd(
     try:
         # Graphviz attributes for improved readability
         graph = create_schema_graph(
-            engine=engine,
+            engine,
             metadata=metadata,
             tables=tables_to_include,
             show_datatypes=False,
@@ -289,7 +289,9 @@ def main() -> None:
         )
 
         # 2. For tmp_df9, generate additional focused ERDs
-        if db_name == "TMP_DF9":
+        #    Normalize the database name to handle case differences when
+        #    reading from the config file.
+        if db_name.upper() == "TMP_DF9":
             logging.info("Generating focused ERDs for '%s'...", db_name)
             for subsystem_name, table_list in TMP_DF9_SUBSYSTEMS.items():
                 # Create a lowercase table list for case-insensitive matching
