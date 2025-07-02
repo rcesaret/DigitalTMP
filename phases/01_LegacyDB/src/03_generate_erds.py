@@ -175,6 +175,9 @@ def generate_and_save_erd(
         graph_title,
         output_path.name,
     )
+    # Ensure the output directory exists in case this function is used
+    # independently of the main orchestrator which normally creates it.
+    output_path.parent.mkdir(parents=True, exist_ok=True)
     try:
         # Graphviz attributes for improved readability
         graph = create_schema_graph(
