@@ -23,7 +23,18 @@ import os
 import re
 import subprocess
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass as _dataclass
+import types
+
+
+def dataclass(*args, **kwargs):
+    """Safely apply ``dataclasses.dataclass`` even if module isn't registered."""
+    def wrapper(cls):
+        if cls.__module__ not in sys.modules:
+            sys.modules[cls.__module__] = types.ModuleType(cls.__module__)
+        return _dataclass(*args, **kwargs)(cls)
+
+    return wrapper
 from pathlib import Path
 from typing import List
 
