@@ -59,9 +59,9 @@ def parse_arguments() -> argparse.Namespace:
     )
     parser.add_argument(
         "--config",
-        type=str,
-        default="config.ini",
-        help="Path to the configuration file (default: config.ini)",
+        type=Path,
+        required=True,
+        help="Path to the configuration file (e.g., config.ini).",
     )
     return parser.parse_args()
 
@@ -71,20 +71,22 @@ def parse_arguments() -> argparse.Namespace:
 
 def load_all_metrics(input_dir: Path) -> Dict[str, Dict[str, Any]]:
     """
-     Discovers and loads all metric files from the input directory.
-    Filenames are parsed from the right to strip the metric suffix
-    (e.g., ``_basic_metrics``) and treat the remaining prefix as the
-    database name.
+    Discovers and loads all metric files, tagging benchmark databases.
+
+    Filenames are parsed to extract the database name and metric type.
+    It now returns a richer structure that includes an 'is_benchmark' flag.
 
     Args:
         input_dir: The path to the directory containing metric files.
 
     Returns:
-        A nested dictionary mapping: db_name -> metric_name -> data,
-        where data is a DataFrame (for CSVs) or a dict (for JSONs).
+        A dictionary where each key is a database name. The value is another
+        dictionary with two keys:
+        - 'is_benchmark': A boolean flag.
+        - 'metrics': A nested dictionary mapping metric_name to its data.
     """
     logging.info("Scanning for metric files in: %s", input_dir)
-    all_data = defaultdict(dict)
+    all_data = defaultdict(lambda: {"metrics": {}, "is_benchmark": False})
 
     if not input_dir.is_dir():
         logging.error("Input metrics directory not found: %s", input_dir)
@@ -121,11 +123,14 @@ def load_all_metrics(input_dir: Path) -> Dict[str, Dict[str, Any]]:
                 )
                 continue
 
+            if db_name.startswith("tmp_benchmark"):
+                all_data[db_name]["is_benchmark"] = True
+
             if file_path.suffix == ".csv":
-                all_data[db_name][metric_name] = pd.read_csv(file_path)
+                all_data[db_name]["metrics"][metric_name] = pd.read_csv(file_path)
             elif file_path.suffix == ".json":
                 with open(file_path, "r", encoding="utf-8") as f:
-                    all_data[db_name][metric_name] = json.load(f)
+                    all_data[db_name]["metrics"][metric_name] = json.load(f)
         except Exception as e:
             logging.exception(f"Failed to load or parse file '{file_path.name}': {e}")
 
@@ -134,7 +139,8 @@ def load_all_metrics(input_dir: Path) -> Dict[str, Dict[str, Any]]:
 
 def calculate_summary_metrics(db_name: str, db_data: Dict[str, Any]) -> Dict[str, Any]:
     """
-    This function calculates a flat dictionary of key summary metrics for a single database.
+    This function calculates a flat dictionary of
+    key summary metrics for a single database.
 
     Args:
         db_name: The name of the database being summarized.
@@ -151,7 +157,7 @@ def calculate_summary_metrics(db_name: str, db_data: Dict[str, Any]) -> Dict[str
     def get_metric_data(key, default=None):
         data = db_data.get(key)
         if data is None:
-            logging.warning(f"Metric data '{key}' not found for database '{db_name}'.")
+            logging.warning("Metric data '%s' not found for db '%s'.", key, db_name)
         return data if data is not None else default
 
     # --- Basic Metrics ---
@@ -186,10 +192,12 @@ def calculate_comparative_performance_metrics(
     """
     logging.info("Calculating advanced comparative performance metrics...")
     perf_data = []
-    for db_name, db_metrics in all_data.items():
+    for db_name, db_info in all_data.items():
+        db_metrics = db_info.get("metrics", {})
         if "performance_benchmarks" in db_metrics:
             df = db_metrics["performance_benchmarks"].copy()
             df["database"] = db_name
+            df["is_benchmark"] = db_info.get("is_benchmark", False)
             perf_data.append(df)
 
     if not perf_data:
@@ -206,15 +214,13 @@ def calculate_comparative_performance_metrics(
     df["latency_ms"] = pd.to_numeric(df["latency_ms"], errors="coerce")
     df_success = df[df["status"] == "Success"].copy()
 
-    denormalized_dbs = [
-        db for db in df_success["database"].unique() if "benchmark" in db
-    ]
-    if not denormalized_dbs:
-        logging.error("No benchmark/denormalized databases found for comparison base.")
-        return df
+    benchmark_dbs = df_success[df_success["is_benchmark"]]["database"].unique()
+    if benchmark_dbs.size == 0:
+        logging.error("No benchmark databases found for comparison base.")
+        return df_success
 
     baseline_latency = (
-        df_success[df_success["database"].isin(denormalized_dbs)]
+        df_success[df_success["database"].isin(benchmark_dbs)]
         .groupby("query_id")["latency_ms"]
         .min()
         .rename("baseline_latency_ms")
@@ -225,15 +231,12 @@ def calculate_comparative_performance_metrics(
     df_success["schema_efficiency_factor"] = (
         df_success["latency_ms"] / df_success["baseline_latency_ms"]
     ).round(2)
+    improvement_numerator = df_success["latency_ms"] - df_success["baseline_latency_ms"]
     df_success["performance_improvement_factor"] = (
-        (
-            (df_success["latency_ms"] - df_success["baseline_latency_ms"])
-            / df_success["latency_ms"]
-        )
-        * 100
+        (improvement_numerator / df_success["latency_ms"]) * 100
     ).round(2)
     df_success.loc[
-        df_success["database"].isin(denormalized_dbs), "performance_improvement_factor"
+        df_success["database"].isin(benchmark_dbs), "performance_improvement_factor"
     ] = 0.0
 
     logging.info("Successfully calculated comparative performance metrics.")
@@ -243,7 +246,10 @@ def calculate_comparative_performance_metrics(
 def generate_markdown_report(
     summary_df: pd.DataFrame, perf_summary_df: pd.DataFrame, output_path: Path
 ) -> None:
-    """Generates a rich, multi-section markdown report, now enhanced with new performance insights."""
+    """Generates a rich, multi-section markdown report.
+
+    This report is now enhanced with new performance insights.
+    """
     logging.info(
         "Generating comprehensive markdown report to: %s",
         output_path,
@@ -273,7 +279,9 @@ def generate_markdown_report(
             "### At-a-Glance: Schema Efficiency Factor (Lower is Better)"
         )
         report_parts.append(
-            "This table shows how many times slower each database is compared to the fastest benchmark database for each query category. A value of 1.0 means it is as fast as the benchmark."
+            "This table shows how many times slower each database is compared to the "
+            "fastest benchmark database for each query category. A value of 1.0 means "
+            "it is as fast as the benchmark."
         )
         pivot_efficiency = perf_summary_df.pivot_table(
             index="database",
@@ -294,7 +302,8 @@ def generate_markdown_report(
         )
 
     report_parts.append("\n## 3. Run Metadata")
-    report_parts.append(f"- **Databases Processed**: {summary_df['Database'].tolist()}")
+    db_list = summary_df["Database"].tolist()
+    report_parts.append(f"- **Databases Processed**: {db_list}")
 
     try:
         with open(output_path, "w", encoding="utf-8") as f:
@@ -310,9 +319,10 @@ def generate_markdown_report(
 def main() -> None:
     """Main function to orchestrate the comparison and aggregation process."""
     args = parse_arguments()
-    config_path = Path(args.config)
+    config_path = args.config
 
-    log_dir = Path(__file__).parent
+    config_dir = config_path.parent
+    log_dir = config_dir
     setup_logging(log_dir)
     logging.info("--- Starting Comparison & Aggregation Script ---")
     logging.info("Reading configuration from: %s", config_path)
@@ -325,9 +335,8 @@ def main() -> None:
     config.read(config_path)
 
     try:
-        project_root = Path(__file__).parent.parent
-        input_dir = project_root / config.get("paths", "output_metrics")
-        output_dir = project_root / config.get("paths", "output_reports")
+        input_dir = config_dir / config.get("paths", "output_metrics")
+        output_dir = config_dir / config.get("paths", "output_reports")
         output_dir.mkdir(parents=True, exist_ok=True)
     except (configparser.NoSectionError, configparser.NoOptionError) as e:
         logging.critical(
@@ -344,8 +353,8 @@ def main() -> None:
 
     # 2. Calculate ORIGINAL summary metrics for each database
     all_db_summaries = [
-        calculate_summary_metrics(db_name, db_data)
-        for db_name, db_data in sorted(all_loaded_data.items())
+        calculate_summary_metrics(db_name, db_info["metrics"])
+        for db_name, db_info in sorted(all_loaded_data.items())
     ]
     summary_df = pd.DataFrame(all_db_summaries)
 
