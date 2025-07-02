@@ -1,0 +1,9 @@
+,TMP_DF10,TMP_DF8,TMP_DF9,TMP_REAN_DF2,tmp_benchmark_wide_numeric,tmp_benchmark_wide_text_nulls
+Database Size (MB),64.0,20.0,28.0,14.0,21.0,61.0
+Table Count,9.0,27.0,62.0,13.0,1.0,1.0
+View Count,0.0,0.0,0.0,0.0,0.0,0.0
+Total Estimated Rows,485797.0,136350.0,106109.0,65715.0,5050.0,5050.0
+Total Index Count,29.0,27.0,196.0,13.0,0.0,0.0
+JDI (Join Dependency Index),0.2778,0.0741,0.0719,0.1538,0.0,0.0
+LIF (Logical Interop. Factor),7.0,2.0,9.0,1.0,0.0,0.0
+NF (Normalization Factor),0.2485,0.2139,0.3503,0.1857,,
