@@ -173,10 +173,10 @@ def main() -> None:
         ]
         all_dbs_to_profile = legacy_dbs + benchmark_dbs
 
-        # Define paths relative to the project structure
-        project_root = Path(__file__).parent.parent
-        output_dir = project_root / OUTPUT_METRICS_DIR
-        sql_queries_dir = project_root / config.get("paths", "sql_queries_dir")
+        # Define paths relative to the config file location
+        config_dir = config_path.parent
+        output_dir = config_dir / config.get("paths", "output_metrics")
+        sql_queries_dir = config_dir / config.get("paths", "sql_queries_dir")
 
     except (configparser.NoSectionError, configparser.NoOptionError) as e:
         logging.critical(
