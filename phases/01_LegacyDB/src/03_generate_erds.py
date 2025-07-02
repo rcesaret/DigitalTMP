@@ -224,10 +224,14 @@ def main() -> None:
     try:
         db_config_root = dict(config["postgresql"])
         legacy_dbs = [
-            db.strip() for db in config.get("databases", "legacy_dbs").split(",")
+            db.strip()
+            for db in config.get("databases", "legacy_dbs").split(",")
+            if db.strip()
         ]
         benchmark_dbs = [
-            db.strip() for db in config.get("databases", "benchmark_dbs").split(",")
+            db.strip()
+            for db in config.get("databases", "benchmark_dbs").split(",")
+            if db.strip()
         ]
         all_dbs_to_profile = legacy_dbs + benchmark_dbs
 
