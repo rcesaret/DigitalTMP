@@ -1,7 +1,95 @@
-database,schema,category,query_id,query_name,sql_query,latency_ms,status,is_benchmark,error_message,baseline_latency_ms,schema_efficiency_factor,performance_improvement_factor
-tmp_benchmark_wide_numeric,public,baseline,1.1,Baseline Performance - Query 1.1,SELECT COUNT(*) FROM public.wide_format_data,0.0,Success,True,,0.0,,0.0
-tmp_benchmark_wide_numeric,public,join_performance,2.1,Join Performance - Query 2.1,"SELECT ""site"", ""subsite"", ""obsidianTot"" FROM public.wide_format_data WHERE ""obsidianTot"" IS NOT NULL AND ""obsidianTot"" > 0 ORDER BY ""obsidianTot"" DESC",47.0,Success,True,,32.0,1.47,0.0
-tmp_benchmark_wide_numeric,public,complex_filtering,3.1,Complex Filtering & Aggregation - Query 3.1,"SELECT SUM(""obsidianBlades"") AS total_obsidian_blades FROM public.wide_format_data WHERE ""unit"" = 'N1W4' AND ""collectionYear"" = 64",16.0,Success,True,,15.0,1.07,0.0
-tmp_benchmark_wide_text_nulls,public,baseline,1.1,Baseline Performance - Query 1.1,SELECT COUNT(*) FROM public.wide_format_data,0.0,Success,True,,0.0,,0.0
-tmp_benchmark_wide_text_nulls,public,join_performance,2.1,Join Performance - Query 2.1,"SELECT ""site"", ""subsite"", ""obsidianTot"" FROM public.wide_format_data WHERE ""obsidianTot"" IS NOT NULL AND ""obsidianTot"" > 0 ORDER BY ""obsidianTot"" DESC",32.0,Success,True,,32.0,1.0,0.0
-tmp_benchmark_wide_text_nulls,public,complex_filtering,3.1,Complex Filtering & Aggregation - Query 3.1,"SELECT SUM(""obsidianBlades"") AS total_obsidian_blades FROM public.wide_format_data WHERE ""unit"" = 'N1W4' AND ""collectionYear"" = 64",15.0,Success,True,,15.0,1.0,0.0
+query_name,status,latency_ms,records_returned,error_message,executed_sql,database,is_benchmark,category,query_id,baseline_latency_ms,schema_efficiency_factor,performance_improvement_factor
+Baseline Performance - Query 1.1,Success,2.105599967762828,1,,SELECT COUNT(*) FROM public.wide_format_data;,tmp_benchmark_wide_numeric,True,Baseline Performance,Query 1.1,1.932599989231676,1.09,0.0
+Join_performance Performance - Query 2.1,Success,23.20640004472807,4595,,"SELECT
+    ""site"",
+    ""subsite"",
+    ""obsidianTot""
+FROM public.wide_format_data
+WHERE ""obsidianTot"" IS NOT NULL AND ""obsidianTot"" > 0
+ORDER BY ""obsidianTot"" DESC;",tmp_benchmark_wide_numeric,True,Join_performance Performance,Query 2.1,23.20640004472807,1.0,0.0
+Complex_filtering Performance - Query 3.1,Success,3.144599962979555,1,,"SELECT
+    SUM(""obsidianBlades"") AS total_obsidian_blades
+FROM public.wide_format_data
+WHERE ""unit"" = 'N1W4' AND ""collectionYear"" = 64;",tmp_benchmark_wide_numeric,True,Complex_filtering Performance,Query 3.1,3.144599962979555,1.0,0.0
+Baseline Performance - Query 1.1,Success,1.932599989231676,1,,SELECT COUNT(*) FROM public.wide_format_data;,tmp_benchmark_wide_text_nulls,True,Baseline Performance,Query 1.1,1.932599989231676,1.0,0.0
+Join_performance Performance - Query 2.1,Success,23.80480000283569,4595,,"SELECT
+    ""site"",
+    ""subsite"",
+    ""obsidianTot""
+FROM public.wide_format_data
+WHERE ""obsidianTot"" IS NOT NULL AND ""obsidianTot"" > 0
+ORDER BY ""obsidianTot"" DESC;",tmp_benchmark_wide_text_nulls,True,Join_performance Performance,Query 2.1,23.20640004472807,1.03,0.0
+Complex_filtering Performance - Query 3.1,Success,4.504099953919649,1,,"SELECT
+    SUM(""obsidianBlades"") AS total_obsidian_blades
+FROM public.wide_format_data
+WHERE ""unit"" = 'N1W4' AND ""collectionYear"" = 64;",tmp_benchmark_wide_text_nulls,True,Complex_filtering Performance,Query 3.1,3.144599962979555,1.43,0.0
+Baseline Performance - Query 1.1,Success,0.9530000388622284,1,,"SELECT COUNT(*) FROM tmp_df10.""provTable"";",TMP_DF10,False,Baseline Performance,Query 1.1,1.932599989231676,0.49,-102.79
+Join_performance Performance - Query 2.1,Success,52.7816999820061,17903,,"SELECT
+    p.""Site"",
+    p.""Unit"",
+    a.""Count""
+FROM tmp_df10.""provTable"" AS p
+JOIN tmp_df10.""artifactTable"" AS a ON p.""SSN"" = a.""SSN""
+JOIN tmp_df10.""artifactCodes"" AS ac ON a.""ArtCode2"" = ac.""Code""
+WHERE ac.""Description"" = 'Obsidian' AND a.""Count"" > 0
+ORDER BY a.""Count"" DESC;",TMP_DF10,False,Join_performance Performance,Query 2.1,23.20640004472807,2.27,56.03
+Complex_filtering Performance - Query 3.1,Success,7.902699988335371,1,,"SELECT
+    SUM(a.""Count"") AS total_obsidian_blades
+FROM tmp_df10.""provTable"" p
+JOIN tmp_df10.""artifactTable"" a ON p.""SSN"" = a.""SSN""
+JOIN tmp_df10.""artifactCodes"" ac1 ON a.""ArtCode1"" = ac1.""Code""
+JOIN tmp_df10.""artifactCodes"" ac2 ON a.""ArtCode2"" = ac2.""Code""
+JOIN tmp_df10.""codeTable"" ct ON p.""SSN"" = ct.""SSN""
+JOIN tmp_df10.""codeCodes"" cc ON ct.""Code"" = cc.""Code""
+WHERE
+    p.""Unit"" = 'N1W4'
+    AND ac2.""Description"" = 'Obsidian'
+    AND ac1.""Description"" = 'Lithic'
+    AND ct.""Variable"" = 'collectionYear'
+    AND cc.""Description"" = '1964';",TMP_DF10,False,Complex_filtering Performance,Query 3.1,3.144599962979555,2.51,60.21
+Baseline Performance - Query 1.1,Success,0.8084999863058329,1,,"SELECT COUNT(*) FROM tmp_df8.""ssn_master"";",TMP_DF8,False,Baseline Performance,Query 1.1,1.932599989231676,0.42,-139.04
+Join_performance Performance - Query 2.1,Success,7.107100042048842,5050,,"SELECT
+    t1.""subsite"",
+    t1.""obsitots""
+FROM tmp_df8.""v401"" AS t1
+LEFT JOIN tmp_df8.""v301"" AS t2 ON t1.""ssn"" = t2.""ssn""
+WHERE t1.""obsitots"" IS NOT NULL
+ORDER BY t1.""obsitots"" DESC;",TMP_DF8,False,Join_performance Performance,Query 2.1,23.20640004472807,0.31,-226.52
+Complex_filtering Performance - Query 3.1,Success,3.600600000936538,1,,"SELECT
+    SUM(t3.""obsiblds"") AS total_obsidian_blades
+FROM tmp_df8.""v401"" AS t1
+JOIN tmp_df8.""v201"" AS t2 ON t1.""ssn"" = t2.""ssn""
+JOIN tmp_df8.""v301"" AS t3 ON t1.""ssn"" = t3.""ssn""
+WHERE t1.""unit"" = 'N1W4' AND t2.""collyear"" = 64;",TMP_DF8,False,Complex_filtering Performance,Query 3.1,3.144599962979555,1.15,12.66
+Baseline Performance - Query 1.1,Success,0.8234000415541232,1,,"SELECT COUNT(*) FROM tmp_df9.""location"";",TMP_DF9,False,Baseline Performance,Query 1.1,1.932599989231676,0.43,-134.71
+Join_performance Performance - Query 2.1,Success,12.110100011341274,4595,,"SELECT
+    loc.""site"",
+    loc.""subsite"",
+    lith.""obsidianTot""
+FROM tmp_df9.""location"" AS loc
+JOIN tmp_df9.""description"" AS des ON loc.""SSN"" = des.""SSN""
+JOIN tmp_df9.""archInterp"" AS interp ON loc.""SSN"" = interp.""SSN""
+JOIN tmp_df9.""lithicFlaked"" AS lith ON loc.""SSN"" = lith.""SSN""
+JOIN tmp_df9.""admin"" AS adm ON loc.""SSN"" = adm.""SSN""
+WHERE lith.""obsidianTot"" IS NOT NULL AND lith.""obsidianTot"" > 0
+ORDER BY lith.""obsidianTot"" DESC;",TMP_DF9,False,Join_performance Performance,Query 2.1,23.20640004472807,0.52,-91.63
+Complex_filtering Performance - Query 3.1,Success,2.127700019627809,1,,"SELECT
+    SUM(lith.""obsidianBlades"") AS total_obsidian_blades
+FROM tmp_df9.""location"" AS loc
+JOIN tmp_df9.""admin"" AS adm ON loc.""SSN"" = adm.""SSN""
+JOIN tmp_df9.""lithicFlaked"" AS lith ON loc.""SSN"" = lith.""SSN""
+WHERE loc.""unit"" = 'N1W4' AND adm.""collectionYear"" = 64;",TMP_DF9,False,Complex_filtering Performance,Query 3.1,3.144599962979555,0.68,-47.79
+Baseline Performance - Query 1.1,Success,0.959699973464012,1,,"SELECT COUNT(*) FROM tmp_rean_df2.""REAN_00"";",TMP_REAN_DF2,False,Baseline Performance,Query 1.1,1.932599989231676,0.5,-101.38
+Join_performance Performance - Query 2.1,Success,8.035299950279295,4701,,"SELECT
+    r00.""site"",
+    r00.""subsite"",
+    r01.""certot_rean""
+FROM tmp_rean_df2.""REAN_00"" as r00
+JOIN tmp_rean_df2.""REAN_01"" as r01 ON r00.""ssn"" = r01.""ssn""
+WHERE r01.""certot_rean"" IS NOT NULL
+ORDER BY r01.""certot_rean"" DESC;",TMP_REAN_DF2,False,Join_performance Performance,Query 2.1,23.20640004472807,0.35,-188.81
+Complex_filtering Performance - Query 3.1,Success,1.2694000033661723,1,,"SELECT
+    SUM(r01.""certot_rean"") AS total_ceramics
+FROM tmp_rean_df2.""REAN_00"" AS r00
+JOIN tmp_rean_df2.""REAN_01"" AS r01 ON r00.""ssn"" = r01.""ssn""
+WHERE r00.""unit"" = 'N1W4' AND r01.""rean_year"" = 96;",TMP_REAN_DF2,False,Complex_filtering Performance,Query 3.1,3.144599962979555,0.4,-147.72
