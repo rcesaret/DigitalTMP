@@ -52,8 +52,7 @@ preview = true
 # This configures the SQL linter/formatter for all .sql files in your project.
 # Based on your use of psycopg2 and postgres-related scripts.
 dialect = "postgres"
-# Specify the file extensions to lint.
-sql_file_exts = [".sql"]
+# Rely on the default .sql file extension to avoid parsing issues.
 
 [tool.pytest.ini_options]
 # Pytest configuration: https://docs.pytest.org/en/latest/reference/reference.html#ini-options-ref
