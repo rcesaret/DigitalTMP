@@ -47,7 +47,6 @@ dependencies:
   - geopandas
   - dbt-core
   - pyodbc
-  - jupyterlab
   - mamba
   - fastapi
   - pykrige
@@ -63,4 +62,5 @@ dependencies:
   - pytest-console-scripts
   - pytest-csv
   - pytest-pep8
+  - notebook
 prefix: C:\ProgramData\anaconda3\envs\digital_tmp_base
