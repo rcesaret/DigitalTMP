@@ -1,232 +1,134 @@
 # -*- coding: utf-8 -*-
-"""Enhanced functions for running database-specific performance benchmarks."""
+"""Functions for running database-specific performance benchmarks."""
 
-import json
 import logging
+import re
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
 
+import pandas as pd
 from sqlalchemy import text
 from sqlalchemy.engine import Engine
 
 
-def load_query_metadata(queries_dir: Path) -> Dict[str, Any]:
-    """Load query categories and database mappings."""
-    metadata_path = queries_dir / "_categories.json"
-    if not metadata_path.exists():
-        logging.warning(f"Query metadata not found at {metadata_path}")
-        return {"categories": {}, "database_mappings": {}}
-
-    try:
-        with open(metadata_path, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except json.JSONDecodeError as e:
-        logging.error("Failed to decode JSON from %s: %s", metadata_path, e)
-        return {"categories": {}, "database_mappings": {}}
-
-
-def parse_categorized_queries(sql_content: str) -> List[Tuple[str, str, str]]:
-    """Parse SQL benchmark files containing category and query markers.
-
-    The SQL files are expected to contain blocks marked with ``-- CATEGORY:`` and
-    ``-- QUERY:`` comments::
-
-        -- CATEGORY: baseline
-        -- QUERY: 1.1
-        SELECT COUNT(*) FROM ...;
-
-    Each ``-- QUERY:`` section corresponds to a single executable SQL statement
-    that belongs to the most recently seen category.
-
-    Returns a list of ``(category, query_id, sql)`` tuples.
-    """
-
-    queries: List[Tuple[str, str, str]] = []
-    current_category = "uncategorized"
-    current_entry: Optional[Dict[str, Any]] = None
-
-    for raw_line in sql_content.splitlines():
-        line = raw_line.strip()
-
-        if line.startswith("-- CATEGORY:"):
-            # Update the active category. This will apply to the next query we
-            # encounter.
-            current_category = line.split(":", 1)[1].strip()
-            continue
-
-        if line.startswith("-- QUERY:"):
-            # Finalize any previous query before starting a new one.
-            if current_entry is not None:
-                sql = " ".join(current_entry["sql_lines"]).strip()
-                if sql.endswith(";"):
-                    sql = sql[:-1]
-                queries.append(
-                    (current_entry["category"], current_entry["query_id"], sql)
-                )
-
-            query_id = line.split(":", 1)[1].strip()
-            current_entry = {
-                "category": current_category,
-                "query_id": query_id,
-                "sql_lines": [],
-            }
-            continue
-
-        if current_entry is not None and (line and not line.startswith("--")):
-            current_entry["sql_lines"].append(line)
-
-    # Finalize the last query block if present.
-    if current_entry is not None:
-        sql = " ".join(current_entry["sql_lines"]).strip()
-        if sql.endswith(";"):
-            sql = sql[:-1]
-        queries.append((current_entry["category"], current_entry["query_id"], sql))
-
-    return queries
-
-
 def run_performance_benchmarks(
-    engine: Engine, db_name: str, schema_name: str, sql_queries_dir: Path
-) -> List[Dict[str, Any]]:
+    engine: Engine, db_name: str, schema_name: str, query_file_path: Path
+) -> pd.DataFrame:
     """
-    Execute database-specific performance benchmarks.
+    Runs a set of canonical SQL queries against a database to measure performance.
+
+    This function robustly parses SQL files by splitting them based on a
+    specific delimiter (`-- END Query`), extracting query metadata from
+    comments, and cleaning the SQL before execution.
 
     Args:
-        engine: SQLAlchemy engine instance
-        db_name: Name of the database being profiled
-        schema_name: Schema name for the database
-        sql_queries_dir: Path to directory containing query files
+        engine: An active SQLAlchemy Engine instance.
+        db_name: The name of the database being profiled.
+        schema_name: The name of the schema to run queries against.
+        query_file_path: The path to the .sql file containing canonical queries.
 
     Returns:
-        List of benchmark results with query metadata
+        A pandas DataFrame containing the performance results, including
+        query name, status, latency, and any errors.
     """
-    benchmarks = []
-
-    # Load metadata to find appropriate query file
-    metadata = load_query_metadata(sql_queries_dir)
-    db_mappings = metadata.get("database_mappings", {})
-    categories = metadata.get("categories", {})
-
-    # Determine query file
-    query_filename = db_mappings.get(db_name)
-    if not query_filename:
-        logging.warning(
-            f"No specific queries found for database '{db_name}', using legacy approach"
-        )
-        # Fallback to legacy single file if it exists
-        legacy_path = sql_queries_dir.parent / "canonical_queries.sql"
-        if legacy_path.exists():
-            return run_legacy_benchmarks(engine, legacy_path)
-        return benchmarks
-
-    query_file_path = sql_queries_dir / query_filename
+    results = []
     if not query_file_path.exists():
-        logging.error("Query file not found: %s", query_file_path)
-        return benchmarks
+        logging.warning(f"Query file not found for {db_name}: {query_file_path}")
+        return pd.DataFrame()
 
-    # Read and parse queries
     try:
         with open(query_file_path, "r", encoding="utf-8") as f:
-            sql_content = f.read()
+            sql_script = f.read()
     except IOError as e:
-        logging.error(
-            "Could not read query file '%s': %s",
-            query_file_path,
-            e,
-        )
-        return benchmarks
+        logging.error(f"Could not read query file {query_file_path}: {e}")
+        return pd.DataFrame()
 
-    # Parse categorized queries
-    queries = parse_categorized_queries(sql_content)
+    # Split the script into individual queries using a robust delimiter.
+    # The delimiter is a line that starts with "-- END Query" (case-insensitive).
+    query_chunks = re.split(r"--\s*END Query.*", sql_script, flags=re.IGNORECASE)
 
-    logging.info(
-        "Running %s benchmark queries for '%s' from '%s'...",
-        len(queries),
-        db_name,
-        query_filename,
-    )
+    # Extract category and query ID information
+    # Match category comments like "-- CATEGORY: baseline"
+    category_pattern = r"--\s*CATEGORY:\s*(\w+)"
+    # Match query comments like "-- QUERY: 1.1"
+    query_id_pattern = r"--\s*QUERY:\s*(\d+(?:\.\d+)?)"
+
+    # Log information about queries found
+    query_count = sum(1 for chunk in query_chunks if chunk.strip())
+    log_msg = f"Running {query_count} benchmark queries for '{db_name}'"
+    log_msg += f" from '{query_file_path.name}'..."
+    logging.info(log_msg)
 
     with engine.connect() as connection:
-        for category, query_id, query_sql in queries:
-            # Build descriptive query name
-            category_name = categories.get(category, {}).get("name", category)
-            query_name = f"{category_name} - Query {query_id}"
+        for chunk in query_chunks:
+            if not chunk.strip():
+                continue
 
-            result_entry = {
-                "database": db_name,
-                "schema": schema_name,
-                "category": category,
-                "query_id": query_id,
-                "query_name": query_name,
-                "sql_query": query_sql,
-                "latency_ms": None,
-                "status": "Failed",
-            }
+            # Extract category
+            category_match = re.search(category_pattern, chunk, re.IGNORECASE)
+            category = category_match.group(1) if category_match else "Unknown"
 
+            # Extract query ID
+            query_id_match = re.search(query_id_pattern, chunk, re.IGNORECASE)
+            query_id = query_id_match.group(1) if query_id_match else "Unknown"
+
+            # Create a meaningful query name
+            query_name = f"{category.capitalize()} Performance - Query {query_id}"
+
+            # Clean the SQL by removing all comment lines and extra whitespace.
+            # This regex matches comment lines (starting with --) and removes them
+            sql_to_execute = re.sub(r"--.*$", "", chunk, flags=re.MULTILINE).strip()
+
+            if not sql_to_execute:
+                logging.warning(f"Skipping empty query chunk for: {query_name}")
+                continue
+
+            latency_ms = None
+            status = "Pending"
+            records_returned = 0
+            error_message = ""
+
+            # Perform template variable substitution
+            # Replace ${schema} with the actual schema name
+            final_sql = sql_to_execute.replace("${schema}", schema_name)
+
+            # Each query is run in its own transaction to isolate failures.
+            trans = connection.begin()
             try:
-                start_time = time.monotonic()
-                connection.execute(text(query_sql))
-                end_time = time.monotonic()
+                start_time = time.perf_counter()
+                result = connection.execute(text(final_sql))
 
-                result_entry["latency_ms"] = round((end_time - start_time) * 1000, 2)
-                result_entry["status"] = "Success"
-                logging.info("  %s: %s ms", query_name, result_entry["latency_ms"])
+                if result.returns_rows:
+                    # Fetch all records to ensure the query is fully executed.
+                    records = result.fetchall()
+                    records_returned = len(records)
+                else:
+                    records_returned = 0  # For statements like INSERT, UPDATE, DELETE
+
+                end_time = time.perf_counter()
+                latency_ms = (end_time - start_time) * 1000
+                status = "Success"
+                trans.commit()
+
+                # Log successful execution with timing
+                logging.info(f"  {query_name}: {latency_ms:.1f} ms")
 
             except Exception as e:
-                logging.exception("  Query '%s' failed: %s", query_name, e)
-                result_entry["error_message"] = str(e)
+                trans.rollback()
+                status = "Failed"
+                # Capture the first line of the error for concise logging.
+                error_message = str(e).splitlines()[0]
+                logging.error(
+                    f"  Benchmark query '{query_name}' failed: {error_message}"
+                )
 
-            benchmarks.append(result_entry)
-
-    return benchmarks
-
-
-def run_legacy_benchmarks(
-    engine: Engine, sql_queries_path: Path
-) -> List[Dict[str, Any]]:
-    """Backward compatibility: Run benchmarks from single SQL file."""
-    # Original implementation for backward compatibility
-    benchmarks = []
-    if not sql_queries_path.is_file():
-        logging.error("Benchmark SQL file not found: %s", sql_queries_path)
-        return benchmarks
-
-    try:
-        with open(sql_queries_path, "r", encoding="utf-8") as f:
-            queries = [q.strip() for q in f.read().split(";") if q.strip()]
-    except IOError as e:
-        logging.error(
-            "Could not read benchmark file '%s': %s",
-            sql_queries_path,
-            e,
-        )
-        return benchmarks
-
-    logging.info("Running %s legacy benchmark queries...", len(queries))
-
-    with engine.connect() as connection:
-        for i, query in enumerate(queries):
-            query_name = f"Query {i + 1}"
-            result_entry = {
+            results.append({
                 "query_name": query_name,
-                "sql_query": query,
-                "latency_ms": None,
-                "status": "Failed",
-            }
-            try:
-                start_time = time.monotonic()
-                connection.execute(text(query))
-                end_time = time.monotonic()
+                "status": status,
+                "latency_ms": latency_ms,
+                "records_returned": records_returned,
+                "error_message": error_message,
+                "executed_sql": final_sql,
+            })
 
-                result_entry["latency_ms"] = round((end_time - start_time) * 1000, 2)
-                result_entry["status"] = "Success"
-                logging.info("  %s: %s ms", query_name, result_entry["latency_ms"])
-
-            except Exception as e:
-                logging.error("  Benchmark query '%s' failed: %s", query_name, e)
-                result_entry["error_message"] = str(e)
-
-            benchmarks.append(result_entry)
-
-    return benchmarks
+    return pd.DataFrame(results)
