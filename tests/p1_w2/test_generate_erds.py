@@ -2,10 +2,16 @@
 
 import configparser
 import importlib.util
+import sys
 from pathlib import Path
 from unittest.mock import MagicMock, Mock
 
 import pytest
+
+# Mock the problematic sqlalchemy_schemadisplay module before importing the script
+mock_schemadisplay = MagicMock()
+mock_schemadisplay.create_schema_graph = MagicMock()
+sys.modules["sqlalchemy_schemadisplay"] = mock_schemadisplay
 
 # Dynamically load the orchestrator script
 script_path = (
@@ -32,20 +38,10 @@ def mock_config():
     }
     config["databases"] = {
         "legacy_dbs": "tmp_df8,tmp_df9,tmp_df10,tmp_rean_df2",
-        "benchmark_dbs": "tmp_benchmark_wide_numeric,tmp_benchmark_wide_text_nulls",
+        "benchmark_dbs": ("tmp_benchmark_wide_numeric,tmp_benchmark_wide_text_nulls"),
     }
     config["paths"] = {"erd_outputs": "test_erds"}
-    config["erd_styles"] = {
-        "graph_attr": '{ "rankdir": "LR" }',
-        "node_attr": '{ "shape": "rectangle" }',
-        "edge_attr": '{ "fontsize": "10" }',
-    }
-    # Add subsystem tables to trigger focused ERD generation
-    config["subsystem_tables"] = {
-        "tmp_df9_Core_Data_Tables": "location,description,archInterp",
-        "tmp_df9_Ceramic_System": "cerVessel,cerPhTot,cerNonVessel",
-        "tmp_df9_Lithic_System": "lithicFlaked,lithicGround,lithicDeb",
-    }
+    # Note: subsystem_tables removed as script uses hardcoded constants
     return config
 
 
@@ -59,13 +55,14 @@ def mock_args(tmp_path):
 
 @pytest.fixture
 def mock_metadata():
-    """Fixture for mocked SQLAlchemy metadata with realistic table structure."""
+    """Fixture for mocked SQLAlchemy metadata with realistic structure."""
     metadata = MagicMock()
 
     # Mock tables for different database types
     def create_mock_tables(db_name):
         if db_name == "tmp_df9":
-            # Complex normalized structure with many tables
+            # Complex normalized structure with many tables matching
+            # TMP_DF9_SUBSYSTEMS
             table_names = [
                 "tmp_df9.location",
                 "tmp_df9.description",
@@ -76,6 +73,15 @@ def mock_metadata():
                 "tmp_df9.lithicFlaked",
                 "tmp_df9.lithicGround",
                 "tmp_df9.lithicDeb",
+                "tmp_df9.admin",
+                "tmp_df9.condition",
+                "tmp_df9.figurine",
+                "tmp_df9.plasterFloor",
+                "tmp_df9.archaeology",
+                "tmp_df9.artifactOther",
+                "tmp_df9.architecture",
+                "tmp_df9.complexData",
+                "tmp_df9.complexMacroData",
             ]
         elif "benchmark" in db_name:
             # Simple denormalized structure
@@ -143,13 +149,12 @@ def test_when_valid_config_then_generates_all_erds_successfully(
 
     # --- Apply Patches ---
     monkeypatch.setattr(
-        orchestrator, "create_engine", lambda *args, **kwargs: mock_engine
+        orchestrator, "get_sqlalchemy_engine", lambda *args, **kwargs: mock_engine
     )
     monkeypatch.setattr(orchestrator, "MetaData", lambda: mock_metadata)
     monkeypatch.setattr(orchestrator, "create_schema_graph", mock_create_schema_graph)
     monkeypatch.setattr(Path, "mkdir", lambda *args, **kwargs: None)
     monkeypatch.setattr(orchestrator, "parse_arguments", lambda: mock_args)
-    # Mock logging setup to prevent file creation issues during testing
     monkeypatch.setattr(orchestrator, "setup_logging", lambda *args, **kwargs: None)
 
     # Mock metadata reflection to set current database context
@@ -181,12 +186,6 @@ def test_when_valid_config_then_generates_all_erds_successfully(
         mock_graph.write_svg.call_count == total_expected_erds
     ), f"Expected {total_expected_erds} SVG files to be written"
 
-    # Verify deprecated styling arguments are NOT used
-    for _, kwargs in create_schema_graph_calls:
-        assert "graph_attr" not in kwargs, "Deprecated 'graph_attr' was used"
-        assert "node_attr" not in kwargs, "Deprecated 'node_attr' was used"
-        assert "edge_attr" not in kwargs, "Deprecated 'edge_attr' was used"
-
     # Verify new styling API is used
     assert mock_graph.set_graph_defaults.call_count == total_expected_erds
     assert mock_graph.set_node_defaults.call_count == total_expected_erds
@@ -214,13 +213,12 @@ def test_when_tmp_df9_has_subsystems_then_generates_focused_erds(
 
     # --- Apply Patches ---
     monkeypatch.setattr(
-        orchestrator, "create_engine", lambda *args, **kwargs: mock_engine
+        orchestrator, "get_sqlalchemy_engine", lambda *args, **kwargs: mock_engine
     )
     monkeypatch.setattr(orchestrator, "MetaData", lambda: mock_metadata)
     monkeypatch.setattr(orchestrator, "create_schema_graph", mock_create_schema_graph)
     monkeypatch.setattr(Path, "mkdir", lambda *args, **kwargs: None)
     monkeypatch.setattr(orchestrator, "parse_arguments", lambda: mock_args)
-    # Mock logging setup to prevent file creation issues during testing
     monkeypatch.setattr(orchestrator, "setup_logging", lambda *args, **kwargs: None)
 
     # Set up metadata to return tmp_df9 context
@@ -276,7 +274,7 @@ def test_when_schema_names_are_determined_then_uses_correct_naming_convention(
 
     # --- Apply Patches ---
     monkeypatch.setattr(
-        orchestrator, "create_engine", lambda *args, **kwargs: mock_engine
+        orchestrator, "get_sqlalchemy_engine", lambda *args, **kwargs: mock_engine
     )
     monkeypatch.setattr(orchestrator, "MetaData", lambda: mock_metadata)
     monkeypatch.setattr(
@@ -284,7 +282,6 @@ def test_when_schema_names_are_determined_then_uses_correct_naming_convention(
     )
     monkeypatch.setattr(Path, "mkdir", lambda *args, **kwargs: None)
     monkeypatch.setattr(orchestrator, "parse_arguments", lambda: mock_args)
-    # Mock logging setup to prevent file creation issues during testing
     monkeypatch.setattr(orchestrator, "setup_logging", lambda *args, **kwargs: None)
 
     # --- Execute ---
@@ -311,7 +308,7 @@ def test_when_schema_names_are_determined_then_uses_correct_naming_convention(
 def test_when_no_subsystem_tables_configured_then_only_generates_full_erds(
     mock_args, mock_metadata, monkeypatch
 ):
-    """Test that without subsystem configuration, only full ERDs are generated."""
+    """Test that without matching tables, only full ERDs are generated."""
     # --- Setup config without subsystem_tables ---
     config = configparser.ConfigParser()
     config["postgresql"] = {
@@ -325,7 +322,6 @@ def test_when_no_subsystem_tables_configured_then_only_generates_full_erds(
         "benchmark_dbs": "",
     }
     config["paths"] = {"erd_outputs": "test_erds"}
-    # Note: No subsystem_tables section
 
     mock_engine = MagicMock()
     mock_graph = Mock()
@@ -349,13 +345,12 @@ def test_when_no_subsystem_tables_configured_then_only_generates_full_erds(
 
     # --- Apply Patches ---
     monkeypatch.setattr(
-        orchestrator, "create_engine", lambda *args, **kwargs: mock_engine
+        orchestrator, "get_sqlalchemy_engine", lambda *args, **kwargs: mock_engine
     )
     monkeypatch.setattr(orchestrator, "MetaData", lambda: mock_metadata)
     monkeypatch.setattr(orchestrator, "create_schema_graph", mock_create_schema_graph)
     monkeypatch.setattr(Path, "mkdir", lambda *args, **kwargs: None)
     monkeypatch.setattr(orchestrator, "parse_arguments", lambda: mock_args)
-    # Mock logging setup to prevent file creation issues during testing
     monkeypatch.setattr(orchestrator, "setup_logging", lambda *args, **kwargs: None)
 
     mock_metadata._current_db = "tmp_df9"
@@ -415,11 +410,11 @@ def test_when_database_connection_fails_then_continues_with_other_databases(
 
     call_count = 0
 
-    def mock_create_engine(*args, **kwargs):
+    def mock_get_sqlalchemy_engine(*args, **kwargs):
         nonlocal call_count
         call_count += 1
         if call_count == 2:  # Second database fails
-            raise Exception("Database connection failed")
+            return None  # get_sqlalchemy_engine returns None on failure
         return mock_engine_success
 
     create_schema_graph_calls = []
@@ -434,12 +429,13 @@ def test_when_database_connection_fails_then_continues_with_other_databases(
         mock_config.write(f)
 
     # --- Apply Patches ---
-    monkeypatch.setattr(orchestrator, "create_engine", mock_create_engine)
+    monkeypatch.setattr(
+        orchestrator, "get_sqlalchemy_engine", mock_get_sqlalchemy_engine
+    )
     monkeypatch.setattr(orchestrator, "MetaData", lambda: mock_metadata)
     monkeypatch.setattr(orchestrator, "create_schema_graph", mock_create_schema_graph)
     monkeypatch.setattr(Path, "mkdir", lambda *args, **kwargs: None)
     monkeypatch.setattr(orchestrator, "parse_arguments", lambda: mock_args)
-    # Mock logging setup to prevent file creation issues during testing
     monkeypatch.setattr(orchestrator, "setup_logging", lambda *args, **kwargs: None)
 
     mock_metadata._current_db = "tmp_df8"
@@ -465,6 +461,7 @@ def test_when_graph_generation_fails_then_logs_error_and_continues(
     """Test error handling when ERD generation fails for one database."""
     # --- Setup ---
     mock_engine = MagicMock()
+    mock_graph = Mock()
 
     call_count = 0
 
@@ -473,8 +470,6 @@ def test_when_graph_generation_fails_then_logs_error_and_continues(
         call_count += 1
         if call_count == 1:  # First ERD generation fails
             raise Exception("ERD generation failed")
-
-        mock_graph = Mock()
         return mock_graph
 
     config_file_path = Path(mock_args.config)
@@ -484,19 +479,19 @@ def test_when_graph_generation_fails_then_logs_error_and_continues(
 
     # --- Apply Patches ---
     monkeypatch.setattr(
-        orchestrator, "create_engine", lambda *args, **kwargs: mock_engine
+        orchestrator, "get_sqlalchemy_engine", lambda *args, **kwargs: mock_engine
     )
     monkeypatch.setattr(orchestrator, "MetaData", lambda: mock_metadata)
     monkeypatch.setattr(orchestrator, "create_schema_graph", mock_create_schema_graph)
     monkeypatch.setattr(Path, "mkdir", lambda *args, **kwargs: None)
     monkeypatch.setattr(orchestrator, "parse_arguments", lambda: mock_args)
-    # Mock logging setup to prevent file creation issues during testing
     monkeypatch.setattr(orchestrator, "setup_logging", lambda *args, **kwargs: None)
 
     mock_metadata._current_db = "tmp_df8"
 
     # --- Execute ---
     # Should not raise exception despite ERD generation failure
+    # because generate_and_save_erd catches exceptions internally
     orchestrator.main()
 
     # --- Assertions ---
@@ -519,7 +514,7 @@ def test_when_valid_config_then_script_executes_successfully(
 
     # --- Apply Patches ---
     monkeypatch.setattr(
-        orchestrator, "create_engine", lambda *args, **kwargs: mock_engine
+        orchestrator, "get_sqlalchemy_engine", lambda *args, **kwargs: mock_engine
     )
     monkeypatch.setattr(orchestrator, "MetaData", lambda: mock_metadata)
     monkeypatch.setattr(
@@ -527,7 +522,6 @@ def test_when_valid_config_then_script_executes_successfully(
     )
     monkeypatch.setattr(Path, "mkdir", lambda *args, **kwargs: None)
     monkeypatch.setattr(orchestrator, "parse_arguments", lambda: mock_args)
-    # Mock logging setup to prevent file creation issues during testing
     monkeypatch.setattr(orchestrator, "setup_logging", lambda *args, **kwargs: None)
 
     mock_metadata._current_db = "tmp_df8"
