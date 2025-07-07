@@ -1,4 +1,13 @@
-database,schema,category,query_id,query_name,sql_query,latency_ms,status
-tmp_benchmark_wide_numeric,public,baseline,1.1,Baseline Performance - Query 1.1,SELECT COUNT(*) FROM public.wide_format_data,0.0,Success
-tmp_benchmark_wide_numeric,public,join_performance,2.1,Join Performance - Query 2.1,"SELECT ""site"", ""subsite"", ""obsidianTot"" FROM public.wide_format_data WHERE ""obsidianTot"" IS NOT NULL AND ""obsidianTot"" > 0 ORDER BY ""obsidianTot"" DESC",47.0,Success
-tmp_benchmark_wide_numeric,public,complex_filtering,3.1,Complex Filtering & Aggregation - Query 3.1,"SELECT SUM(""obsidianBlades"") AS total_obsidian_blades FROM public.wide_format_data WHERE ""unit"" = 'N1W4' AND ""collectionYear"" = 64",16.0,Success
+query_name,status,latency_ms,records_returned,error_message,executed_sql
+Baseline Performance - Query 1.1,Success,2.105599967762828,1,,SELECT COUNT(*) FROM public.wide_format_data;
+Join_performance Performance - Query 2.1,Success,23.20640004472807,4595,,"SELECT
+    ""site"",
+    ""subsite"",
+    ""obsidianTot""
+FROM public.wide_format_data
+WHERE ""obsidianTot"" IS NOT NULL AND ""obsidianTot"" > 0
+ORDER BY ""obsidianTot"" DESC;"
+Complex_filtering Performance - Query 3.1,Success,3.144599962979555,1,,"SELECT
+    SUM(""obsidianBlades"") AS total_obsidian_blades
+FROM public.wide_format_data
+WHERE ""unit"" = 'N1W4' AND ""collectionYear"" = 64;"

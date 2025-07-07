@@ -1,0 +1,344 @@
+[
+    {
+        "fq_table_name": "tmp_df10.interpCodes",
+        "tablename": "interpCodes",
+        "column_name": "Code",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 83,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.codeTable",
+        "tablename": "codeTable",
+        "column_name": "ID",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 148579,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.codeTable",
+        "tablename": "codeTable",
+        "column_name": "SSN",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5058.0,
+        "row_count_exact": 148579,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.codeTable",
+        "tablename": "codeTable",
+        "column_name": "Code",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 99.0,
+        "row_count_exact": 148579,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.codeTable",
+        "tablename": "codeTable",
+        "column_name": "Variable",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 77.0,
+        "row_count_exact": 148579,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.codeTable",
+        "tablename": "codeTable",
+        "column_name": "Where",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 2.0,
+        "row_count_exact": 148579,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.provTable",
+        "tablename": "provTable",
+        "column_name": "SSN",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.provTable",
+        "tablename": "provTable",
+        "column_name": "Site",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 197.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.provTable",
+        "tablename": "provTable",
+        "column_name": "Subsite",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 190.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.provTable",
+        "tablename": "provTable",
+        "column_name": "Unit",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 142.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.provTable",
+        "tablename": "provTable",
+        "column_name": "Northing",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -0.1239604,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.provTable",
+        "tablename": "provTable",
+        "column_name": "Easting",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -0.14316832,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.archToSSN",
+        "tablename": "archToSSN",
+        "column_name": "ID",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 7296,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.archToSSN",
+        "tablename": "archToSSN",
+        "column_name": "ArchPolyID",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -0.59292763,
+        "row_count_exact": 7296,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.archToSSN",
+        "tablename": "archToSSN",
+        "column_name": "SSN",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -0.5794956,
+        "row_count_exact": 7296,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.archToSSN",
+        "tablename": "archToSSN",
+        "column_name": "Area_SSN_Coverage",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -0.87033993,
+        "row_count_exact": 7296,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.codeCodes",
+        "tablename": "codeCodes",
+        "column_name": "Code",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 107,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.codeCodes",
+        "tablename": "codeCodes",
+        "column_name": "Description",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -0.99065423,
+        "row_count_exact": 107,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.artifactTable",
+        "tablename": "artifactTable",
+        "column_name": "ID",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 190870,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.artifactTable",
+        "tablename": "artifactTable",
+        "column_name": "ArtCode1",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 190870,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.artifactTable",
+        "tablename": "artifactTable",
+        "column_name": "ArtCode2",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 22.0,
+        "row_count_exact": 190870,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.artifactTable",
+        "tablename": "artifactTable",
+        "column_name": "ArtCode3",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 125.0,
+        "row_count_exact": 190870,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.artifactTable",
+        "tablename": "artifactTable",
+        "column_name": "SSN",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4980.0,
+        "row_count_exact": 190870,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.artifactTable",
+        "tablename": "artifactTable",
+        "column_name": "Count",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 911.0,
+        "row_count_exact": 190870,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.artifactTable",
+        "tablename": "artifactTable",
+        "column_name": "Where",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 2.0,
+        "row_count_exact": 190870,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.artifactCodes",
+        "tablename": "artifactCodes",
+        "column_name": "Code",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 149,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.artifactCodes",
+        "tablename": "artifactCodes",
+        "column_name": "Description",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 149,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.interpTable",
+        "tablename": "interpTable",
+        "column_name": "ID",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 62865,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.interpTable",
+        "tablename": "interpTable",
+        "column_name": "SSN",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5045.0,
+        "row_count_exact": 62865,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.interpTable",
+        "tablename": "interpTable",
+        "column_name": "Code",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 81.0,
+        "row_count_exact": 62865,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.interpTable",
+        "tablename": "interpTable",
+        "column_name": "Variable",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 51.0,
+        "row_count_exact": 62865,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.interpTable",
+        "tablename": "interpTable",
+        "column_name": "Where",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 2.0,
+        "row_count_exact": 62865,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.interpCodes",
+        "tablename": "interpCodes",
+        "column_name": "Description",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -0.9879518,
+        "row_count_exact": 83,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.totalsTable",
+        "tablename": "totalsTable",
+        "column_name": "ID",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 70798,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.totalsTable",
+        "tablename": "totalsTable",
+        "column_name": "SSN",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5028.0,
+        "row_count_exact": 70798,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.totalsTable",
+        "tablename": "totalsTable",
+        "column_name": "Count",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 551.0,
+        "row_count_exact": 70798,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.totalsTable",
+        "tablename": "totalsTable",
+        "column_name": "Variable",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 21.0,
+        "row_count_exact": 70798,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df10.totalsTable",
+        "tablename": "totalsTable",
+        "column_name": "Where",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 2.0,
+        "row_count_exact": 70798,
+        "null_count_estimate": 0
+    }
+]

@@ -1,0 +1,110 @@
+[
+    {
+        "table_name": "artifactTable",
+        "row_estimate": 190870,
+        "column_count": 7,
+        "table_size": "9728 kB",
+        "index_size": "15 MB",
+        "total_size": "25 MB",
+        "index_count": 9,
+        "bloat_bytes": 5939445.930645755,
+        "bloat_percent": 59.62,
+        "bloat_size": "5.66 MB"
+    },
+    {
+        "table_name": "codeTable",
+        "row_estimate": 148579,
+        "column_count": 5,
+        "table_size": "8104 kB",
+        "index_size": "9184 kB",
+        "total_size": "17 MB",
+        "index_count": 5,
+        "bloat_bytes": 4623444.946452641,
+        "bloat_percent": 55.71,
+        "bloat_size": "4.41 MB"
+    },
+    {
+        "table_name": "totalsTable",
+        "row_estimate": 70798,
+        "column_count": 5,
+        "table_size": "3768 kB",
+        "index_size": "2976 kB",
+        "total_size": "6784 kB",
+        "index_count": 3,
+        "bloat_bytes": 2203074.8310256097,
+        "bloat_percent": 57.1,
+        "bloat_size": "2.1 MB"
+    },
+    {
+        "table_name": "interpTable",
+        "row_estimate": 62865,
+        "column_count": 5,
+        "table_size": "3296 kB",
+        "index_size": "3712 kB",
+        "total_size": "7048 kB",
+        "index_count": 5,
+        "bloat_bytes": 1956217.6792059797,
+        "bloat_percent": 57.96,
+        "bloat_size": "1.87 MB"
+    },
+    {
+        "table_name": "archToSSN",
+        "row_estimate": 7296,
+        "column_count": 4,
+        "table_size": "320 kB",
+        "index_size": "592 kB",
+        "total_size": "944 kB",
+        "index_count": 3,
+        "bloat_bytes": 227035.14177184168,
+        "bloat_percent": 69.29,
+        "bloat_size": "0.22 MB"
+    },
+    {
+        "table_name": "provTable",
+        "row_estimate": 5050,
+        "column_count": 6,
+        "table_size": "256 kB",
+        "index_size": "128 kB",
+        "total_size": "424 kB",
+        "index_count": 1,
+        "bloat_bytes": 157144.66364416125,
+        "bloat_percent": 59.95,
+        "bloat_size": "0.15 MB"
+    },
+    {
+        "table_name": "artifactCodes",
+        "row_estimate": 149,
+        "column_count": 2,
+        "table_size": "8192 bytes",
+        "index_size": "16 kB",
+        "total_size": "32 kB",
+        "index_count": 1,
+        "bloat_bytes": 4636.545521382183,
+        "bloat_percent": 56.6,
+        "bloat_size": "0.0 MB"
+    },
+    {
+        "table_name": "codeCodes",
+        "row_estimate": 107,
+        "column_count": 2,
+        "table_size": "8192 bytes",
+        "index_size": "16 kB",
+        "total_size": "32 kB",
+        "index_count": 1,
+        "bloat_bytes": 3329.5998039455953,
+        "bloat_percent": 40.64,
+        "bloat_size": "0.0 MB"
+    },
+    {
+        "table_name": "interpCodes",
+        "row_estimate": 83,
+        "column_count": 2,
+        "table_size": "8192 bytes",
+        "index_size": "16 kB",
+        "total_size": "32 kB",
+        "index_count": 1,
+        "bloat_bytes": 2582.7736796961162,
+        "bloat_percent": 31.53,
+        "bloat_size": "0.0 MB"
+    }
+]

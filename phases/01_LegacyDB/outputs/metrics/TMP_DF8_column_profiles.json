@@ -1,0 +1,2882 @@
+[
+    {
+        "fq_table_name": "tmp_df8.v202",
+        "tablename": "v202",
+        "column_name": "adobe",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v202",
+        "tablename": "v202",
+        "column_name": "xalnene",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v202",
+        "tablename": "v202",
+        "column_name": "cascajo",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v202",
+        "tablename": "v202",
+        "column_name": "concrete",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.ssn_master",
+        "tablename": "ssn_master",
+        "column_name": "ssn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v201",
+        "tablename": "v201",
+        "column_name": "ssn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v201",
+        "tablename": "v201",
+        "column_name": "fldwrk1",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 19.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v201",
+        "tablename": "v201",
+        "column_name": "fldwrk2",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 24.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v201",
+        "tablename": "v201",
+        "column_name": "fldwrk3",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 29.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v201",
+        "tablename": "v201",
+        "column_name": "fldwrk4",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 28.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v201",
+        "tablename": "v201",
+        "column_name": "fldwrk5",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 28.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v201",
+        "tablename": "v201",
+        "column_name": "collyear",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 10.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v201",
+        "tablename": "v201",
+        "column_name": "collqurt",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v201",
+        "tablename": "v201",
+        "column_name": "lstbuild",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v201",
+        "tablename": "v201",
+        "column_name": "burials",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 10.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v201",
+        "tablename": "v201",
+        "column_name": "midden",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v201",
+        "tablename": "v201",
+        "column_name": "qntstone",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 11.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v201",
+        "tablename": "v201",
+        "column_name": "dststone",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v202",
+        "tablename": "v202",
+        "column_name": "ssn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v202",
+        "tablename": "v202",
+        "column_name": "cutstone",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v202",
+        "tablename": "v202",
+        "column_name": "lajas",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v202",
+        "tablename": "v202",
+        "column_name": "tepetate",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v202",
+        "tablename": "v202",
+        "column_name": "plstrunp",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v202",
+        "tablename": "v202",
+        "column_name": "plstrpnt",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v202",
+        "tablename": "v202",
+        "column_name": "burnclay",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v202",
+        "tablename": "v202",
+        "column_name": "almena",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 16.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v202",
+        "tablename": "v202",
+        "column_name": "brndstrc",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v203",
+        "tablename": "v203",
+        "column_name": "ssn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v203",
+        "tablename": "v203",
+        "column_name": "floors",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 9.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v203",
+        "tablename": "v203",
+        "column_name": "walls",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 9.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v203",
+        "tablename": "v203",
+        "column_name": "drains",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v203",
+        "tablename": "v203",
+        "column_name": "wallfixt",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v203",
+        "tablename": "v203",
+        "column_name": "murals",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v203",
+        "tablename": "v203",
+        "column_name": "COLUMNS",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 9.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v203",
+        "tablename": "v203",
+        "column_name": "taludes",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v203",
+        "tablename": "v203",
+        "column_name": "tableros",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v203",
+        "tablename": "v203",
+        "column_name": "situflrs",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v203",
+        "tablename": "v203",
+        "column_name": "taludstn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v203",
+        "tablename": "v203",
+        "column_name": "wallmatr",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v203",
+        "tablename": "v203",
+        "column_name": "wallface",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 9.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v204",
+        "tablename": "v204",
+        "column_name": "ssn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v204",
+        "tablename": "v204",
+        "column_name": "intrushd",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v204",
+        "tablename": "v204",
+        "column_name": "height",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 86.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v204",
+        "tablename": "v204",
+        "column_name": "pmicarc1",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 17.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v204",
+        "tablename": "v204",
+        "column_name": "mctlarc1",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 18.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v204",
+        "tablename": "v204",
+        "column_name": "xlmearc1",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 18.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v204",
+        "tablename": "v204",
+        "column_name": "oxtoarc1",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 14.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v204",
+        "tablename": "v204",
+        "column_name": "pmicarc2",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 17.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v204",
+        "tablename": "v204",
+        "column_name": "mctlarc2",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 20.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v204",
+        "tablename": "v204",
+        "column_name": "xlmearc2",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 19.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v204",
+        "tablename": "v204",
+        "column_name": "oxtoarc2",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 11.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v204",
+        "tablename": "v204",
+        "column_name": "qualcnst",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v207",
+        "tablename": "v207",
+        "column_name": "mcxunitn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 2.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v204",
+        "tablename": "v204",
+        "column_name": "pmicfnc1",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 26.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v205",
+        "tablename": "v205",
+        "column_name": "ssn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v205",
+        "tablename": "v205",
+        "column_name": "mctlfnc1",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 29.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v205",
+        "tablename": "v205",
+        "column_name": "xlmefnc1",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 28.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v205",
+        "tablename": "v205",
+        "column_name": "oxtofnc1",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 20.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v205",
+        "tablename": "v205",
+        "column_name": "pmicfnc2",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 25.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v205",
+        "tablename": "v205",
+        "column_name": "mctlfnc2",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 27.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v205",
+        "tablename": "v205",
+        "column_name": "xlmefnc2",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 27.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v205",
+        "tablename": "v205",
+        "column_name": "oxtofnc2",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 14.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v205",
+        "tablename": "v205",
+        "column_name": "pttzcx1",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 11.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v205",
+        "tablename": "v205",
+        "column_name": "mctlcx1",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 11.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v205",
+        "tablename": "v205",
+        "column_name": "xlmecx1",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 11.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v205",
+        "tablename": "v205",
+        "column_name": "pttzcx2",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 9.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v205",
+        "tablename": "v205",
+        "column_name": "mctlcx2",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v206",
+        "tablename": "v206",
+        "column_name": "ssn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v206",
+        "tablename": "v206",
+        "column_name": "xlmecx2",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v206",
+        "tablename": "v206",
+        "column_name": "pttzcxfn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v206",
+        "tablename": "v206",
+        "column_name": "mctlcxfn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v206",
+        "tablename": "v206",
+        "column_name": "xlmecxfn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v206",
+        "tablename": "v206",
+        "column_name": "pttzrsfn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v206",
+        "tablename": "v206",
+        "column_name": "mctlrsfn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v206",
+        "tablename": "v206",
+        "column_name": "xlmersfn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v206",
+        "tablename": "v206",
+        "column_name": "pttztmfn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v206",
+        "tablename": "v206",
+        "column_name": "mctltmfn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v206",
+        "tablename": "v206",
+        "column_name": "xlmetmfn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v206",
+        "tablename": "v206",
+        "column_name": "pttzcvfn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v206",
+        "tablename": "v206",
+        "column_name": "mctlcvfn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v207",
+        "tablename": "v207",
+        "column_name": "ssn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v207",
+        "tablename": "v207",
+        "column_name": "xlmecvfn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v207",
+        "tablename": "v207",
+        "column_name": "xlmeotfn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 9.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v207",
+        "tablename": "v207",
+        "column_name": "cxunitn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 14.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v207",
+        "tablename": "v207",
+        "column_name": "pttzmcx",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v207",
+        "tablename": "v207",
+        "column_name": "mctlmcx",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v207",
+        "tablename": "v207",
+        "column_name": "xlmemcx",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v207",
+        "tablename": "v207",
+        "column_name": "pttzmxfn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 3.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v207",
+        "tablename": "v207",
+        "column_name": "tlxlmxfn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v207",
+        "tablename": "v207",
+        "column_name": "xlmemxfn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v207",
+        "tablename": "v207",
+        "column_name": "nhoodchr",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v207",
+        "tablename": "v207",
+        "column_name": "frstndwl",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v208",
+        "tablename": "v208",
+        "column_name": "ssn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v208",
+        "tablename": "v208",
+        "column_name": "wells",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v208",
+        "tablename": "v208",
+        "column_name": "jagueys",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v208",
+        "tablename": "v208",
+        "column_name": "puestos",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v208",
+        "tablename": "v208",
+        "column_name": "milpa",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v208",
+        "tablename": "v208",
+        "column_name": "barley",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v208",
+        "tablename": "v208",
+        "column_name": "beans",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v208",
+        "tablename": "v208",
+        "column_name": "cutalfal",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v208",
+        "tablename": "v208",
+        "column_name": "uncalfal",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v208",
+        "tablename": "v208",
+        "column_name": "nopales",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v208",
+        "tablename": "v208",
+        "column_name": "magueys",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v208",
+        "tablename": "v208",
+        "column_name": "fallowld",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v208",
+        "tablename": "v208",
+        "column_name": "uncultiv",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v209",
+        "tablename": "v209",
+        "column_name": "ssn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v209",
+        "tablename": "v209",
+        "column_name": "cropwatr",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v209",
+        "tablename": "v209",
+        "column_name": "plowing",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v209",
+        "tablename": "v209",
+        "column_name": "cultpits",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v209",
+        "tablename": "v209",
+        "column_name": "lootpits",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v209",
+        "tablename": "v209",
+        "column_name": "archexcv",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v209",
+        "tablename": "v209",
+        "column_name": "miscpits",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v209",
+        "tablename": "v209",
+        "column_name": "qurrying",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v209",
+        "tablename": "v209",
+        "column_name": "clrstone",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v209",
+        "tablename": "v209",
+        "column_name": "ldlvling",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v209",
+        "tablename": "v209",
+        "column_name": "terracng",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v209",
+        "tablename": "v209",
+        "column_name": "ditching",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v209",
+        "tablename": "v209",
+        "column_name": "roadorrr",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v210",
+        "tablename": "v210",
+        "column_name": "ssn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v210",
+        "tablename": "v210",
+        "column_name": "rcntwall",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v210",
+        "tablename": "v210",
+        "column_name": "stonerws",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v210",
+        "tablename": "v210",
+        "column_name": "rcntbldg",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v210",
+        "tablename": "v210",
+        "column_name": "dam",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v210",
+        "tablename": "v210",
+        "column_name": "jaguey",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v210",
+        "tablename": "v210",
+        "column_name": "erosion",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v210",
+        "tablename": "v210",
+        "column_name": "silting",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v210",
+        "tablename": "v210",
+        "column_name": "obscsite",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v210",
+        "tablename": "v210",
+        "column_name": "slope",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v210",
+        "tablename": "v210",
+        "column_name": "gswkshop",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v210",
+        "tablename": "v210",
+        "column_name": "obwkshop",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v210",
+        "tablename": "v210",
+        "column_name": "manos",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 27.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v211",
+        "tablename": "v211",
+        "column_name": "ssn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v211",
+        "tablename": "v211",
+        "column_name": "metates",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 26.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v211",
+        "tablename": "v211",
+        "column_name": "mortars",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 10.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v211",
+        "tablename": "v211",
+        "column_name": "pestles",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v211",
+        "tablename": "v211",
+        "column_name": "psmoothr",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 24.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v211",
+        "tablename": "v211",
+        "column_name": "plumbbob",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v211",
+        "tablename": "v211",
+        "column_name": "fixtwall",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v211",
+        "tablename": "v211",
+        "column_name": "firegods",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v211",
+        "tablename": "v211",
+        "column_name": "mscstnsc",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v211",
+        "tablename": "v211",
+        "column_name": "hammers",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 24.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v211",
+        "tablename": "v211",
+        "column_name": "slingstn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v211",
+        "tablename": "v211",
+        "column_name": "smthstn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v211",
+        "tablename": "v211",
+        "column_name": "whetstn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v212",
+        "tablename": "v212",
+        "column_name": "ssn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v212",
+        "tablename": "v212",
+        "column_name": "palettes",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v212",
+        "tablename": "v212",
+        "column_name": "celts",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 2.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v212",
+        "tablename": "v212",
+        "column_name": "rwkdlaja",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 12.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v212",
+        "tablename": "v212",
+        "column_name": "anvils",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v212",
+        "tablename": "v212",
+        "column_name": "drains",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v212",
+        "tablename": "v212",
+        "column_name": "draincvr",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v212",
+        "tablename": "v212",
+        "column_name": "othergs",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 12.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v212",
+        "tablename": "v212",
+        "column_name": "obsikniv",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 31.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v212",
+        "tablename": "v212",
+        "column_name": "obsiecce",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v212",
+        "tablename": "v212",
+        "column_name": "obsimgsc",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v212",
+        "tablename": "v212",
+        "column_name": "bslttool",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 19.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v212",
+        "tablename": "v212",
+        "column_name": "chrtfrag",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 9.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v213",
+        "tablename": "v213",
+        "column_name": "ssn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v213",
+        "tablename": "v213",
+        "column_name": "quartz",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v213",
+        "tablename": "v213",
+        "column_name": "slatetot",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 12.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v213",
+        "tablename": "v213",
+        "column_name": "slatepnt",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v213",
+        "tablename": "v213",
+        "column_name": "alabastr",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v213",
+        "tablename": "v213",
+        "column_name": "serpentn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v213",
+        "tablename": "v213",
+        "column_name": "jade",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v213",
+        "tablename": "v213",
+        "column_name": "wrkdbone",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v213",
+        "tablename": "v213",
+        "column_name": "shelltot",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 14.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v213",
+        "tablename": "v213",
+        "column_name": "shellwkd",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v213",
+        "tablename": "v213",
+        "column_name": "figheads",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 21.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v213",
+        "tablename": "v213",
+        "column_name": "ppatfigs",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v213",
+        "tablename": "v213",
+        "column_name": "patlfigs",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v214",
+        "tablename": "v214",
+        "column_name": "ssn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v214",
+        "tablename": "v214",
+        "column_name": "tzacfigs",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v214",
+        "tablename": "v214",
+        "column_name": "miccfigs",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 25.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v214",
+        "tablename": "v214",
+        "column_name": "tlamfigs",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 19.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v214",
+        "tablename": "v214",
+        "column_name": "xolafigs",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 20.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v214",
+        "tablename": "v214",
+        "column_name": "metefigs",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 10.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v214",
+        "tablename": "v214",
+        "column_name": "toltfigs",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v214",
+        "tablename": "v214",
+        "column_name": "aztefigs",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v214",
+        "tablename": "v214",
+        "column_name": "puppfigs",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 36.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v214",
+        "tablename": "v214",
+        "column_name": "spinwhrl",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v214",
+        "tablename": "v214",
+        "column_name": "sealstmp",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v214",
+        "tablename": "v214",
+        "column_name": "earspool",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v214",
+        "tablename": "v214",
+        "column_name": "whistles",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v215",
+        "tablename": "v215",
+        "column_name": "ssn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v215",
+        "tablename": "v215",
+        "column_name": "flutes",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v215",
+        "tablename": "v215",
+        "column_name": "ceranwk1",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 14.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v215",
+        "tablename": "v215",
+        "column_name": "ceranwk2",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 19.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v215",
+        "tablename": "v215",
+        "column_name": "ceranwk3",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 21.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v215",
+        "tablename": "v215",
+        "column_name": "ceranyr",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 11.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v215",
+        "tablename": "v215",
+        "column_name": "ceranqt",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v215",
+        "tablename": "v215",
+        "column_name": "fldcwksh",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v215",
+        "tablename": "v215",
+        "column_name": "fldcabun",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 11.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v215",
+        "tablename": "v215",
+        "column_name": "coatcand",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v215",
+        "tablename": "v215",
+        "column_name": "atoycand",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v215",
+        "tablename": "v215",
+        "column_name": "exolcand",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v215",
+        "tablename": "v215",
+        "column_name": "lxolcand",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v216",
+        "tablename": "v216",
+        "column_name": "ssn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v216",
+        "tablename": "v216",
+        "column_name": "othpclas",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v216",
+        "tablename": "v216",
+        "column_name": "ppatcnsr",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v216",
+        "tablename": "v216",
+        "column_name": "patlcnsr",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v216",
+        "tablename": "v216",
+        "column_name": "tzaccnsr",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v216",
+        "tablename": "v216",
+        "column_name": "oxtocnsr",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 3.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v216",
+        "tablename": "v216",
+        "column_name": "xomecnsr",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 2.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v216",
+        "tablename": "v216",
+        "column_name": "mazacnsr",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v216",
+        "tablename": "v216",
+        "column_name": "aztecnsr",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 3.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v216",
+        "tablename": "v216",
+        "column_name": "tlamsmo",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 26.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v216",
+        "tablename": "v216",
+        "column_name": "patlcoml",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 2.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v216",
+        "tablename": "v216",
+        "column_name": "tzaccoml",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v216",
+        "tablename": "v216",
+        "column_name": "micccoml",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 19.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v217",
+        "tablename": "v217",
+        "column_name": "ssn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v217",
+        "tablename": "v217",
+        "column_name": "tlamcoml",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 18.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v217",
+        "tablename": "v217",
+        "column_name": "oxtocoml",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v217",
+        "tablename": "v217",
+        "column_name": "patlnubb",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v217",
+        "tablename": "v217",
+        "column_name": "apetnubb",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 3.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v217",
+        "tablename": "v217",
+        "column_name": "instnubb",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 26.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v217",
+        "tablename": "v217",
+        "column_name": "flshnubb",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 39.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v217",
+        "tablename": "v217",
+        "column_name": "atoynubb",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 3.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v217",
+        "tablename": "v217",
+        "column_name": "xolanubb",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v217",
+        "tablename": "v217",
+        "column_name": "metenubb",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v217",
+        "tablename": "v217",
+        "column_name": "stmpshrd",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v217",
+        "tablename": "v217",
+        "column_name": "plrfshrd",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 9.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v217",
+        "tablename": "v217",
+        "column_name": "stccshrd",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v218",
+        "tablename": "v218",
+        "column_name": "ssn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v218",
+        "tablename": "v218",
+        "column_name": "incishrd",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 33.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v218",
+        "tablename": "v218",
+        "column_name": "frnshtot",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 22.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v218",
+        "tablename": "v218",
+        "column_name": "lowmaya",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v218",
+        "tablename": "v218",
+        "column_name": "highmaya",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 3.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v218",
+        "tablename": "v218",
+        "column_name": "huastec",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v218",
+        "tablename": "v218",
+        "column_name": "tajin",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v218",
+        "tablename": "v218",
+        "column_name": "gulfcst",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v218",
+        "tablename": "v218",
+        "column_name": "montealb",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 9.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v218",
+        "tablename": "v218",
+        "column_name": "oaxaca",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 9.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v218",
+        "tablename": "v218",
+        "column_name": "othfrn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 17.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v218",
+        "tablename": "v218",
+        "column_name": "adornos",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 13.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v218",
+        "tablename": "v218",
+        "column_name": "miniatur",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 11.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v219",
+        "tablename": "v219",
+        "column_name": "ssn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v219",
+        "tablename": "v219",
+        "column_name": "copas",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 16.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v219",
+        "tablename": "v219",
+        "column_name": "mattware",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 25.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v219",
+        "tablename": "v219",
+        "column_name": "grantots",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 50.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v219",
+        "tablename": "v219",
+        "column_name": "pmicgran",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 12.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v219",
+        "tablename": "v219",
+        "column_name": "miccgran",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 31.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v219",
+        "tablename": "v219",
+        "column_name": "tlamgran",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 27.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v219",
+        "tablename": "v219",
+        "column_name": "xolagran",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 11.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v219",
+        "tablename": "v219",
+        "column_name": "metegran",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v219",
+        "tablename": "v219",
+        "column_name": "ceradisk",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 20.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v219",
+        "tablename": "v219",
+        "column_name": "sobsiwk1",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v219",
+        "tablename": "v219",
+        "column_name": "sobsiwk2",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v219",
+        "tablename": "v219",
+        "column_name": "kcerawks",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 3.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v220",
+        "tablename": "v220",
+        "column_name": "ssn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v220",
+        "tablename": "v220",
+        "column_name": "bfigconc",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 3.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v220",
+        "tablename": "v220",
+        "column_name": "insubstr",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 13.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v220",
+        "tablename": "v220",
+        "column_name": "qualbnd",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v301",
+        "tablename": "v301",
+        "column_name": "ssn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v301",
+        "tablename": "v301",
+        "column_name": "site",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 197.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v301",
+        "tablename": "v301",
+        "column_name": "obsiblds",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 189.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v301",
+        "tablename": "v301",
+        "column_name": "obsiscrp",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 78.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v301",
+        "tablename": "v301",
+        "column_name": "obsipnts",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 60.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v301",
+        "tablename": "v301",
+        "column_name": "obsicors",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 53.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v301",
+        "tablename": "v301",
+        "column_name": "obsiuflk",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 43.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v301",
+        "tablename": "v301",
+        "column_name": "obsinods",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 57.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v301",
+        "tablename": "v301",
+        "column_name": "bslttots",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 43.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v301",
+        "tablename": "v301",
+        "column_name": "figutots",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 113.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v301",
+        "tablename": "v301",
+        "column_name": "candtots",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 78.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v301",
+        "tablename": "v301",
+        "column_name": "metecand",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 25.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v301",
+        "tablename": "v301",
+        "column_name": "commcand",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 58.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v301",
+        "tablename": "v301",
+        "column_name": "UNIT",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 142.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v302",
+        "tablename": "v302",
+        "column_name": "ssn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v302",
+        "tablename": "v302",
+        "column_name": "brn3prng",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 35.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v302",
+        "tablename": "v302",
+        "column_name": "handcovr",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 46.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v302",
+        "tablename": "v302",
+        "column_name": "cuanalan",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 48.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v302",
+        "tablename": "v302",
+        "column_name": "tezoyuca",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 9.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v302",
+        "tablename": "v302",
+        "column_name": "patlachi",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 121.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v302",
+        "tablename": "v302",
+        "column_name": "tzacuall",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 193.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v302",
+        "tablename": "v302",
+        "column_name": "miccaotl",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 150.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v302",
+        "tablename": "v302",
+        "column_name": "tlamimil",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 233.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v304",
+        "tablename": "v304",
+        "column_name": "metecoml",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 12.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v304",
+        "tablename": "v304",
+        "column_name": "poxtcoml",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v302",
+        "tablename": "v302",
+        "column_name": "xolalpan",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 221.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v302",
+        "tablename": "v302",
+        "column_name": "metepec",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 101.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v302",
+        "tablename": "v302",
+        "column_name": "oxtotipa",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 47.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v302",
+        "tablename": "v302",
+        "column_name": "xometla",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 137.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v303",
+        "tablename": "v303",
+        "column_name": "ssn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v303",
+        "tablename": "v303",
+        "column_name": "mazapan",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 119.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v303",
+        "tablename": "v303",
+        "column_name": "aztec",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 186.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v303",
+        "tablename": "v303",
+        "column_name": "cnsrtots",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 75.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v303",
+        "tablename": "v303",
+        "column_name": "micccnsr",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 21.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v303",
+        "tablename": "v303",
+        "column_name": "tlamcnsr",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 34.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v303",
+        "tablename": "v303",
+        "column_name": "xolacnsr",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 49.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v303",
+        "tablename": "v303",
+        "column_name": "metecnsr",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 18.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v303",
+        "tablename": "v303",
+        "column_name": "thnotots",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 181.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v303",
+        "tablename": "v303",
+        "column_name": "regthno",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 162.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v303",
+        "tablename": "v303",
+        "column_name": "crsthno",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 41.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v303",
+        "tablename": "v303",
+        "column_name": "smotots",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 158.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v303",
+        "tablename": "v303",
+        "column_name": "xolasmo",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 147.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v304",
+        "tablename": "v304",
+        "column_name": "ssn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v304",
+        "tablename": "v304",
+        "column_name": "metesmo",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 18.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v304",
+        "tablename": "v304",
+        "column_name": "ollatot",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 149.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v304",
+        "tablename": "v304",
+        "column_name": "patlolla",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 14.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v304",
+        "tablename": "v304",
+        "column_name": "wdgrolla",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 50.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v304",
+        "tablename": "v304",
+        "column_name": "miccolla",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 47.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v304",
+        "tablename": "v304",
+        "column_name": "tlamolla",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 86.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v304",
+        "tablename": "v304",
+        "column_name": "xolaolla",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 74.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v304",
+        "tablename": "v304",
+        "column_name": "meteolla",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 24.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v304",
+        "tablename": "v304",
+        "column_name": "comltots",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 38.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v304",
+        "tablename": "v304",
+        "column_name": "xolacoml",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 30.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v305",
+        "tablename": "v305",
+        "column_name": "ssn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v305",
+        "tablename": "v305",
+        "column_name": "nubbtots",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 48.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v401",
+        "tablename": "v401",
+        "column_name": "ssn",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v401",
+        "tablename": "v401",
+        "column_name": "subsite",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 195.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v401",
+        "tablename": "v401",
+        "column_name": "unit",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 142.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v401",
+        "tablename": "v401",
+        "column_name": "northing",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -0.1239604,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v401",
+        "tablename": "v401",
+        "column_name": "easting",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -0.14316832,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v401",
+        "tablename": "v401",
+        "column_name": "cxunit",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 32.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v401",
+        "tablename": "v401",
+        "column_name": "mcxunit",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 9.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v401",
+        "tablename": "v401",
+        "column_name": "obsitots",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 386.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v401",
+        "tablename": "v401",
+        "column_name": "obsiwste",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 231.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v401",
+        "tablename": "v401",
+        "column_name": "areasite",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -0.20316832,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v401",
+        "tablename": "v401",
+        "column_name": "shrdstot",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -0.1340594,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v401",
+        "tablename": "v401",
+        "column_name": "areastrc",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -0.26653466,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df8.v401",
+        "tablename": "v401",
+        "column_name": "SITENUM",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 197.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    }
+]

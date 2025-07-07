@@ -1,0 +1,2747 @@
+[
+    {
+        "fq_table_name": "tmp_df9.archInterp",
+        "tablename": "archInterp",
+        "column_name": "func1Oxto",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 20.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archInterp",
+        "tablename": "archInterp",
+        "column_name": "func2PMic",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 25.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archInterp",
+        "tablename": "archInterp",
+        "column_name": "func2McTl",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 27.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.location",
+        "tablename": "location",
+        "column_name": "SSN",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.location",
+        "tablename": "location",
+        "column_name": "site",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 197.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.location",
+        "tablename": "location",
+        "column_name": "subsite",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 195.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archInterp",
+        "tablename": "archInterp",
+        "column_name": "func2XlMe",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 27.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.location",
+        "tablename": "location",
+        "column_name": "unit",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 142.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.location",
+        "tablename": "location",
+        "column_name": "northing",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -0.1239604,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.location",
+        "tablename": "location",
+        "column_name": "easting",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -0.14316832,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archInterp",
+        "tablename": "archInterp",
+        "column_name": "func2Oxto",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 13.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.admin",
+        "tablename": "admin",
+        "column_name": "SSN",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.admin",
+        "tablename": "admin",
+        "column_name": "collectionYear",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 10.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.admin",
+        "tablename": "admin",
+        "column_name": "collectionQuarter",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.admin",
+        "tablename": "admin",
+        "column_name": "analysisYear",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 11.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.admin",
+        "tablename": "admin",
+        "column_name": "analysisQuarter",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.description",
+        "tablename": "description",
+        "column_name": "SSN",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.description",
+        "tablename": "description",
+        "column_name": "midden",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.description",
+        "tablename": "description",
+        "column_name": "burials",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 10.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.description",
+        "tablename": "description",
+        "column_name": "height",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 86.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.description",
+        "tablename": "description",
+        "column_name": "slope",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.description",
+        "tablename": "description",
+        "column_name": "areaSite",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -0.20316832,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.description",
+        "tablename": "description",
+        "column_name": "areaStruct",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -0.26653466,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.description",
+        "tablename": "description",
+        "column_name": "lastBuildPhase",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.description",
+        "tablename": "description",
+        "column_name": "ceramicAbundance",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 11.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.description",
+        "tablename": "description",
+        "column_name": "intrusiveSherd",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archInterp",
+        "tablename": "archInterp",
+        "column_name": "SSN",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archInterp",
+        "tablename": "archInterp",
+        "column_name": "neighborhoodChar",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archInterp",
+        "tablename": "archInterp",
+        "column_name": "constructQual",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archInterp",
+        "tablename": "archInterp",
+        "column_name": "boundInfoQual",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archInterp",
+        "tablename": "archInterp",
+        "column_name": "insubstantialCount",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 13.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archInterp",
+        "tablename": "archInterp",
+        "column_name": "arch1PMic",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 17.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archInterp",
+        "tablename": "archInterp",
+        "column_name": "arch1McTl",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 18.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archInterp",
+        "tablename": "archInterp",
+        "column_name": "arch1XlMe",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 18.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archInterp",
+        "tablename": "archInterp",
+        "column_name": "arch1Oxto",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 13.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archInterp",
+        "tablename": "archInterp",
+        "column_name": "arch2PMic",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 17.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archInterp",
+        "tablename": "archInterp",
+        "column_name": "arch2McTl",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 19.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archInterp",
+        "tablename": "archInterp",
+        "column_name": "arch2XlMe",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 19.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archInterp",
+        "tablename": "archInterp",
+        "column_name": "arch2Oxto",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 11.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archInterp",
+        "tablename": "archInterp",
+        "column_name": "func1PMic",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 26.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archInterp",
+        "tablename": "archInterp",
+        "column_name": "func1McTl",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 28.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archInterp",
+        "tablename": "archInterp",
+        "column_name": "func1XlMe",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 28.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "SSN",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "milpa",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "barley",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "beans",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "alfalfaCut",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "alfalfaUncut",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "nopales",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "magueys",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "fallow",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "uncultivate",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "cropWater",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "plowing",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "pitCultivate",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "pitLoot",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "pitMisc",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "archaeoExcRest",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "quarrying",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "stoneClearing",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "landLeveling",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "terracing",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "ditching",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "roadOrRail",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "recentWall",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "stoneRows",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "recentBuild",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "dam",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "jaguey",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "erosion",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "silting",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.condition",
+        "tablename": "condition",
+        "column_name": "siteAlteration",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerPhTot",
+        "tablename": "cerPhTot",
+        "column_name": "SSN",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerPhTot",
+        "tablename": "cerPhTot",
+        "column_name": "totAll",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -0.1340594,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerPhTot",
+        "tablename": "cerPhTot",
+        "column_name": "totPrec",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerPhTot",
+        "tablename": "cerPhTot",
+        "column_name": "totCuan",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 48.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerPhTot",
+        "tablename": "cerPhTot",
+        "column_name": "totTezo",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 9.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerPhTot",
+        "tablename": "cerPhTot",
+        "column_name": "totPatl",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 121.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerPhTot",
+        "tablename": "cerPhTot",
+        "column_name": "totTzac",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 193.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerPhTot",
+        "tablename": "cerPhTot",
+        "column_name": "totMicc",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 150.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerPhTot",
+        "tablename": "cerPhTot",
+        "column_name": "totTlam",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 233.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerPhTot",
+        "tablename": "cerPhTot",
+        "column_name": "totXola",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 221.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerPhTot",
+        "tablename": "cerPhTot",
+        "column_name": "totMete",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 101.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerPhTot",
+        "tablename": "cerPhTot",
+        "column_name": "totOxto",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 47.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerPhTot",
+        "tablename": "cerPhTot",
+        "column_name": "totXome",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 137.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerPhTot",
+        "tablename": "cerPhTot",
+        "column_name": "totMaza",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 119.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerPhTot",
+        "tablename": "cerPhTot",
+        "column_name": "totAzte",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 186.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "SSN",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "ollaTot",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 149.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "ollaPatl",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 14.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "ollaWedge",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 50.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "ollaMicc",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 47.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "ollaTlam",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 86.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "ollaXola",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 74.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "ollaMete",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 24.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "comalTot",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 38.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "comalPatl",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 2.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "comalTzac",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "comalMicc",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 19.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "comalTlam",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 18.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "comalXola",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 30.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "comalMete",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 12.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "comalOxto",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "comalPOxt",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "censerTot",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 75.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "censerPPat",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "censerPatl",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "censerTzac",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "censerMicc",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 21.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "censerTlam",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 34.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "censerXola",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 49.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "censerMete",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 18.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "censerOxto",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 3.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "censerXome",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 2.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "censerMaza",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "censerAzte",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 3.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "nubbinTot",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 48.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "nubbinPatl",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "nubbinApet",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 3.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "nubbinInset",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 26.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "nubbinFlush",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 39.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "nubbinAtoy",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 3.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "nubbinXola",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "nubbinMete",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "toTot",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 181.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "toRegular",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 162.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "toCoarse",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 41.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "smoTot",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 158.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "smoTlam",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 26.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "smoXola",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 147.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "smoMete",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 18.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "shrdStamped",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "shrdPlanoR",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 9.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "shrdStucco",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "shrdIncised",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 33.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "foreignTot",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 22.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "mayaLow",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "mayaHigh",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 3.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "huastec",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "tajin",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "gulfCoast",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "monteAlban",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 9.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "oaxaca",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 9.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "foreignOther",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 17.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "adornos",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 13.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "minatures",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 11.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "copas",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 16.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "matteWare",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 25.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "granTot",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 50.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "granPMic",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 12.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "granMicc",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 31.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "granTlam",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 27.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "granXola",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 11.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "granMete",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "burner3P",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 35.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "columns",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 9.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerVessel",
+        "tablename": "cerVessel",
+        "column_name": "coverHandled",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 46.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicFlaked",
+        "tablename": "lithicFlaked",
+        "column_name": "SSN",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicFlaked",
+        "tablename": "lithicFlaked",
+        "column_name": "obsidianTot",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 386.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicFlaked",
+        "tablename": "lithicFlaked",
+        "column_name": "obsidianBlades",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 189.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicFlaked",
+        "tablename": "lithicFlaked",
+        "column_name": "obsidianWaste",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 231.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicFlaked",
+        "tablename": "lithicFlaked",
+        "column_name": "obsidianScrapers",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 78.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicFlaked",
+        "tablename": "lithicFlaked",
+        "column_name": "obsidianPoints",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 60.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicFlaked",
+        "tablename": "lithicFlaked",
+        "column_name": "obsidianCores",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 53.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicFlaked",
+        "tablename": "lithicFlaked",
+        "column_name": "obsidianKnives",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 31.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicFlaked",
+        "tablename": "lithicFlaked",
+        "column_name": "obsidianEccentrics",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicFlaked",
+        "tablename": "lithicFlaked",
+        "column_name": "obsidianMagueyS",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicFlaked",
+        "tablename": "lithicFlaked",
+        "column_name": "obsidianUtFlake",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 43.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicFlaked",
+        "tablename": "lithicFlaked",
+        "column_name": "obsidianNodules",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 57.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicFlaked",
+        "tablename": "lithicFlaked",
+        "column_name": "basaltTot",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 43.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicFlaked",
+        "tablename": "lithicFlaked",
+        "column_name": "basaltTools",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 19.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicFlaked",
+        "tablename": "lithicFlaked",
+        "column_name": "chert",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 9.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicFlaked",
+        "tablename": "lithicFlaked",
+        "column_name": "quartz",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicGround",
+        "tablename": "lithicGround",
+        "column_name": "SSN",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicGround",
+        "tablename": "lithicGround",
+        "column_name": "manos",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 27.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicGround",
+        "tablename": "lithicGround",
+        "column_name": "metates",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 26.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicGround",
+        "tablename": "lithicGround",
+        "column_name": "mortars",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 10.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicGround",
+        "tablename": "lithicGround",
+        "column_name": "pestles",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicGround",
+        "tablename": "lithicGround",
+        "column_name": "plasterSmoothers",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 24.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicGround",
+        "tablename": "lithicGround",
+        "column_name": "plumbBobs",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicGround",
+        "tablename": "lithicGround",
+        "column_name": "wallFixtures",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicGround",
+        "tablename": "lithicGround",
+        "column_name": "fireGods",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicGround",
+        "tablename": "lithicGround",
+        "column_name": "sculptureFrags",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicGround",
+        "tablename": "lithicGround",
+        "column_name": "hammerStones",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 24.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicGround",
+        "tablename": "lithicGround",
+        "column_name": "slingStones",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicGround",
+        "tablename": "lithicGround",
+        "column_name": "smoothStones",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicGround",
+        "tablename": "lithicGround",
+        "column_name": "whetStones",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicGround",
+        "tablename": "lithicGround",
+        "column_name": "palettes",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicGround",
+        "tablename": "lithicGround",
+        "column_name": "celts",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 2.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicGround",
+        "tablename": "lithicGround",
+        "column_name": "lajasReworked",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 12.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicGround",
+        "tablename": "lithicGround",
+        "column_name": "anvils",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicGround",
+        "tablename": "lithicGround",
+        "column_name": "drains",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicGround",
+        "tablename": "lithicGround",
+        "column_name": "drainCovers",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicGround",
+        "tablename": "lithicGround",
+        "column_name": "groundstoneOther",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 12.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicGround",
+        "tablename": "lithicGround",
+        "column_name": "slateTot",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 12.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicGround",
+        "tablename": "lithicGround",
+        "column_name": "slatePainted",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicGround",
+        "tablename": "lithicGround",
+        "column_name": "alabaster",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicGround",
+        "tablename": "lithicGround",
+        "column_name": "serpentine",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.lithicGround",
+        "tablename": "lithicGround",
+        "column_name": "jade",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.artifactOther",
+        "tablename": "artifactOther",
+        "column_name": "SSN",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.artifactOther",
+        "tablename": "artifactOther",
+        "column_name": "workedBone",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.artifactOther",
+        "tablename": "artifactOther",
+        "column_name": "shellTot",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 14.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.artifactOther",
+        "tablename": "artifactOther",
+        "column_name": "shellWorked",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.artifactOther",
+        "tablename": "artifactOther",
+        "column_name": "unworkedBone",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 10.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexMacroData",
+        "tablename": "complexMacroData",
+        "column_name": "SSN",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "taludes",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexMacroData",
+        "tablename": "complexMacroData",
+        "column_name": "macroComplexUnit",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 9.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexMacroData",
+        "tablename": "complexMacroData",
+        "column_name": "macroComplexNum",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 2.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexMacroData",
+        "tablename": "complexMacroData",
+        "column_name": "presPaTz",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexMacroData",
+        "tablename": "complexMacroData",
+        "column_name": "presMcTl",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexMacroData",
+        "tablename": "complexMacroData",
+        "column_name": "presXlMt",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexMacroData",
+        "tablename": "complexMacroData",
+        "column_name": "funcIntPaTz",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 3.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexMacroData",
+        "tablename": "complexMacroData",
+        "column_name": "funcIntMcTl",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexMacroData",
+        "tablename": "complexMacroData",
+        "column_name": "funcIntXlMt",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.workshop",
+        "tablename": "workshop",
+        "column_name": "SSN",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.workshop",
+        "tablename": "workshop",
+        "column_name": "groundstoneField",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.workshop",
+        "tablename": "workshop",
+        "column_name": "obsidianField",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.workshop",
+        "tablename": "workshop",
+        "column_name": "ceramicField",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.workshop",
+        "tablename": "workshop",
+        "column_name": "obsidianSpencePhase1",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.workshop",
+        "tablename": "workshop",
+        "column_name": "obsidianSpencePhase2",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.workshop",
+        "tablename": "workshop",
+        "column_name": "ceramicKrotser",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 3.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.workshop",
+        "tablename": "workshop",
+        "column_name": "figurineConcBarbour",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 3.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "SSN",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "stoneQuant",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 11.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "stoneDist",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "stoneCut",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "lajas",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "tepetate",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "adobe",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "xalnene",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "cascajo",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "concrete",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "plasterPaint",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "plasterUnpaint",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "burntClay",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "almena",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 16.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "burnedStruct",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "floors",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 9.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "walls",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 9.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "drains",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "wallFixtures",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "murals",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "tableros",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "floorMaterial",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "wallCoreStone",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "wallCoreOthMat",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "wallFacing",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 9.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "wells",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "jagueys",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "puestos",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.archMaterial",
+        "tablename": "archMaterial",
+        "column_name": "freeStandWall",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.fieldWorkers",
+        "tablename": "fieldWorkers",
+        "column_name": "SSN",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -0.34039816,
+        "row_count_exact": 14768,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.fieldWorkers",
+        "tablename": "fieldWorkers",
+        "column_name": "personnelCode",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 29.0,
+        "row_count_exact": 14768,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.labAnalysts",
+        "tablename": "labAnalysts",
+        "column_name": "SSN",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -0.45517242,
+        "row_count_exact": 10585,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.labAnalysts",
+        "tablename": "labAnalysts",
+        "column_name": "personnelCode",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 24.0,
+        "row_count_exact": 10585,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexData",
+        "tablename": "complexData",
+        "column_name": "SSN",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexData",
+        "tablename": "complexData",
+        "column_name": "complexUnit",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 32.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexData",
+        "tablename": "complexData",
+        "column_name": "complexNum",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 14.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexData",
+        "tablename": "complexData",
+        "column_name": "archInt1PaTz",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 11.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexData",
+        "tablename": "complexData",
+        "column_name": "archInt1McTl",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 11.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexData",
+        "tablename": "complexData",
+        "column_name": "archInt1XlMt",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 11.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexData",
+        "tablename": "complexData",
+        "column_name": "archInt2PaTz",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 9.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexData",
+        "tablename": "complexData",
+        "column_name": "archInt2McTl",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexData",
+        "tablename": "complexData",
+        "column_name": "archInt2XlMt",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexData",
+        "tablename": "complexData",
+        "column_name": "funcIntPaTz",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexData",
+        "tablename": "complexData",
+        "column_name": "funcIntMcTl",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexData",
+        "tablename": "complexData",
+        "column_name": "funcIntXlMt",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexData",
+        "tablename": "complexData",
+        "column_name": "funcResPaTz",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexData",
+        "tablename": "complexData",
+        "column_name": "funcResMcTl",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexData",
+        "tablename": "complexData",
+        "column_name": "funcResXlMt",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexData",
+        "tablename": "complexData",
+        "column_name": "funcTmpPaTz",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexData",
+        "tablename": "complexData",
+        "column_name": "funcTmpMcTl",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexData",
+        "tablename": "complexData",
+        "column_name": "funcTmpXlMt",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexData",
+        "tablename": "complexData",
+        "column_name": "funcCivPaTz",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexData",
+        "tablename": "complexData",
+        "column_name": "funcCivMcTl",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexData",
+        "tablename": "complexData",
+        "column_name": "funcCivXlMt",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexData",
+        "tablename": "complexData",
+        "column_name": "funcOthXlMt",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerNonVessel",
+        "tablename": "cerNonVessel",
+        "column_name": "SSN",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerNonVessel",
+        "tablename": "cerNonVessel",
+        "column_name": "figTot",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 113.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerNonVessel",
+        "tablename": "cerNonVessel",
+        "column_name": "figHead",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 21.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerNonVessel",
+        "tablename": "cerNonVessel",
+        "column_name": "figPPat",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerNonVessel",
+        "tablename": "cerNonVessel",
+        "column_name": "figPatl",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerNonVessel",
+        "tablename": "cerNonVessel",
+        "column_name": "figTzac",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 8.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerNonVessel",
+        "tablename": "cerNonVessel",
+        "column_name": "figMicc",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 25.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerNonVessel",
+        "tablename": "cerNonVessel",
+        "column_name": "figTlam",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 19.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerNonVessel",
+        "tablename": "cerNonVessel",
+        "column_name": "figXola",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 20.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerNonVessel",
+        "tablename": "cerNonVessel",
+        "column_name": "figMete",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 10.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerNonVessel",
+        "tablename": "cerNonVessel",
+        "column_name": "figTolt",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerNonVessel",
+        "tablename": "cerNonVessel",
+        "column_name": "figAzte",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerNonVessel",
+        "tablename": "cerNonVessel",
+        "column_name": "figPupp",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 36.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerNonVessel",
+        "tablename": "cerNonVessel",
+        "column_name": "spindleWhorl",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerNonVessel",
+        "tablename": "cerNonVessel",
+        "column_name": "sealStamp",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerNonVessel",
+        "tablename": "cerNonVessel",
+        "column_name": "earSpool",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerNonVessel",
+        "tablename": "cerNonVessel",
+        "column_name": "whistle",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerNonVessel",
+        "tablename": "cerNonVessel",
+        "column_name": "flute",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerNonVessel",
+        "tablename": "cerNonVessel",
+        "column_name": "ceramicDisk",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 20.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerNonVessel",
+        "tablename": "cerNonVessel",
+        "column_name": "candTot",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 78.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerNonVessel",
+        "tablename": "cerNonVessel",
+        "column_name": "candCoat",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerNonVessel",
+        "tablename": "cerNonVessel",
+        "column_name": "candAtoy",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 4.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerNonVessel",
+        "tablename": "cerNonVessel",
+        "column_name": "candEXol",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerNonVessel",
+        "tablename": "cerNonVessel",
+        "column_name": "candLXol",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 7.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerNonVessel",
+        "tablename": "cerNonVessel",
+        "column_name": "candMete",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 25.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.cerNonVessel",
+        "tablename": "cerNonVessel",
+        "column_name": "candComm",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 58.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.Plazas",
+        "tablename": "Plazas",
+        "column_name": "SSN",
+        "null_percent": 0.0,
+        "distinct_values_estimate": -1.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.Plazas",
+        "tablename": "Plazas",
+        "column_name": "PlazaNo",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 75.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    }
+]

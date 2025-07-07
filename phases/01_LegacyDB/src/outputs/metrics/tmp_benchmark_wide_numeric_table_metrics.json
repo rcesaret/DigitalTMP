@@ -1,0 +1,14 @@
+[
+    {
+        "table_name": "wide_format_data",
+        "row_estimate": 5050,
+        "column_count": 337,
+        "table_size": "13 MB",
+        "index_size": "0 bytes",
+        "total_size": "13 MB",
+        "index_count": 0,
+        "bloat_bytes": 157144.66364416108,
+        "bloat_percent": 1.14,
+        "bloat_size": "0.15 MB"
+    }
+]
