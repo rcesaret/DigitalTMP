@@ -77,7 +77,7 @@ def get_all_column_profiles(engine: Engine, schema_name: str) -> List[Dict[str, 
 
         # Now, create the final list from the pg_stats DataFrame
         for record in df_stats.to_dict("records"):
-            table_name = record["table_name"]
+            table_name = record["tablename"]
             total_rows = total_rows_map.get(table_name, 0)
             # Add the exact row count to each record
             record["row_count_exact"] = total_rows
