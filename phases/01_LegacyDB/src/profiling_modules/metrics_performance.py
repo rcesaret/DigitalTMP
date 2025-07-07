@@ -5,6 +5,7 @@ import logging
 import re
 import time
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
 from sqlalchemy import text
@@ -15,7 +16,8 @@ def run_performance_benchmarks(
     engine: Engine, db_name: str, schema_name: str, query_file_path: Path
 ) -> pd.DataFrame:
     """
-    Runs a set of canonical SQL queries against a database to measure performance.
+    Runs a set of canonical SQL queries against a database to measure
+    performance.
 
     This function robustly parses SQL files by splitting them based on a
     specific delimiter (`-- END Query`), extracting query metadata from
@@ -25,7 +27,8 @@ def run_performance_benchmarks(
         engine: An active SQLAlchemy Engine instance.
         db_name: The name of the database being profiled.
         schema_name: The name of the schema to run queries against.
-        query_file_path: The path to the .sql file containing canonical queries.
+        query_file_path: The path to the .sql file containing canonical
+                        queries.
 
     Returns:
         A pandas DataFrame containing the performance results, including
@@ -44,7 +47,8 @@ def run_performance_benchmarks(
         return pd.DataFrame()
 
     # Split the script into individual queries using a robust delimiter.
-    # The delimiter is a line that starts with "-- END Query" (case-insensitive).
+    # The delimiter is a line that starts with "-- END Query"
+    # (case-insensitive).
     query_chunks = re.split(r"--\s*END Query.*", sql_script, flags=re.IGNORECASE)
 
     # Extract category and query ID information
@@ -75,15 +79,16 @@ def run_performance_benchmarks(
             # Create a meaningful query name
             query_name = f"{category.capitalize()} Performance - Query {query_id}"
 
-            # Clean the SQL by removing all comment lines and extra whitespace.
-            # This regex matches comment lines (starting with --) and removes them
+            # Clean the SQL by removing all comment lines and extra
+            # whitespace. This regex matches comment lines (starting with --)
+            # and removes them
             sql_to_execute = re.sub(r"--.*$", "", chunk, flags=re.MULTILINE).strip()
 
             if not sql_to_execute:
                 logging.warning(f"Skipping empty query chunk for: {query_name}")
                 continue
 
-            latency_ms = None
+            latency_ms: Any = None
             status = "Pending"
             records_returned = 0
             error_message = ""
@@ -103,7 +108,8 @@ def run_performance_benchmarks(
                     records = result.fetchall()
                     records_returned = len(records)
                 else:
-                    records_returned = 0  # For statements like INSERT, UPDATE, DELETE
+                    # For statements like INSERT, UPDATE, DELETE
+                    records_returned = 0
 
                 end_time = time.perf_counter()
                 latency_ms = (end_time - start_time) * 1000
