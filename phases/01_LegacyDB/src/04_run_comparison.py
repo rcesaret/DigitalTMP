@@ -2,8 +2,8 @@
 """
 Aggregates and compares results from the database profiling pipeline.
 
-This script acts as the final synthesizer for the data-gathering phase. It does
-not connect to any databases. Instead, it performs the following steps:
+This script acts as the final synthesizer for the data-gathering phase. It
+does not connect to any databases. Instead, it performs the following steps:
 1.  Discovers and loads all raw metric files (.csv, .json) from the
     `outputs/metrics/` directory.
 2.  Calculates high-level summary metrics for each database.
@@ -13,8 +13,8 @@ not connect to any databases. Instead, it performs the following steps:
     b) `comparison_report.md`: A formatted, human-readable summary.
     c) `report_performance_summary_detailed.csv`: A detailed, long-format
        performance report with calculated efficiency and improvement factors.
-    d) `report_performance_pivot_efficiency.csv`: A pivot table for at-a-glance
-       comparison of schema efficiency.
+    d) `report_performance_pivot_efficiency.csv`: A pivot table for
+       at-a-glance comparison of schema efficiency.
 """
 
 import argparse
@@ -126,13 +126,34 @@ def load_all_metrics(input_dir: Path) -> Dict[str, Dict[str, Any]]:
             if db_name.startswith("tmp_benchmark"):
                 all_data[db_name]["is_benchmark"] = True
 
+            # ------------------------------------------------------------------
+            # Prefer CSV over JSON when both versions of a metric are present.
+            # CSV files load into pandas DataFrames, which the aggregation
+            # logic (e.g., `table_metrics`) expects.
+            # If a JSON file appears
+            # *after* its corresponding CSV, we skip it.
+            # Doing so prevents accidental replacement of the
+            # DataFrame with a dict or list.
+            # If only a JSON file exists, we
+            # load it as a fallback.
+            # ------------------------------------------------------------------
+            existing_entry = all_data[db_name]["metrics"].get(metric_name)
+
             if file_path.suffix == ".csv":
                 all_data[db_name]["metrics"][metric_name] = pd.read_csv(file_path)
             elif file_path.suffix == ".json":
-                with open(file_path, "r", encoding="utf-8") as f:
-                    all_data[db_name]["metrics"][metric_name] = json.load(f)
+                if existing_entry is None:
+                    with open(file_path, "r", encoding="utf-8") as f:
+                        all_data[db_name]["metrics"][metric_name] = json.load(f)
+                else:
+                    logging.debug(
+                        "Skipping JSON file '%s'; CSV already loaded.",
+                        file_path.name,
+                    )
         except Exception as e:
-            logging.exception(f"Failed to load or parse file '{file_path.name}': {e}")
+            logging.exception(
+                "Failed to load or parse file '%s': %s", file_path.name, e
+            )
 
     return dict(all_data)
 
@@ -170,10 +191,19 @@ def calculate_summary_metrics(db_name: str, db_data: Dict[str, Any]) -> Dict[str
     summary["View Count"] = schema_counts.get("view_count")
 
     # --- Table-level Aggregations ---
-    table_metrics_df = get_metric_data("table_metrics")
-    if table_metrics_df is not None and not table_metrics_df.empty:
-        summary["Total Estimated Rows"] = int(table_metrics_df["row_estimate"].sum())
-        summary["Total Index Count"] = int(table_metrics_df["index_count"].sum())
+    table_metrics_data = get_metric_data("table_metrics")
+    if table_metrics_data is not None:
+        # Convert to DataFrame if it's a list (JSON data)
+        if isinstance(table_metrics_data, list):
+            table_metrics_df = pd.DataFrame(table_metrics_data)
+        else:
+            table_metrics_df = table_metrics_data
+
+        if not table_metrics_df.empty:
+            summary["Total Estimated Rows"] = int(
+                table_metrics_df["row_estimate"].sum()
+            )
+            summary["Total Index Count"] = int(table_metrics_df["index_count"].sum())
 
     # --- Interoperability Metrics ---
     interop_metrics = get_metric_data("interop_metrics", {})
@@ -188,7 +218,8 @@ def calculate_comparative_performance_metrics(
     all_data: Dict[str, Dict[str, Any]],
 ) -> pd.DataFrame:
     """
-    Calculates advanced, comparative performance metrics using the new architecture.
+    Calculates advanced, comparative performance metrics using the new
+    architecture.
     """
     logging.info("Calculating advanced comparative performance metrics...")
     perf_data = []
@@ -198,6 +229,11 @@ def calculate_comparative_performance_metrics(
             df = db_metrics["performance_benchmarks"].copy()
             df["database"] = db_name
             df["is_benchmark"] = db_info.get("is_benchmark", False)
+
+            # Create query_id from query_name by extracting category
+            df["category"] = df["query_name"].str.split(" - ").str[0]
+            df["query_id"] = df["query_name"].str.split(" - ").str[1]
+
             perf_data.append(df)
 
     if not perf_data:
@@ -205,10 +241,9 @@ def calculate_comparative_performance_metrics(
         return pd.DataFrame()
 
     df = pd.concat(perf_data, ignore_index=True)
-    if df.empty or "status" not in df.columns or df[df["status"] == "Success"].empty:
-        logging.warning(
-            "Performance DataFrame is empty or contains no successful queries."
-        )
+    success_check = df[df["status"] == "Success"].empty if not df.empty else True
+    if df.empty or "status" not in df.columns or success_check:
+        logging.warning("Performance DataFrame is empty or has no successful queries.")
         return pd.DataFrame()
 
     df["latency_ms"] = pd.to_numeric(df["latency_ms"], errors="coerce")
@@ -219,14 +254,15 @@ def calculate_comparative_performance_metrics(
         logging.error("No benchmark databases found for comparison base.")
         return df_success
 
+    # Use category instead of query_id for grouping
     baseline_latency = (
         df_success[df_success["database"].isin(benchmark_dbs)]
-        .groupby("query_id")["latency_ms"]
+        .groupby("category")["latency_ms"]
         .min()
         .rename("baseline_latency_ms")
     )
 
-    df_success = pd.merge(df_success, baseline_latency, on="query_id", how="left")
+    df_success = pd.merge(df_success, baseline_latency, on="category", how="left")
 
     df_success["schema_efficiency_factor"] = (
         df_success["latency_ms"] / df_success["baseline_latency_ms"]
@@ -235,9 +271,9 @@ def calculate_comparative_performance_metrics(
     df_success["performance_improvement_factor"] = (
         (improvement_numerator / df_success["latency_ms"]) * 100
     ).round(2)
-    df_success.loc[
-        df_success["database"].isin(benchmark_dbs), "performance_improvement_factor"
-    ] = 0.0
+
+    benchmark_mask = df_success["database"].isin(benchmark_dbs)
+    df_success.loc[benchmark_mask, "performance_improvement_factor"] = 0.0
 
     logging.info("Successfully calculated comparative performance metrics.")
     return df_success
@@ -279,9 +315,9 @@ def generate_markdown_report(
             "### At-a-Glance: Schema Efficiency Factor (Lower is Better)"
         )
         report_parts.append(
-            "This table shows how many times slower each database is compared to the "
-            "fastest benchmark database for each query category. A value of 1.0 means "
-            "it is as fast as the benchmark."
+            "This table shows how many times slower each database is compared "
+            "to the fastest benchmark database for each query category. "
+            "A value of 1.0 means it is as fast as the benchmark."
         )
         pivot_efficiency = perf_summary_df.pivot_table(
             index="database",
@@ -293,7 +329,9 @@ def generate_markdown_report(
 
         report_parts.append("\n### Detailed Latency Breakdown (ms)")
         pivot_latency = perf_summary_df.pivot_table(
-            index=["category", "query_id"], columns="database", values="latency_ms"
+            index=["category", "query_id"],
+            columns="database",
+            values="latency_ms",
         ).round(2)
         report_parts.append(pivot_latency.to_markdown())
     else:
@@ -366,13 +404,17 @@ def main() -> None:
     matrix_path = output_dir / "comparison_matrix.csv"
     summary_df.set_index("Database").T.to_csv(matrix_path)
     logging.info(
-        "Successfully saved original comparison matrix to %s", matrix_path.name
+        "Successfully saved original comparison matrix to %s",
+        matrix_path.name,
     )
 
     # NEW: detailed performance summary
     perf_summary_path = output_dir / "report_performance_summary_detailed.csv"
     perf_summary_df.to_csv(perf_summary_path, index=False)
-    logging.info("Saved detailed performance summary report to: %s", perf_summary_path)
+    logging.info(
+        "Saved detailed performance summary report to: %s",
+        perf_summary_path,
+    )
 
     # NEW: high-level performance pivot
     if (
