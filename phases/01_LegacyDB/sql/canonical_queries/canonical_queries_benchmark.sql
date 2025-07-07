@@ -7,22 +7,24 @@
 -- QUERY: 1.1
 -- Full scan of wide table
 SELECT COUNT(*) FROM public.wide_format_data;
+-- END Query
 
 -- CATEGORY: join_performance
--- QUERY: 2.1  
+-- QUERY: 2.1
 -- No joins needed - direct query on denormalized data
 SELECT
     "site",
-    "subsite", 
+    "subsite",
     "obsidianTot"
 FROM public.wide_format_data
 WHERE "obsidianTot" IS NOT NULL AND "obsidianTot" > 0
 ORDER BY "obsidianTot" DESC;
+-- END Query
 
 -- CATEGORY: complex_filtering
 -- QUERY: 3.1
 -- Simple aggregation without joins
-SELECT
-    SUM("obsidianBlades") AS total_obsidian_blades
+SELECT SUM("obsidianBlades") AS total_obsidian_blades
 FROM public.wide_format_data
 WHERE "unit" = 'N1W4' AND "collectionYear" = 64;
+-- END Query
