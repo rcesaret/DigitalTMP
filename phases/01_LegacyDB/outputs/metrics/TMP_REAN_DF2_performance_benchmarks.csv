@@ -1,6 +1,6 @@
 query_name,status,latency_ms,records_returned,error_message,executed_sql
-Baseline Performance - Query 1.1,Success,0.9596999734640121,1,,"SELECT COUNT(*) FROM tmp_rean_df2.""REAN_00"";"
-Join_performance Performance - Query 2.1,Success,8.035299950279295,4701,,"SELECT
+Baseline Performance - Query 1.1,Success,0.9123000781983137,1,,"SELECT COUNT(*) FROM tmp_rean_df2.""REAN_00"";"
+Join_performance Performance - Query 2.1,Success,10.288599994964898,4701,,"SELECT
     r00.""site"",
     r00.""subsite"",
     r01.""certot_rean""
@@ -8,7 +8,7 @@ FROM tmp_rean_df2.""REAN_00"" as r00
 JOIN tmp_rean_df2.""REAN_01"" as r01 ON r00.""ssn"" = r01.""ssn""
 WHERE r01.""certot_rean"" IS NOT NULL
 ORDER BY r01.""certot_rean"" DESC;"
-Complex_filtering Performance - Query 3.1,Success,1.2694000033661723,1,,"SELECT
+Complex_filtering Performance - Query 3.1,Success,2.1449000341817737,1,,"SELECT
     SUM(r01.""certot_rean"") AS total_ceramics
 FROM tmp_rean_df2.""REAN_00"" AS r00
 JOIN tmp_rean_df2.""REAN_01"" AS r01 ON r00.""ssn"" = r01.""ssn""

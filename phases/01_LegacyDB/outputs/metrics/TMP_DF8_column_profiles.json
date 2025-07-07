@@ -1674,6 +1674,15 @@
         "null_count_estimate": 0
     },
     {
+        "fq_table_name": "tmp_df8.v217",
+        "tablename": "v217",
+        "column_name": "stmpshrd",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 5.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
         "fq_table_name": "tmp_df8.v215",
         "tablename": "v215",
         "column_name": "ceranwk2",
@@ -1967,15 +1976,6 @@
         "column_name": "metenubb",
         "null_percent": 0.0,
         "distinct_values_estimate": 7.0,
-        "row_count_exact": 5050,
-        "null_count_estimate": 0
-    },
-    {
-        "fq_table_name": "tmp_df8.v217",
-        "tablename": "v217",
-        "column_name": "stmpshrd",
-        "null_percent": 0.0,
-        "distinct_values_estimate": 5.0,
         "row_count_exact": 5050,
         "null_count_estimate": 0
     },

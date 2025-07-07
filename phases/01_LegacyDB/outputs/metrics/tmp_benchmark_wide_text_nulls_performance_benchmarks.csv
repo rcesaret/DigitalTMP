@@ -1,13 +1,12 @@
 query_name,status,latency_ms,records_returned,error_message,executed_sql
-Baseline Performance - Query 1.1,Success,1.9325999892316759,1,,SELECT COUNT(*) FROM public.wide_format_data;
-Join_performance Performance - Query 2.1,Success,23.80480000283569,4595,,"SELECT
+Baseline Performance - Query 1.1,Success,2.025799942202866,1,,SELECT COUNT(*) FROM public.wide_format_data;
+Join_performance Performance - Query 2.1,Success,16.115900012664497,4595,,"SELECT
     ""site"",
     ""subsite"",
     ""obsidianTot""
 FROM public.wide_format_data
 WHERE ""obsidianTot"" IS NOT NULL AND ""obsidianTot"" > 0
 ORDER BY ""obsidianTot"" DESC;"
-Complex_filtering Performance - Query 3.1,Success,4.504099953919649,1,,"SELECT
-    SUM(""obsidianBlades"") AS total_obsidian_blades
+Complex_filtering Performance - Query 3.1,Success,1.9376999698579311,1,,"SELECT SUM(""obsidianBlades"") AS total_obsidian_blades
 FROM public.wide_format_data
 WHERE ""unit"" = 'N1W4' AND ""collectionYear"" = 64;"

@@ -1,6 +1,6 @@
 query_name,status,latency_ms,records_returned,error_message,executed_sql
-Baseline Performance - Query 1.1,Success,0.9530000388622284,1,,"SELECT COUNT(*) FROM tmp_df10.""provTable"";"
-Join_performance Performance - Query 2.1,Success,52.7816999820061,17903,,"SELECT
+Baseline Performance - Query 1.1,Success,1.5391999622806907,1,,"SELECT COUNT(*) FROM tmp_df10.""provTable"";"
+Join_performance Performance - Query 2.1,Success,65.63479988835752,17903,,"SELECT
     p.""Site"",
     p.""Unit"",
     a.""Count""
@@ -9,7 +9,7 @@ JOIN tmp_df10.""artifactTable"" AS a ON p.""SSN"" = a.""SSN""
 JOIN tmp_df10.""artifactCodes"" AS ac ON a.""ArtCode2"" = ac.""Code""
 WHERE ac.""Description"" = 'Obsidian' AND a.""Count"" > 0
 ORDER BY a.""Count"" DESC;"
-Complex_filtering Performance - Query 3.1,Success,7.902699988335371,1,,"SELECT
+Complex_filtering Performance - Query 3.1,Success,8.883400005288422,1,,"SELECT
     SUM(a.""Count"") AS total_obsidian_blades
 FROM tmp_df10.""provTable"" p
 JOIN tmp_df10.""artifactTable"" a ON p.""SSN"" = a.""SSN""

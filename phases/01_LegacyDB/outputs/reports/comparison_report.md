@@ -1,6 +1,6 @@
 # Database Comparison Report
 
-_Generated on: 2025-07-06 22:17:55_
+_Generated on: 2025-07-07 15:05:21_
 
 
 ## 1. Executive Summary
@@ -12,7 +12,7 @@ _Generated on: 2025-07-06 22:17:55_
 | TMP_DF9                       |                   28 |            62 |                 106109 |                        0.0719 |                      0.3503 |
 | TMP_REAN_DF2                  |                   14 |            13 |                  65715 |                        0.1538 |                      0.1857 |
 | tmp_benchmark_wide_numeric    |                   21 |             1 |                   5050 |                      nan      |                    nan      |
-| tmp_benchmark_wide_text_nulls |                   61 |             1 |                   5050 |                      nan      |                    nan      |
+| tmp_benchmark_wide_text_nulls |                   62 |             1 |                   5050 |                      nan      |                    nan      |
 
 
 ## 2. Performance Benchmark Comparison
@@ -23,21 +23,21 @@ This table shows how many times slower each database is compared to the fastest 
 
 | database                      |   Baseline Performance |   Complex_filtering Performance |   Join_performance Performance |
 |:------------------------------|-----------------------:|--------------------------------:|-------------------------------:|
-| TMP_DF10                      |                   0.49 |                            2.51 |                           2.27 |
-| TMP_DF8                       |                   0.42 |                            1.15 |                           0.31 |
-| TMP_DF9                       |                   0.43 |                            0.68 |                           0.52 |
-| TMP_REAN_DF2                  |                   0.5  |                            0.4  |                           0.35 |
-| tmp_benchmark_wide_numeric    |                   1.09 |                            1    |                           1    |
-| tmp_benchmark_wide_text_nulls |                   1    |                            1.43 |                           1.03 |
+| TMP_DF10                      |                   1.04 |                            4.58 |                           5.46 |
+| TMP_DF8                       |                   0.69 |                            4.38 |                           0.58 |
+| TMP_DF9                       |                   1.05 |                            1.34 |                           1.56 |
+| TMP_REAN_DF2                  |                   0.62 |                            1.11 |                           0.86 |
+| tmp_benchmark_wide_numeric    |                   1    |                            1.29 |                           1    |
+| tmp_benchmark_wide_text_nulls |                   1.37 |                            1    |                           1.34 |
 
 
 ### Detailed Latency Breakdown (ms)
 
 |                                                |   TMP_DF10 |   TMP_DF8 |   TMP_DF9 |   TMP_REAN_DF2 |   tmp_benchmark_wide_numeric |   tmp_benchmark_wide_text_nulls |
 |:-----------------------------------------------|-----------:|----------:|----------:|---------------:|-----------------------------:|--------------------------------:|
-| ('Baseline Performance', 'Query 1.1')          |       0.95 |      0.81 |      0.82 |           0.96 |                         2.11 |                            1.93 |
-| ('Complex_filtering Performance', 'Query 3.1') |       7.9  |      3.6  |      2.13 |           1.27 |                         3.14 |                            4.5  |
-| ('Join_performance Performance', 'Query 2.1')  |      52.78 |      7.11 |     12.11 |           8.04 |                        23.21 |                           23.8  |
+| ('Baseline Performance', 'Query 1.1')          |       1.54 |      1.02 |      1.55 |           0.91 |                         1.48 |                            2.03 |
+| ('Complex_filtering Performance', 'Query 3.1') |       8.88 |      8.48 |      2.6  |           2.14 |                         2.5  |                            1.94 |
+| ('Join_performance Performance', 'Query 2.1')  |      65.63 |      6.98 |     18.77 |          10.29 |                        12.03 |                           16.12 |
 
 
 ## 3. Run Metadata

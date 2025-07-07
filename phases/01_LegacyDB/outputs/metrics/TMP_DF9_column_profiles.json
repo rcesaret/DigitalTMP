@@ -2297,6 +2297,15 @@
     {
         "fq_table_name": "tmp_df9.complexData",
         "tablename": "complexData",
+        "column_name": "funcResXlMt",
+        "null_percent": 0.0,
+        "distinct_values_estimate": 6.0,
+        "row_count_exact": 5050,
+        "null_count_estimate": 0
+    },
+    {
+        "fq_table_name": "tmp_df9.complexData",
+        "tablename": "complexData",
         "column_name": "SSN",
         "null_percent": 0.0,
         "distinct_values_estimate": -1.0,
@@ -2415,15 +2424,6 @@
         "fq_table_name": "tmp_df9.complexData",
         "tablename": "complexData",
         "column_name": "funcResMcTl",
-        "null_percent": 0.0,
-        "distinct_values_estimate": 6.0,
-        "row_count_exact": 5050,
-        "null_count_estimate": 0
-    },
-    {
-        "fq_table_name": "tmp_df9.complexData",
-        "tablename": "complexData",
-        "column_name": "funcResXlMt",
         "null_percent": 0.0,
         "distinct_values_estimate": 6.0,
         "row_count_exact": 5050,

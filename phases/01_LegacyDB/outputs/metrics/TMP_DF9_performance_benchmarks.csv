@@ -1,6 +1,6 @@
 query_name,status,latency_ms,records_returned,error_message,executed_sql
-Baseline Performance - Query 1.1,Success,0.8234000415541232,1,,"SELECT COUNT(*) FROM tmp_df9.""location"";"
-Join_performance Performance - Query 2.1,Success,12.110100011341274,4595,,"SELECT
+Baseline Performance - Query 1.1,Success,1.5505000483244658,1,,"SELECT COUNT(*) FROM tmp_df9.""location"";"
+Join_performance Performance - Query 2.1,Success,18.769399961456656,4595,,"SELECT
     loc.""site"",
     loc.""subsite"",
     lith.""obsidianTot""
@@ -11,7 +11,7 @@ JOIN tmp_df9.""lithicFlaked"" AS lith ON loc.""SSN"" = lith.""SSN""
 JOIN tmp_df9.""admin"" AS adm ON loc.""SSN"" = adm.""SSN""
 WHERE lith.""obsidianTot"" IS NOT NULL AND lith.""obsidianTot"" > 0
 ORDER BY lith.""obsidianTot"" DESC;"
-Complex_filtering Performance - Query 3.1,Success,2.1277000196278095,1,,"SELECT
+Complex_filtering Performance - Query 3.1,Success,2.6000000070780516,1,,"SELECT
     SUM(lith.""obsidianBlades"") AS total_obsidian_blades
 FROM tmp_df9.""location"" AS loc
 JOIN tmp_df9.""admin"" AS adm ON loc.""SSN"" = adm.""SSN""

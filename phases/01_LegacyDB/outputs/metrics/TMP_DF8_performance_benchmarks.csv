@@ -1,13 +1,13 @@
 query_name,status,latency_ms,records_returned,error_message,executed_sql
-Baseline Performance - Query 1.1,Success,0.8084999863058329,1,,"SELECT COUNT(*) FROM tmp_df8.""ssn_master"";"
-Join_performance Performance - Query 2.1,Success,7.107100042048842,5050,,"SELECT
+Baseline Performance - Query 1.1,Success,1.0245000012218952,1,,"SELECT COUNT(*) FROM tmp_df8.""ssn_master"";"
+Join_performance Performance - Query 2.1,Success,6.975300027988851,5050,,"SELECT
     t1.""subsite"",
     t1.""obsitots""
 FROM tmp_df8.""v401"" AS t1
 LEFT JOIN tmp_df8.""v301"" AS t2 ON t1.""ssn"" = t2.""ssn""
 WHERE t1.""obsitots"" IS NOT NULL
 ORDER BY t1.""obsitots"" DESC;"
-Complex_filtering Performance - Query 3.1,Success,3.600600000936538,1,,"SELECT
+Complex_filtering Performance - Query 3.1,Success,8.480300079099834,1,,"SELECT
     SUM(t3.""obsiblds"") AS total_obsidian_blades
 FROM tmp_df8.""v401"" AS t1
 JOIN tmp_df8.""v201"" AS t2 ON t1.""ssn"" = t2.""ssn""

@@ -22,7 +22,7 @@
         "tablename": "codeTable",
         "column_name": "SSN",
         "null_percent": 0.0,
-        "distinct_values_estimate": 5058.0,
+        "distinct_values_estimate": 5050.0,
         "row_count_exact": 148579,
         "null_count_estimate": 0
     },
@@ -31,7 +31,7 @@
         "tablename": "codeTable",
         "column_name": "Code",
         "null_percent": 0.0,
-        "distinct_values_estimate": 99.0,
+        "distinct_values_estimate": 96.0,
         "row_count_exact": 148579,
         "null_count_estimate": 0
     },
@@ -40,7 +40,7 @@
         "tablename": "codeTable",
         "column_name": "Variable",
         "null_percent": 0.0,
-        "distinct_values_estimate": 77.0,
+        "distinct_values_estimate": 78.0,
         "row_count_exact": 148579,
         "null_count_estimate": 0
     },
@@ -202,7 +202,7 @@
         "tablename": "artifactTable",
         "column_name": "SSN",
         "null_percent": 0.0,
-        "distinct_values_estimate": 4980.0,
+        "distinct_values_estimate": 4997.0,
         "row_count_exact": 190870,
         "null_count_estimate": 0
     },
@@ -211,7 +211,7 @@
         "tablename": "artifactTable",
         "column_name": "Count",
         "null_percent": 0.0,
-        "distinct_values_estimate": 911.0,
+        "distinct_values_estimate": 933.0,
         "row_count_exact": 190870,
         "null_count_estimate": 0
     },
@@ -256,7 +256,7 @@
         "tablename": "interpTable",
         "column_name": "SSN",
         "null_percent": 0.0,
-        "distinct_values_estimate": 5045.0,
+        "distinct_values_estimate": 5052.0,
         "row_count_exact": 62865,
         "null_count_estimate": 0
     },
@@ -265,7 +265,7 @@
         "tablename": "interpTable",
         "column_name": "Code",
         "null_percent": 0.0,
-        "distinct_values_estimate": 81.0,
+        "distinct_values_estimate": 80.0,
         "row_count_exact": 62865,
         "null_count_estimate": 0
     },
@@ -310,7 +310,7 @@
         "tablename": "totalsTable",
         "column_name": "SSN",
         "null_percent": 0.0,
-        "distinct_values_estimate": 5028.0,
+        "distinct_values_estimate": 5038.0,
         "row_count_exact": 70798,
         "null_count_estimate": 0
     },
@@ -319,7 +319,7 @@
         "tablename": "totalsTable",
         "column_name": "Count",
         "null_percent": 0.0,
-        "distinct_values_estimate": 551.0,
+        "distinct_values_estimate": 562.0,
         "row_count_exact": 70798,
         "null_count_estimate": 0
     },
