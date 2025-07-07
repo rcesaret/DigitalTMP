@@ -6,6 +6,9 @@ The script uses SQLAlchemy Core for all PostgreSQL interactions, validates the
 configuration file, and provides robust, idempotent creation and population of
 legacy databases.
 
+This enhanced version includes comprehensive verification to ensure true
+idempotency and reliable pipeline execution.
+
 Usage
 -----
 From the ``src/`` directory run::
@@ -23,29 +26,52 @@ import os
 import re
 import subprocess
 import sys
-from dataclasses import dataclass as _dataclass
 import types
+from dataclasses import dataclass as _dataclass
+from pathlib import Path
+from typing import List, Tuple
+
+from sqlalchemy import create_engine, text
+from sqlalchemy.engine import Connection, Engine
 
 
 def dataclass(*args, **kwargs):
-    """Safely apply ``dataclasses.dataclass`` even if module isn't registered."""
+    """Safely apply ``dataclasses.dataclass`` even if module isn't
+    registered."""
+
     def wrapper(cls):
         if cls.__module__ not in sys.modules:
             sys.modules[cls.__module__] = types.ModuleType(cls.__module__)
         return _dataclass(*args, **kwargs)(cls)
 
     return wrapper
-from pathlib import Path
-from typing import List
 
-from sqlalchemy import create_engine, text
-from sqlalchemy.engine import Connection, Engine
+
+# Import our verification utilities
+try:
+    from db_verification import verify_database_exists, verify_schema_populated
+except ImportError:
+    # Fallback if module not available
+    def verify_database_exists(engine, db_name):
+        return False
+
+    def verify_schema_populated(engine, schema_name, min_tables=1):
+        return False, {}
+
 
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
 LOG_FILE_NAME = "00_setup_databases.log"
 _VALID_IDENTIFIER_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+
+# Expected minimum tables per database for verification
+DB_MIN_TABLES = {
+    "TMP_DF8": 27,
+    "TMP_DF9": 62,
+    "TMP_DF10": 9,
+    "TMP_REAN_DF2": 13,
+}
 
 # ---------------------------------------------------------------------------
 # Data structures
@@ -105,7 +131,8 @@ def load_config(config_path: Path) -> Config:
         A validated ``Config`` object.
 
     Raises:
-        ConfigurationError: If the config file is missing, malformed, or invalid.
+        ConfigurationError: If the config file is missing, malformed, or
+            invalid.
     """
     if not config_path.is_file():
         raise ConfigurationError(f"Config file not found: {config_path}")
@@ -211,7 +238,8 @@ def handle_db_error(e: Exception, db_name: str) -> None:
     elif "is being accessed by other users" in str(e):
         logging.error(
             "Could not drop database '%s' because it is in use. "
-            "Please close all other connections to the database and try again.",
+            "Please close all other connections to the database and "
+            "try again.",
             db_name,
         )
         raise e from e
@@ -220,8 +248,12 @@ def handle_db_error(e: Exception, db_name: str) -> None:
         raise e from e
 
 
-def populate_database(cfg: Config, db_name: str, sql_file: Path) -> None:
-    """Populates a database from a SQL dump file using the psql utility."""
+def populate_database(cfg: Config, db_name: str, sql_file: Path) -> bool:
+    """Populates a database from a SQL dump file using the psql utility.
+
+    Returns:
+        True if population was successful, False otherwise.
+    """
     try:
         user = cfg.user
         password = cfg.password
@@ -259,20 +291,37 @@ def populate_database(cfg: Config, db_name: str, sql_file: Path) -> None:
             text=True,
             encoding="utf-8",
         )
-        logging.info("Successfully populated database '%s'.", db_name)
+
+        # Check for common warning patterns that might indicate issues
+        if result.stderr:
+            stderr_lower = result.stderr.lower()
+            if "error" in stderr_lower:
+                logging.error("psql reported errors:\n%s", result.stderr)
+                return False
+            elif "duplicate key" in stderr_lower:
+                logging.warning(
+                    "psql reported duplicate key warnings "
+                    "(expected on re-population):\n%s",
+                    result.stderr,
+                )
+            else:
+                logging.info("psql completed with warnings:\n%s", result.stderr)
+
         if result.stdout:
             logging.debug("psql stdout:\n%s", result.stdout)
-        if result.stderr:
-            logging.warning("psql stderr:\n%s", result.stderr)
+
+        logging.info("Successfully executed psql for database '%s'.", db_name)
+        return True
 
     except AttributeError as e:
         logging.error("Configuration error for psql connection: %s", e)
-        raise
+        return False
     except FileNotFoundError:
         logging.error(
-            "psql command not found. Is PostgreSQL installed and in the system's PATH?"
+            "psql command not found. Is PostgreSQL installed and in the "
+            "system's PATH?"
         )
-        raise
+        return False
     except subprocess.CalledProcessError as e:
         logging.error(
             "Failed to populate database '%s'. psql exited with code %d.",
@@ -281,7 +330,50 @@ def populate_database(cfg: Config, db_name: str, sql_file: Path) -> None:
         )
         logging.error("psql stderr:\n%s", e.stderr)
         logging.error("psql stdout:\n%s", e.stdout)
-        raise
+        return False
+
+
+def verify_database_setup(cfg: Config, db_name: str) -> Tuple[bool, str]:
+    """Verify that a database was properly set up with data.
+
+    Args:
+        cfg: Configuration object
+        db_name: Name of database to verify
+
+    Returns:
+        Tuple of (success, message)
+    """
+    try:
+        # Connect to the database
+        db_engine = get_engine(cfg, db_name)
+
+        # Verify basic connection
+        with db_engine.connect():
+            pass
+
+        # Check schema population
+        # Convention: schema name = lowercase db name
+        schema_name = db_name.lower()
+        min_tables = DB_MIN_TABLES.get(db_name, 5)
+
+        is_populated, table_stats = verify_schema_populated(
+            db_engine, schema_name, min_tables
+        )
+
+        db_engine.dispose()
+
+        if is_populated:
+            total_rows = sum(count for count in table_stats.values() if count > 0)
+            return (
+                True,
+                f"Database '{db_name}' verified: "
+                f"{len(table_stats)} tables, {total_rows} total rows",
+            )
+        else:
+            return (False, f"Database '{db_name}' appears empty or " f"corrupted")
+
+    except Exception as e:
+        return False, f"Failed to verify database '{db_name}': {e}"
 
 
 # ---------------------------------------------------------------------------
@@ -303,6 +395,11 @@ def parse_arguments() -> argparse.Namespace:
         action="store_true",
         help="If specified, drop existing databases before creating them.",
     )
+    parser.add_argument(
+        "--verify-only",
+        action="store_true",
+        help="Only verify existing databases, don't create or populate.",
+    )
     return parser.parse_args()
 
 
@@ -315,22 +412,102 @@ def main() -> None:
 
     logging.info("--- Starting Legacy Database Setup ---")
     root_engine = None
+    setup_success = True
+
     try:
         cfg = load_config(args.config)
         root_engine = get_engine(cfg)
 
         logging.info("Processing %d legacy databases...", len(cfg.legacy_dbs))
+
+        # Verify dump files exist
         for db_name in cfg.legacy_dbs:
             sql_file = cfg.dump_dir / f"{db_name}.sql"
+            if not sql_file.is_file():
+                logging.error("SQL dump file not found: %s", sql_file)
+                setup_success = False
 
-            if args.force_recreate:
+        if not setup_success:
+            logging.error("Missing SQL dump files. Cannot proceed.")
+            sys.exit(1)
+
+        # Process each database
+        for i, db_name in enumerate(cfg.legacy_dbs, 1):
+            logging.info("=" * 60)
+            logging.info(
+                "Processing database %d/%d: %s", i, len(cfg.legacy_dbs), db_name
+            )
+            logging.info("=" * 60)
+
+            sql_file = cfg.dump_dir / f"{db_name}.sql"
+
+            # Check if database already exists and is populated
+            db_exists = verify_database_exists(root_engine, db_name)
+
+            if db_exists and not args.force_recreate:
+                # Verify existing database
+                is_verified, message = verify_database_setup(cfg, db_name)
+                if is_verified:
+                    logging.info("✓ %s", message)
+                    if args.verify_only:
+                        continue
+                    logging.info(
+                        "Database '%s' already properly set up, " "skipping.", db_name
+                    )
+                    continue
+                else:
+                    logging.warning("✗ %s", message)
+                    if args.verify_only:
+                        setup_success = False
+                        continue
+                    logging.info(
+                        "Database '%s' exists but needs " "re-population.", db_name
+                    )
+
+            if args.verify_only:
+                if not db_exists:
+                    logging.error("Database '%s' does not exist.", db_name)
+                    setup_success = False
+                continue
+
+            # Create/recreate database
+            if args.force_recreate and db_exists:
                 logging.info("Force-recreate enabled for '%s'.", db_name)
                 drop_database(root_engine, db_name)
 
             create_database(root_engine, db_name)
-            populate_database(cfg, db_name, sql_file)
 
-        logging.info("--- Legacy Database Setup Complete ---")
+            # Populate database
+            populate_success = populate_database(cfg, db_name, sql_file)
+
+            if not populate_success:
+                logging.error("Failed to populate database '%s'.", db_name)
+                setup_success = False
+                continue
+
+            # Verify population was successful
+            is_verified, message = verify_database_setup(cfg, db_name)
+            if is_verified:
+                logging.info("✓ %s", message)
+            else:
+                logging.error("✗ %s", message)
+                setup_success = False
+
+        # Final summary
+        logging.info("=" * 60)
+        if args.verify_only:
+            if setup_success:
+                logging.info("✓ All legacy databases verified successfully.")
+            else:
+                logging.error("✗ Some legacy databases failed verification.")
+        else:
+            if setup_success:
+                logging.info(
+                    "✓ Legacy Database Setup Complete - " "All databases ready"
+                )
+            else:
+                logging.error("✗ Legacy Database Setup encountered errors")
+        logging.info("=" * 60)
 
     except (ConfigurationError, ValueError) as e:
         logging.error("Fatal error during setup: %s", e)
@@ -341,6 +518,9 @@ def main() -> None:
     finally:
         if root_engine:
             root_engine.dispose()
+
+    if not setup_success:
+        sys.exit(1)
 
 
 if __name__ == "__main__":
