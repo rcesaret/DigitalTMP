@@ -151,14 +151,18 @@ def main() -> None:
         print(f"FATAL: Configuration file not found at '{config_path}'")
         sys.exit(1)
 
-    # Resolve paths relative to the config file's location. This assumes
-    # a fixed project structure where the config file is located at:
-    # <project_root>/phases/01_LegacyDB/src/config.ini
-    project_root = config_path.parent.parent.parent.parent
-    log_dir = project_root / "logs"
-    output_dir = project_root / OUTPUT_METRICS_DIR
-    # The SQL directory is inside the phase directory, not the project root.
-    sql_queries_dir = config_path.parent.parent / "sql"
+    # Resolve paths relative to the phase directory (two levels up from
+    # this config file):
+    #   <phase_dir>/src/config.ini  -> phase_dir is `phases/01_LegacyDB/`
+    phase_dir = config_path.parent.parent
+
+    # Store logs/outputs within the phase directory so each phase can run
+    # independently without clobbering others.
+    log_dir = phase_dir / "logs"
+    output_dir = phase_dir / OUTPUT_METRICS_DIR
+
+    # The SQL directory is located within the phase directory as well.
+    sql_queries_dir = phase_dir / "sql"
 
     setup_logging(log_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
