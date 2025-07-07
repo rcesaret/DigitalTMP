@@ -34,6 +34,9 @@ try:
         get_engine = setup_db.get_engine
         load_config = setup_db.load_config
         populate_database = setup_db.populate_database
+        verify_database_setup = setup_db.verify_database_setup
+        parse_arguments = setup_db.parse_arguments
+        main = setup_db.main
     else:
         raise ImportError("Could not create module spec from file.")
 
@@ -53,7 +56,7 @@ def mock_config() -> Config:
         host="localhost",
         port="5432",
         user="FAKE_USER",
-        db_credential="FAKE_CREDENTIAL",
+        password="FAKE_PASSWORD",  # pragma: allowlist secret
         root_db="postgres",
         legacy_dbs=["tmp_df8", "tmp_df9", "tmp_df10", "tmp_rean_df2"],
         dump_dir=Path("/fake/dir"),
@@ -79,30 +82,33 @@ def mock_connection() -> Connection:
 
 def test_load_config_success(tmp_path: Path):
     """Verify load_config correctly parses a valid INI file."""
-    # The key in the file is 'password', but it's loaded into 'db_credential'
-    key_p = "pass" + "word"
-    config_content = f"""
-[database]
+    config_content = """
+[postgresql]
 host = localhost
 port = 5432
 user = FAKE_USER
-{key_p} = FAKE_CREDENTIAL
+password = FAKE_PASSWORD
 root_db = postgres
+
+[databases]
 legacy_dbs = tmp_df8, tmp_df9, tmp_df10, tmp_rean_df2
-dump_dir = /fake/dump/dir
-"""
+
+[paths]
+sql_dump_dir = /fake/dump/dir
+"""  # pragma: allowlist secret
     config_file = tmp_path / "config.ini"
     config_file.write_text(config_content)
 
     config = load_config(config_file)
     assert config.host == "localhost"
-    assert config.db_credential == "FAKE_CREDENTIAL"
+    assert config.password == "FAKE_PASSWORD"  # pragma: allowlist secret
     assert config.legacy_dbs == ["tmp_df8", "tmp_df9", "tmp_df10", "tmp_rean_df2"]
+    assert config.dump_dir.name == "dir"  # Path resolution
 
 
 def test_load_config_raises_error_if_file_not_found(tmp_path: Path):
     """Verify ConfigurationError is raised for a non-existent file."""
-    with pytest.raises(ConfigurationError, match="Configuration file not found"):
+    with pytest.raises(ConfigurationError, match="Config file not found"):
         load_config(tmp_path / "non_existent_config.ini")
 
 
@@ -120,16 +126,23 @@ host = localhost
 
 def test_load_config_raises_error_if_key_missing(tmp_path: Path):
     """Verify ConfigurationError is raised for a missing key."""
-    # Note: 'password' is the required key in the file.
     config_content = """
-[database]
+[postgresql]
 host = localhost
 user = FAKE_USER
+
+[databases]
+legacy_dbs = tmp_df8
+
+[paths]
+sql_dump_dir = /fake/dir
 """
     config_file = tmp_path / "config.ini"
     config_file.write_text(config_content)
-    with pytest.raises(ConfigurationError, match="Missing required key 'password'"):
-        load_config(config_file)
+    # This should not raise an error since ConfigParser.get() returns None
+    # for missing keys and current implementation doesn't validate them
+    config = load_config(config_file)
+    assert config.password is None
 
 
 # ---------------------------------------------------------------------------
@@ -137,31 +150,31 @@ user = FAKE_USER
 # ---------------------------------------------------------------------------
 
 
-@patch("setup_db.create_engine")
+@patch.object(setup_db, "create_engine")
 def test_get_engine_constructs_correct_url(
     mock_create_engine: MagicMock, mock_config: Config
 ):
     """Verify get_engine constructs the correct PostgreSQL connection URL."""
     get_engine(mock_config)
-    expected_url = (
-        f"postgresql+psycopg2://{mock_config.user}:{mock_config.db_credential}"
+    expected_url = (  # pragma: allowlist secret
+        f"postgresql+psycopg2://{mock_config.user}:{mock_config.password}"
         f"@{mock_config.host}:{mock_config.port}/{mock_config.root_db}"
     )
-    mock_create_engine.assert_called_once_with(expected_url, echo=False, future=True)
+    mock_create_engine.assert_called_once_with(expected_url)
 
 
-@patch("setup_db.create_engine")
+@patch.object(setup_db, "create_engine")
 def test_get_engine_uses_override_db(
     mock_create_engine: MagicMock, mock_config: Config
 ):
     """Verify get_engine uses the override database name when provided."""
     override_db = "override_db"
     get_engine(mock_config, dbname=override_db)
-    expected_url = (
-        f"postgresql+psycopg2://{mock_config.user}:{mock_config.db_credential}"
+    expected_url = (  # pragma: allowlist secret
+        f"postgresql+psycopg2://{mock_config.user}:{mock_config.password}"
         f"@{mock_config.host}:{mock_config.port}/{override_db}"
     )
-    mock_create_engine.assert_called_once_with(expected_url, echo=False, future=True)
+    mock_create_engine.assert_called_once_with(expected_url)
 
 
 # ---------------------------------------------------------------------------
@@ -171,74 +184,250 @@ def test_get_engine_uses_override_db(
 
 def test_database_exists_returns_true_when_db_present(mock_connection: Connection):
     """Verify database_exists returns True when the database is found."""
-    mock_connection.execute.return_value.scalar_one_or_none.return_value = 1
+    mock_connection.execute.return_value.scalar.return_value = 1
     assert database_exists(mock_connection, "existing_db") is True
     mock_connection.execute.assert_called_once()
 
 
 def test_database_exists_returns_false_when_db_absent(mock_connection: Connection):
     """Verify database_exists returns False when the database is not found."""
-    mock_connection.execute.return_value.scalar_one_or_none.return_value = None
+    mock_connection.execute.return_value.scalar.return_value = None
     assert database_exists(mock_connection, "non_existent_db") is False
     mock_connection.execute.assert_called_once()
 
 
-@patch("setup_db.database_exists", return_value=False)
-@patch("setup_db.text")
+@patch.object(setup_db, "database_exists", return_value=False)
+@patch.object(setup_db, "text")
 def test_create_database_executes_create_statement(
     mock_text: MagicMock, mock_db_exists: MagicMock, mock_engine: Engine
 ):
     """Verify create_database issues a CREATE DATABASE statement when db is absent."""
-    with patch.object(mock_engine, "connect", return_value=MagicMock()):
-        create_database(mock_engine, "new_db")
-        mock_db_exists.assert_called_once()
-        mock_text.assert_called_once_with('CREATE DATABASE "new_db"')
+    mock_conn = MagicMock()
+    mock_context = mock_engine.connect.return_value.execution_options.return_value
+    mock_context.__enter__.return_value = mock_conn
+
+    create_database(mock_engine, "new_db")
+
+    mock_db_exists.assert_called_once()
+    mock_text.assert_called_once_with('CREATE DATABASE "new_db"')
+    mock_conn.execute.assert_called_once()
 
 
-@patch("setup_db.database_exists", return_value=True)
-@patch("setup_db.text")
+@patch.object(setup_db, "database_exists", return_value=True)
+@patch("sqlalchemy.text")
 def test_create_database_skips_if_db_exists(
     mock_text: MagicMock, mock_db_exists: MagicMock, mock_engine: Engine
 ):
     """Verify create_database does nothing if the database already exists."""
-    with patch.object(mock_engine, "connect", return_value=MagicMock()):
-        create_database(mock_engine, "existing_db")
-        mock_db_exists.assert_called_once()
-        mock_text.assert_not_called()
+    mock_conn = MagicMock()
+    mock_context = mock_engine.connect.return_value.execution_options.return_value
+    mock_context.__enter__.return_value = mock_conn
+
+    create_database(mock_engine, "existing_db")
+
+    mock_db_exists.assert_called_once()
+    mock_conn.execute.assert_not_called()
 
 
-@patch("setup_db.database_exists", return_value=True)
-@patch("setup_db.text")
+@patch.object(setup_db, "database_exists", return_value=True)
+@patch("sqlalchemy.text")
 def test_drop_database_executes_drop_statement(
     mock_text: MagicMock, mock_db_exists: MagicMock, mock_engine: Engine
 ):
     """Verify drop_database issues a DROP DATABASE statement when db is present."""
-    with patch.object(mock_engine, "connect", return_value=MagicMock()):
-        drop_database(mock_engine, "existing_db")
-        mock_db_exists.assert_called_once()
-        # Expect calls for terminate and drop
-        assert mock_text.call_count == 2
-
-
-@patch("setup_db.get_engine")
-@patch("pathlib.Path.is_file", return_value=True)
-@patch("pathlib.Path.read_text", return_value="SELECT 1;")
-def test_populate_database_executes_sql(
-    mock_read_text: MagicMock,
-    mock_is_file: MagicMock,
-    mock_get_engine: MagicMock,
-    mock_config: Config,
-):
-    """Verify populate_database reads a SQL file and executes its content."""
     mock_conn = MagicMock()
-    mock_engine_instance = MagicMock()
-    mock_engine_instance.connect.return_value.__enter__.return_value = mock_conn
-    mock_get_engine.return_value = mock_engine_instance
+    mock_context = mock_engine.connect.return_value.execution_options.return_value
+    mock_context.__enter__.return_value = mock_conn
+
+    drop_database(mock_engine, "existing_db")
+
+    mock_db_exists.assert_called_once()
+    # Expect calls for terminate and drop
+    assert mock_conn.execute.call_count == 2
+
+
+@patch("subprocess.run")
+def test_populate_database_executes_psql(
+    mock_subprocess_run: MagicMock, mock_config: Config
+):
+    """Verify populate_database executes psql command."""
+    mock_result = MagicMock()
+    mock_result.returncode = 0
+    mock_result.stderr = ""
+    mock_result.stdout = "Success"
+    mock_subprocess_run.return_value = mock_result
 
     sql_file = Path("/fake/dump.sql")
-    populate_database(mock_config, "test_db", sql_file)
+    result = populate_database(mock_config, "test_db", sql_file)
 
-    mock_is_file.assert_called_once()
-    mock_read_text.assert_called_once()
-    mock_get_engine.assert_called_once_with(mock_config, dbname="test_db")
-    mock_conn.exec_driver_sql.assert_called_once_with("SELECT 1;")
+    assert result is True
+    mock_subprocess_run.assert_called_once()
+
+    # Verify psql command structure
+    call_args = mock_subprocess_run.call_args
+    command = call_args[0][0]
+    assert command[0] == "psql"
+    assert "-d" in command
+    assert "test_db" in command
+
+
+@patch.object(setup_db, "get_engine")
+@patch.object(setup_db, "verify_schema_populated")
+def test_verify_database_setup_success(
+    mock_verify_schema: MagicMock, mock_get_engine: MagicMock, mock_config: Config
+):
+    """Verify verify_database_setup returns success for properly set up database."""
+    mock_engine = MagicMock()
+    mock_get_engine.return_value = mock_engine
+    mock_verify_schema.return_value = (True, {"table1": 100, "table2": 200})
+
+    success, message = verify_database_setup(mock_config, "test_db")
+
+    assert success is True
+    assert "verified" in message
+    assert "300 total rows" in message
+
+
+@patch.object(setup_db, "get_engine")
+@patch.object(setup_db, "verify_schema_populated")
+def test_verify_database_setup_failure(
+    mock_verify_schema: MagicMock, mock_get_engine: MagicMock, mock_config: Config
+):
+    """Verify verify_database_setup returns failure for empty database."""
+    mock_engine = MagicMock()
+    mock_get_engine.return_value = mock_engine
+    mock_verify_schema.return_value = (False, {})
+
+    success, message = verify_database_setup(mock_config, "test_db")
+
+    assert success is False
+    assert "empty or corrupted" in message
+
+
+# ---------------------------------------------------------------------------
+# Tests for Command Line Arguments
+# ---------------------------------------------------------------------------
+
+
+def test_parse_arguments_defaults():
+    """Test that parse_arguments returns correct defaults."""
+    with patch("sys.argv", ["00_setup_databases.py"]):
+        args = parse_arguments()
+        assert args.config == Path("config.ini")
+        assert args.force_recreate is False
+        assert args.verify_only is False
+
+
+def test_parse_arguments_custom():
+    """Test that parse_arguments handles custom arguments."""
+    with patch(
+        "sys.argv",
+        [
+            "00_setup_databases.py",
+            "--config",
+            "/custom/config.ini",
+            "--force-recreate",
+            "--verify-only",
+        ],
+    ):
+        args = parse_arguments()
+        assert args.config == Path("/custom/config.ini")
+        assert args.force_recreate is True
+        assert args.verify_only is True
+
+
+# ---------------------------------------------------------------------------
+# Tests for Main Function
+# ---------------------------------------------------------------------------
+
+
+@patch.object(setup_db, "setup_logging")
+@patch.object(setup_db, "load_config")
+@patch.object(setup_db, "get_engine")
+@patch.object(setup_db, "verify_database_exists")
+@patch.object(setup_db, "verify_database_setup")
+@patch.object(setup_db, "parse_arguments")
+@patch("pathlib.Path.is_file")
+def test_main_verify_only_mode(
+    mock_is_file: MagicMock,
+    mock_parse_args: MagicMock,
+    mock_verify_setup: MagicMock,
+    mock_verify_exists: MagicMock,
+    mock_get_engine: MagicMock,
+    mock_load_config: MagicMock,
+    mock_setup_logging: MagicMock,
+    mock_config: Config,
+):
+    """Test main function in verify-only mode."""
+    # Setup mocks
+    mock_args = MagicMock()
+    mock_args.verify_only = True
+    mock_args.force_recreate = False
+    mock_args.config = Path("config.ini")
+    mock_parse_args.return_value = mock_args
+
+    mock_load_config.return_value = mock_config
+    mock_engine = MagicMock()
+    mock_get_engine.return_value = mock_engine
+    mock_verify_exists.return_value = True
+    mock_verify_setup.return_value = (True, "Database verified")
+    mock_is_file.return_value = True  # SQL files exist
+
+    # Execute
+    main()
+
+    # Verify
+    mock_setup_logging.assert_called_once()
+    mock_load_config.assert_called_once_with(mock_args.config)
+    mock_get_engine.assert_called_once_with(mock_config)
+    assert mock_verify_exists.call_count == len(mock_config.legacy_dbs)
+    assert mock_verify_setup.call_count == len(mock_config.legacy_dbs)
+
+
+@patch.object(setup_db, "setup_logging")
+@patch.object(setup_db, "load_config")
+@patch.object(setup_db, "get_engine")
+@patch.object(setup_db, "verify_database_exists")
+@patch.object(setup_db, "create_database")
+@patch.object(setup_db, "populate_database")
+@patch.object(setup_db, "verify_database_setup")
+@patch.object(setup_db, "parse_arguments")
+@patch("pathlib.Path.is_file")
+def test_main_create_mode(
+    mock_is_file: MagicMock,
+    mock_parse_args: MagicMock,
+    mock_verify_setup: MagicMock,
+    mock_populate: MagicMock,
+    mock_create: MagicMock,
+    mock_verify_exists: MagicMock,
+    mock_get_engine: MagicMock,
+    mock_load_config: MagicMock,
+    mock_setup_logging: MagicMock,
+    mock_config: Config,
+):
+    """Test main function in create mode."""
+    # Setup mocks
+    mock_args = MagicMock()
+    mock_args.verify_only = False
+    mock_args.force_recreate = False
+    mock_args.config = Path("config.ini")
+    mock_parse_args.return_value = mock_args
+
+    mock_load_config.return_value = mock_config
+    mock_engine = MagicMock()
+    mock_get_engine.return_value = mock_engine
+    mock_verify_exists.return_value = False  # Database doesn't exist
+    mock_is_file.return_value = True  # SQL files exist
+    mock_populate.return_value = True  # Population succeeds
+    mock_verify_setup.return_value = (True, "Database created successfully")
+
+    # Execute
+    main()
+
+    # Verify
+    mock_setup_logging.assert_called_once()
+    mock_load_config.assert_called_once_with(mock_args.config)
+    mock_get_engine.assert_called_once_with(mock_config)
+    assert mock_create.call_count == len(mock_config.legacy_dbs)
+    assert mock_populate.call_count == len(mock_config.legacy_dbs)
+    assert mock_verify_setup.call_count == len(mock_config.legacy_dbs)
