@@ -1,3 +1,4 @@
+-- noqa: disable=all
 -- ============================================================================
 -- Performance Benchmark Queries for TMP_REAN_DF2
 -- Ceramic reanalysis database with different analytical focus
@@ -8,27 +9,30 @@
 -- CATEGORY: baseline
 -- QUERY: 1.1
 -- Full scan of primary administrative table
-SELECT COUNT(*) FROM tmp_rean_df2."REAN_00";
+SELECT COUNT(*) FROM ${schema}."REAN_00";
+-- END Query
 
 -- CATEGORY: join_performance
 -- QUERY: 2.1
 -- Join main table with ceramic totals
 -- Simple two-table join structure
 SELECT
-    r00.site,
-    r00.subsite,
-    r01."CerTot_REAN"
-FROM tmp_rean_df2."REAN_00" as r00
-JOIN tmp_rean_df2."REAN_01" as r01 ON r00.ssn = r01.ssn
-WHERE r01."CerTot_REAN" IS NOT NULL
-ORDER BY r01."CerTot_REAN" DESC;
+    r00."site",
+    r00."subsite",
+    r01."certot_rean"
+FROM ${schema}."REAN_00" as r00
+JOIN ${schema}."REAN_01" as r01 ON r00."ssn" = r01."ssn"
+WHERE r01."certot_rean" IS NOT NULL
+ORDER BY r01."certot_rean" DESC;
+-- END Query
 
 -- CATEGORY: complex_filtering
 -- QUERY: 3.1
 -- Filter and aggregate ceramic data by location and year
 -- Note: Using ceramic totals instead of obsidian for this schema
 SELECT
-    SUM(r01."CerTot_REAN") AS total_ceramics
-FROM tmp_rean_df2."REAN_00" AS r00
-JOIN tmp_rean_df2."REAN_01" AS r01 ON r00.ssn = r01.ssn
-WHERE r00.unit = 'N1W4' AND r01."REAN_Year" = 96;
+    SUM(r01."certot_rean") AS total_ceramics
+FROM ${schema}."REAN_00" AS r00
+JOIN ${schema}."REAN_01" AS r01 ON r00."ssn" = r01."ssn"
+WHERE r00."unit" = 'N1W4' AND r01."rean_year" = 96;
+-- END Query
