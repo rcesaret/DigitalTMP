@@ -1,53 +1,40 @@
 # -*- coding: utf-8 -*-
-"""
-Integration tests for the 01_create_benchmark_dbs.py script.
+"""Unit tests for the benchmark database creation script."""
 
-This test suite validates the functionality of the benchmark database creation
-script, ensuring that it correctly connects to the database, executes SQL
-transformation queries, and populates the target benchmark databases with the
-expected data structure and content. Mocks are used to isolate the script from
-live database dependencies, allowing for controlled and repeatable testing.
-"""
+from __future__ import annotations
 
-import configparser
 import importlib.util
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pandas as pd
 import pytest
-from sqlalchemy.engine import Connection
+from sqlalchemy.engine import Engine
 
-# Define the absolute path to the script under test
-# This makes the test runner location-independent
-SCRIPT_PATH = (
-    Path(__file__).parent.parent.parent
-    / "phases"
-    / "01_LegacyDB"
-    / "src"
-    / "01_create_benchmark_dbs.py"
-).resolve()
-
-
-# Dynamically import the script to be tested
-# This allows testing functions within the script as a module
+# --- Dynamic import of the script to be tested ---
 try:
-    spec = importlib.util.spec_from_file_location("create_benchmark_dbs", SCRIPT_PATH)
-    if spec and spec.loader:
-        create_benchmark_dbs = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(create_benchmark_dbs)
-    else:
-        raise ImportError(f"Could not load spec for module at {SCRIPT_PATH}")
-except FileNotFoundError:
-    pytest.fail(
-        f"The script under test was not found at the expected path: {SCRIPT_PATH}"
+    TEST_DIR = Path(__file__).parent
+    PROJECT_ROOT = TEST_DIR.parent.parent
+    SRC_FILE = (
+        PROJECT_ROOT / "phases" / "01_LegacyDB" / "src" / "01_create_benchmark_dbs.py"
     )
+
+    spec = importlib.util.spec_from_file_location("create_benchmark_dbs", SRC_FILE)
+    create_benchmark_dbs = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(create_benchmark_dbs)
+
+    # Import the functions we need to test
+    Config = create_benchmark_dbs.Config
+
+except Exception as e:
+    print(f"Failed to import script: {e}")
+    raise ImportError(f"Cannot import script from {SRC_FILE}") from e
 
 
 @pytest.fixture
 def mock_db_connection() -> MagicMock:
     """Provides a mock SQLAlchemy Connection object."""
-    mock_conn = MagicMock(spec=Connection)
+    mock_conn = MagicMock(spec=Engine)
     mock_conn.execute.return_value = None
     # For context manager (`with engine.connect() as conn:`)
     mock_conn.__enter__.return_value = mock_conn
@@ -63,69 +50,82 @@ def mock_create_engine(mock_db_connection: MagicMock) -> MagicMock:
 
 
 @pytest.fixture
-def mock_config() -> configparser.ConfigParser:
+def mock_config() -> Config:
     """Provides a mock ConfigParser object with necessary test data."""
-    config = configparser.ConfigParser()
-    config["postgres"] = {
-        "host": "localhost",
-        "port": "5432",
-        "user": "test_user",
-        "db_credential": "test_password",  # Using non-sensitive key name
-        "db_name": "tmp_df9",
-    }
-    config["benchmark_dbs"] = {
-        "numeric_db_name": "tmp_benchmark_wide_numeric",
-        "text_nulls_db_name": "tmp_benchmark_wide_text_nulls",
-    }
-    config["sql_paths"] = {
-        "flatten_numeric": "path/to/fake_flatten_df9.sql",
-        "flatten_text_nulls": "path/to/fake_flatten_df9_text_nulls.sql",
-    }
-    return config
+    return Config(
+        host="localhost",
+        port="5432",
+        user="test_user",
+        password="test_password",  # pragma: allowlist secret
+        root_db="postgres",
+        source_db="tmp_df9",
+        benchmark_dbs=["tmp_benchmark_wide_numeric", "tmp_benchmark_wide_text_nulls"],
+        sql_dir=Path("/fake/sql/dir"),
+    )
 
 
 class TestBenchmarkDBCreation:
     """Test suite for the benchmark database creation script."""
 
-    @patch("create_benchmark_dbs.create_engine")
-    @patch("create_benchmark_dbs.pd.read_sql_query")
-    @patch("create_benchmark_dbs.Path.read_text")
-    @patch("create_benchmark_dbs.setup_logging")
+    @patch.object(create_benchmark_dbs, "check_pipeline_prerequisites")
+    @patch.object(create_benchmark_dbs, "setup_logging")
+    @patch.object(create_benchmark_dbs, "load_config")
+    @patch.object(create_benchmark_dbs, "get_engine")
+    @patch.object(create_benchmark_dbs, "verify_benchmark_database")
+    @patch.object(create_benchmark_dbs, "parse_arguments")
+    @patch("pathlib.Path.read_text")
+    @patch("pandas.read_sql_query")
     def test_main_orchestration(
         self,
-        mock_setup_logging: MagicMock,
-        mock_read_text: MagicMock,
         mock_read_sql: MagicMock,
-        mock_create_engine_func: MagicMock,
-        mock_config: configparser.ConfigParser,
+        mock_read_text: MagicMock,
+        mock_parse_args: MagicMock,
+        mock_verify_benchmark: MagicMock,
+        mock_get_engine: MagicMock,
+        mock_load_config: MagicMock,
+        mock_setup_logging: MagicMock,
+        mock_check_prereqs: MagicMock,
+        mock_config: Config,
     ) -> None:
         """
-        Tests the main function's orchestration logic.
-
-        Verifies that the main function correctly parses the config, reads the
-        SQL files, connects to the database, executes the queries, and calls
-        the data loading function for both benchmark databases. It also checks
-        that the row count of the transformed data is consistent.
+        Test the main orchestration function with all necessary mocks.
         """
         # Arrange
         mock_read_text.return_value = "SELECT 1;"
         mock_read_sql.return_value = pd.DataFrame({"col1": [1, 2]})
+        mock_check_prereqs.return_value = (True, [])
 
         # Mock the engine and connection separately to handle multiple calls
         mock_engine = MagicMock()
         mock_conn = MagicMock()
         mock_conn.__enter__.return_value = mock_conn
         mock_engine.connect.return_value = mock_conn
-        mock_create_engine_func.return_value = mock_engine
+        mock_get_engine.return_value = mock_engine
 
-        # Mock the function that loads data into the new DBs
-        with patch("create_benchmark_dbs.load_data_to_db") as mock_load_data:
+        # Mock verification functions
+        with (
+            patch("create_benchmark_dbs.verify_database_exists", return_value=False),
+            patch("create_benchmark_dbs.create_database"),
+            patch("create_benchmark_dbs.write_to_database", return_value=True),
+            patch("create_benchmark_dbs.verify_benchmark_database", return_value=True),
+            patch("create_benchmark_dbs.load_config", return_value=mock_config),
+            patch("create_benchmark_dbs.parse_arguments") as mock_parse_args,
+        ):
+            mock_args = MagicMock()
+            mock_args.verify_only = False
+            mock_args.force_recreate = False
+            mock_args.config = Path("config.ini")
+            mock_parse_args.return_value = mock_args
+
             # Act
-            create_benchmark_dbs.main(mock_config)
+            create_benchmark_dbs.main()
 
             # Assert
             # Verify logging was set up
             mock_setup_logging.assert_called_once()
+
+            # Verify prerequisites were checked
+            mock_check_prereqs.assert_called_once()
 
             # Verify both SQL files were read
             assert mock_read_text.call_count == 2
@@ -133,96 +133,268 @@ class TestBenchmarkDBCreation:
             # Verify both transformation queries were executed
             assert mock_read_sql.call_count == 2
 
-            # Verify data was loaded into both benchmark databases
-            assert mock_load_data.call_count == 2
-            numeric_db_name = mock_config["benchmark_dbs"]["numeric_db_name"]
-            text_db_name = mock_config["benchmark_dbs"]["text_nulls_db_name"]
-
-            # Check that load_data_to_db was called for the numeric DB
-            mock_load_data.assert_any_call(
-                mock_read_sql.return_value, numeric_db_name, mock_config
-            )
-            # Check that load_data_to_db was called for the text/nulls DB
-            mock_load_data.assert_any_call(
-                mock_read_sql.return_value, text_db_name, mock_config
-            )
-
-            # Verify row count consistency
-            call_args_list = mock_load_data.call_args_list
-            for call in call_args_list:
-                df_arg = call.args[0]
-                assert len(df_arg) == len(mock_read_sql.return_value)
-
-    @patch("create_benchmark_dbs.create_engine")
-    def test_transform_data_executes_query(
+    @patch("create_benchmark_dbs.get_engine")
+    def test_extract_transform_data_executes_query(
         self,
-        mock_create_engine_func: MagicMock,
-        mock_config: configparser.ConfigParser,
+        mock_get_engine: MagicMock,
     ) -> None:
         """
-        Tests that transform_data executes the provided SQL query.
+        Tests that extract_transform_data executes the provided SQL query.
 
         Verifies that the function establishes a database connection using the
-        config and executes the given SQL query using pandas.read_sql_query.
+        engine and executes the given SQL query using pandas.read_sql_query.
         """
         # Arrange
-        sql_query = "SELECT * FROM test_table;"
+        query_path = Path("/fake/query.sql")
         expected_df = pd.DataFrame({"id": [1], "data": ["test"]})
 
         mock_engine = MagicMock()
         mock_conn = MagicMock()
         mock_conn.__enter__.return_value = mock_conn
         mock_engine.connect.return_value = mock_conn
-        mock_create_engine_func.return_value = mock_engine
 
-        with patch(
-            "create_benchmark_dbs.pd.read_sql_query", return_value=expected_df
-        ) as mock_read_sql:
+        with (
+            patch("pathlib.Path.read_text", return_value="SELECT * FROM test;"),
+            patch("pandas.read_sql_query", return_value=expected_df) as mock_read_sql,
+        ):
             # Act
-            result_df = create_benchmark_dbs.transform_data(sql_query, mock_config)
+            result_df = create_benchmark_dbs.extract_transform_data(
+                mock_engine, query_path
+            )
 
             # Assert
-            conn_str = create_benchmark_dbs.get_db_connection_string(
-                mock_config, "postgres"
-            )
-            mock_create_engine_func.assert_called_once_with(conn_str)
-            mock_read_sql.assert_called_once_with(sql_query, mock_engine.connect())
+            mock_read_sql.assert_called_once_with("SELECT * FROM test;", mock_conn)
             pd.testing.assert_frame_equal(result_df, expected_df)
 
-    @patch("create_benchmark_dbs.create_database_if_not_exists")
-    @patch("create_benchmark_dbs.create_engine")
-    def test_load_data_to_db(
+    @patch("create_benchmark_dbs.create_database")
+    @patch("create_benchmark_dbs.get_engine")
+    def test_write_to_database(
         self,
-        mock_create_engine_func: MagicMock,
+        mock_get_engine: MagicMock,
         mock_create_db: MagicMock,
-        mock_config: configparser.ConfigParser,
     ) -> None:
         """
-        Tests the load_data_to_db function.
+        Tests the write_to_database function.
 
-        Verifies that the function creates the target database, establishes a
-        connection, and uses pandas.DataFrame.to_sql to load the data.
+        Verifies that the function uses pandas.DataFrame.to_sql to load the data
+        and creates comprehensive indexes.
         """
         # Arrange
         test_df = pd.DataFrame({"id": [1, 2, 3]})
-        db_name = "test_target_db"
         mock_engine = MagicMock()
-        mock_create_engine_func.return_value = mock_engine
+        mock_conn = MagicMock()
+        mock_conn.__enter__.return_value = mock_conn
+        mock_engine.connect.return_value = mock_conn
 
         with patch.object(pd.DataFrame, "to_sql") as mock_to_sql:
             # Act
-            create_benchmark_dbs.load_data_to_db(test_df, db_name, mock_config)
+            result = create_benchmark_dbs.write_to_database(test_df, mock_engine)
 
             # Assert
-            mock_create_db.assert_called_once_with(db_name, mock_config)
-            target_conn_str = create_benchmark_dbs.get_db_connection_string(
-                mock_config, "postgres", db_name=db_name
-            )
-            mock_create_engine_func.assert_called_with(target_conn_str)
+            assert result is True
             mock_to_sql.assert_called_once_with(
-                name=db_name,
-                con=mock_engine,
+                "wide_format_data",
+                mock_engine,
                 if_exists="replace",
                 index=False,
-                method="multi",
+                chunksize=1000,
             )
+            # Verify indexing SQL was executed
+            assert mock_conn.execute.call_count >= 2  # Indexing + ANALYZE
+
+    def test_map_db_to_sql_file(self):
+        """Test the database to SQL file mapping function."""
+        # Test numeric database mapping
+        result = create_benchmark_dbs._map_db_to_sql_file("tmp_benchmark_wide_numeric")
+        assert result == "flatten_df9.sql"
+
+        # Test text_nulls database mapping
+        result = create_benchmark_dbs._map_db_to_sql_file(
+            "tmp_benchmark_wide_text_nulls"
+        )
+        assert result == "flatten_df9_text_nulls.sql"
+
+        # Test invalid database name
+        with pytest.raises(ValueError):
+            create_benchmark_dbs._map_db_to_sql_file("invalid_db_name")
+
+    @patch("create_benchmark_dbs.get_engine")
+    @patch("create_benchmark_dbs.verify_benchmark_database_ready")
+    def test_verify_benchmark_database_success(
+        self,
+        mock_verify_ready: MagicMock,
+        mock_get_engine: MagicMock,
+        mock_config: Config,
+    ):
+        """Test successful benchmark database verification."""
+        mock_engine = MagicMock()
+        mock_get_engine.return_value = mock_engine
+        mock_verify_ready.return_value = True
+
+        result = create_benchmark_dbs.verify_benchmark_database(mock_config, "test_db")
+
+        assert result is True
+        mock_get_engine.assert_called_once_with(mock_config, dbname="test_db")
+        mock_verify_ready.assert_called_once_with(mock_engine)
+
+    @patch("create_benchmark_dbs.get_engine")
+    @patch("create_benchmark_dbs.verify_benchmark_database_ready")
+    def test_verify_benchmark_database_failure(
+        self,
+        mock_verify_ready: MagicMock,
+        mock_get_engine: MagicMock,
+        mock_config: Config,
+    ):
+        """Test benchmark database verification failure."""
+        mock_engine = MagicMock()
+        mock_get_engine.return_value = mock_engine
+        mock_verify_ready.return_value = False
+
+        result = create_benchmark_dbs.verify_benchmark_database(mock_config, "test_db")
+
+        assert result is False
+
+    def test_load_config_success(self, tmp_path: Path):
+        """Verify load_config correctly parses a valid INI file."""
+        config_content = """
+[postgresql]
+host = localhost
+port = 5432
+user = test_user
+password = test_password
+root_db = postgres
+
+[databases]
+benchmark_dbs = tmp_benchmark_wide_numeric, tmp_benchmark_wide_text_nulls
+benchmark_source_db = tmp_df9
+
+[paths]
+sql_queries_dir = ../sql/canonical_queries
+"""  # pragma: allowlist secret
+        config_file = tmp_path / "config.ini"
+        config_file.write_text(config_content)
+
+        config = create_benchmark_dbs.load_config(config_file)
+        assert config.host == "localhost"
+        assert config.password == "test_password"  # pragma: allowlist secret
+        assert config.source_db == "tmp_df9"
+        assert len(config.benchmark_dbs) == 2
+        assert "tmp_benchmark_wide_numeric" in config.benchmark_dbs
+
+    def test_parse_arguments_defaults(self):
+        """Test that parse_arguments returns correct defaults."""
+        with patch("sys.argv", ["01_create_benchmark_dbs.py"]):
+            args = create_benchmark_dbs.parse_arguments()
+            assert args.config == Path("config.ini")
+            assert args.force_recreate is False
+            assert args.verify_only is False
+
+    def test_parse_arguments_custom(self):
+        """Test that parse_arguments handles custom arguments."""
+        with patch(
+            "sys.argv",
+            [
+                "01_create_benchmark_dbs.py",
+                "--config",
+                "/custom/config.ini",
+                "--force-recreate",
+                "--verify-only",
+            ],
+        ):
+            args = create_benchmark_dbs.parse_arguments()
+            assert args.config == Path("/custom/config.ini")
+            assert args.force_recreate is True
+            assert args.verify_only is True
+
+    @patch("create_benchmark_dbs.setup_logging")
+    @patch("create_benchmark_dbs.load_config")
+    @patch("create_benchmark_dbs.get_engine")
+    @patch("create_benchmark_dbs.verify_database_exists")
+    @patch("create_benchmark_dbs.verify_benchmark_database")
+    @patch("create_benchmark_dbs.parse_arguments")
+    def test_main_verify_only_mode(
+        self,
+        mock_parse_args: MagicMock,
+        mock_verify_benchmark: MagicMock,
+        mock_verify_exists: MagicMock,
+        mock_get_engine: MagicMock,
+        mock_load_config: MagicMock,
+        mock_setup_logging: MagicMock,
+        mock_config: Config,
+    ):
+        """Test main function in verify-only mode."""
+        # Setup mocks
+        mock_args = MagicMock()
+        mock_args.verify_only = True
+        mock_args.force_recreate = False
+        mock_args.config = Path("config.ini")
+        mock_parse_args.return_value = mock_args
+
+        mock_load_config.return_value = mock_config
+        mock_engine = MagicMock()
+        mock_get_engine.return_value = mock_engine
+        mock_verify_exists.return_value = True
+        mock_verify_benchmark.return_value = True
+
+        # Execute
+        create_benchmark_dbs.main()
+
+        # Verify
+        mock_setup_logging.assert_called_once()
+        mock_load_config.assert_called_once_with(mock_args.config)
+        mock_get_engine.assert_called_once_with(mock_config)
+        assert mock_verify_exists.call_count == len(mock_config.benchmark_dbs)
+        assert mock_verify_benchmark.call_count == len(mock_config.benchmark_dbs)
+
+    @patch("create_benchmark_dbs.setup_logging")
+    @patch("create_benchmark_dbs.load_config")
+    @patch("create_benchmark_dbs.get_engine")
+    @patch.object(create_benchmark_dbs, "check_pipeline_prerequisites")
+    @patch.object(create_benchmark_dbs, "verify_database_exists")
+    @patch.object(create_benchmark_dbs, "create_database")
+    @patch.object(create_benchmark_dbs, "extract_transform_data")
+    @patch.object(create_benchmark_dbs, "write_to_database")
+    @patch.object(create_benchmark_dbs, "verify_benchmark_database")
+    @patch.object(create_benchmark_dbs, "parse_arguments")
+    def test_main_create_mode(
+        self,
+        mock_parse_args: MagicMock,
+        mock_verify_benchmark: MagicMock,
+        mock_write_to_db: MagicMock,
+        mock_extract_transform: MagicMock,
+        mock_create: MagicMock,
+        mock_verify_exists: MagicMock,
+        mock_check_prereqs: MagicMock,
+        mock_get_engine: MagicMock,
+        mock_load_config: MagicMock,
+        mock_setup_logging: MagicMock,
+        mock_config: Config,
+    ):
+        """Test main function in create mode."""
+        # Setup mocks
+        mock_args = MagicMock()
+        mock_args.verify_only = False
+        mock_args.force_recreate = False
+        mock_args.config = Path("config.ini")
+        mock_parse_args.return_value = mock_args
+
+        mock_load_config.return_value = mock_config
+        mock_engine = MagicMock()
+        mock_get_engine.return_value = mock_engine
+        mock_check_prereqs.return_value = (True, [])
+        mock_verify_exists.return_value = False  # Database doesn't exist
+        mock_extract_transform.return_value = pd.DataFrame({"col": [1, 2, 3]})
+        mock_write_to_db.return_value = True  # Write succeeds
+        mock_verify_benchmark.return_value = True  # Verification succeeds
+
+        # Execute
+        create_benchmark_dbs.main()
+
+        # Verify
+        mock_setup_logging.assert_called_once()
+        mock_load_config.assert_called_once_with(mock_args.config)
+        mock_check_prereqs.assert_called_once()
+        assert mock_create.call_count == len(mock_config.benchmark_dbs)
+        assert mock_extract_transform.call_count == len(mock_config.benchmark_dbs)
+        assert mock_write_to_db.call_count == len(mock_config.benchmark_dbs)
+        assert mock_verify_benchmark.call_count == len(mock_config.benchmark_dbs)
