@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 from unittest.mock import MagicMock, mock_open, patch
 
+import pandas as pd
 import pytest
 
 # Add the parent directory of 'profiling_modules' to the system path
@@ -32,62 +33,81 @@ def mock_engine():
     return engine, mock_connection
 
 
-class TestLoadQueryMetadata:
-    """Tests for load_query_metadata."""
-
-    @patch("pathlib.Path.exists", return_value=True)
-    def test_success(self, mock_exists):
-        """Test successful loading of metadata JSON."""
-        json_data = '{"categories": {"cat1": "Category 1"}}'
-        with patch("builtins.open", mock_open(read_data=json_data)):
-            metadata = metrics_performance.load_query_metadata(Path("/fake/dir"))
-            assert metadata["categories"]["cat1"] == "Category 1"
-
-
-class TestParseCategorizedQueries:
-    """Tests for parse_categorized_queries."""
-
-    def test_parsing(self):
-        """Test correct parsing of a categorized SQL string."""
-        sql_content = """-- CATEGORY: baseline\n-- QUERY: 1.1\nSELECT * FROM table1;"""
-        queries = metrics_performance.parse_categorized_queries(sql_content)
-        assert queries == [("baseline", "1.1", "SELECT * FROM table1")]
-
-
 class TestRunPerformanceBenchmarks:
     """Tests for run_performance_benchmarks."""
 
-    @patch("profiling_modules.metrics_performance.parse_categorized_queries")
     @patch("pathlib.Path.exists", return_value=True)
-    @patch("profiling_modules.metrics_performance.load_query_metadata")
-    def test_success(self, mock_load_meta, mock_exists, mock_parse, mock_engine):
+    def test_success(self, mock_exists, mock_engine):
         """Test a successful benchmark run."""
-        engine, _ = mock_engine
-        mock_load_meta.return_value = {
-            "database_mappings": {"test_db": "test_queries.sql"},
-            "categories": {"cat1": {"name": "Category One"}},
-        }
-        mock_parse.return_value = [("cat1", "q1", "SELECT 1")]
+        engine, mock_connection = mock_engine
 
-        with patch("builtins.open", mock_open(read_data="-- QUERY: q1\nSELECT 1;")):
+        # Mock file content with proper SQL format
+        sql_content = """-- CATEGORY: baseline
+-- QUERY: 1.1
+SELECT COUNT(*) FROM ${schema}.test_table;
+-- END Query
+
+-- CATEGORY: performance
+-- QUERY: 2.1
+SELECT * FROM ${schema}.users WHERE id = 1;
+-- END Query"""
+
+        with patch("builtins.open", mock_open(read_data=sql_content)):
+            # Mock the connection execute to return successful results
+            mock_result = MagicMock()
+            mock_result.returns_rows = True
+            mock_result.fetchall.return_value = [(100,)]
+            mock_connection.execute.return_value = mock_result
+
+            # Mock transaction
+            mock_trans = MagicMock()
+            mock_connection.begin.return_value = mock_trans
+
             results = metrics_performance.run_performance_benchmarks(
-                engine, "test_db", "public", Path("/fake/dir")
+                engine, "test_db", "public", Path("/fake/dir/test_queries.sql")
             )
 
-        assert len(results) == 1
-        assert results[0]["status"] == "Success"
+        # Should have results for both queries
+        assert len(results) == 2
+        assert all(results["status"] == "Success")
+        assert all(results["latency_ms"].notna())
 
-    @patch("profiling_modules.metrics_performance.run_legacy_benchmarks")
-    @patch("profiling_modules.metrics_performance.load_query_metadata")
-    def test_fallback_to_legacy(self, mock_load_meta, mock_legacy, mock_engine):
-        """Test it falls back to legacy benchmarks if no mapping is found."""
+    @patch("pathlib.Path.exists", return_value=False)
+    def test_file_not_found(self, mock_exists, mock_engine):
+        """Test behavior when query file doesn't exist."""
         engine, _ = mock_engine
-        mock_load_meta.return_value = {"database_mappings": {}}
-        mock_legacy.return_value = [{"status": "Success"}]
 
-        with patch("pathlib.Path.exists", return_value=True):
-            _ = metrics_performance.run_performance_benchmarks(
-                engine, "other_db", "public", Path("/fake/dir")
-            )
+        results = metrics_performance.run_performance_benchmarks(
+            engine, "test_db", "public", Path("/nonexistent/file.sql")
+        )
 
-        mock_legacy.assert_called_once()
+        # Should return empty DataFrame when file doesn't exist
+        assert isinstance(results, pd.DataFrame)
+        assert len(results) == 0
+
+    def test_query_execution_failure(self, mock_engine):
+        """Test handling of query execution failures."""
+        engine, mock_connection = mock_engine
+
+        sql_content = """-- CATEGORY: baseline
+-- QUERY: 1.1
+SELECT * FROM nonexistent_table;
+-- END Query"""
+
+        with patch("builtins.open", mock_open(read_data=sql_content)):
+            with patch("pathlib.Path.exists", return_value=True):
+                # Mock the connection execute to raise an exception
+                mock_connection.execute.side_effect = Exception("Table not found")
+
+                # Mock transaction
+                mock_trans = MagicMock()
+                mock_connection.begin.return_value = mock_trans
+
+                results = metrics_performance.run_performance_benchmarks(
+                    engine, "test_db", "public", Path("/fake/dir/test_queries.sql")
+                )
+
+        # Should have one failed result
+        assert len(results) == 1
+        assert results.iloc[0]["status"] == "Failed"
+        assert "Table not found" in results.iloc[0]["error_message"]
