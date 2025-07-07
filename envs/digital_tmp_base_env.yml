@@ -16,7 +16,7 @@ dependencies:
   - argon2-cffi-bindings=21.2.0=py311he736701_5
   - arrow=1.3.0=pyhd8ed1ab_1
   - asttokens=3.0.0=pyhd8ed1ab_1
-  - async-lru=2.0.5=pyh29332c3_0
+  - async-lru=2.0.4=py311haa95532_0
   - attrs=25.3.0=pyh71513ae_0
   - babel=2.17.0=pyhd8ed1ab_0
   - backoff=2.2.1=pyhd8ed1ab_1
@@ -109,7 +109,7 @@ dependencies:
   - getopt-win32=0.1=hcfcfb64_1
   - graphite2=1.3.13=h63175ca_1003
   - graphviz=12.2.1=hf40819d_1
-  - great-expectations=1.5.1=pyhd8ed1ab_0
+  - great-expectations=1.4.1=py311haa95532_0
   - greenlet=3.2.3=py311hda3d55a_0
   - gts=0.7.6=h6b5321d_4
   - h11=0.16.0=pyhd8ed1ab_0
@@ -146,13 +146,13 @@ dependencies:
   - jsonschema=4.24.0=pyhd8ed1ab_0
   - jsonschema-specifications=2025.4.1=pyh29332c3_0
   - jsonschema-with-format-nongpl=4.24.0=hd8ed1ab_0
-  - jupyter-lsp=2.2.5=pyhe01879c_2
-  - jupyter_client=8.6.3=pyhd8ed1ab_1
+  - jupyter-lsp=2.2.5=py311haa95532_0
+  - jupyter_client=7.4.9=py311haa95532_0
   - jupyter_core=5.8.1=pyh5737063_0
   - jupyter_events=0.12.0=pyh29332c3_0
   - jupyter_server=2.16.0=pyhe01879c_0
   - jupyter_server_terminals=0.5.3=pyhd8ed1ab_1
-  - jupyterlab=4.4.3=pyhd8ed1ab_0
+  - jupyterlab=4.3.4=py311haa95532_0
   - jupyterlab_pygments=0.3.0=pyhd8ed1ab_2
   - jupyterlab_server=2.27.3=pyhd8ed1ab_1
   - jupyterlab_widgets=3.0.15=pyhd8ed1ab_0
@@ -228,15 +228,15 @@ dependencies:
   - mypy_extensions=1.0.0=py311haa95532_0
   - narwhals=1.42.0=pyhe01879c_0
   - nbclient=0.10.2=pyhd8ed1ab_0
-  - nbconvert-core=7.16.6=pyh29332c3_0
+  - nbconvert-core=7.16.6=py311haa95532_0
   - nbformat=5.10.4=pyhd8ed1ab_1
   - nbstripout=0.8.1=pyhd8ed1ab_0
   - nest-asyncio=1.6.0=pyhd8ed1ab_1
   - networkx=3.5=pyhe01879c_0
   - nlohmann_json=3.11.3=he0c23c2_1
   - nodeenv=1.9.1=pyhd8ed1ab_1
-  - notebook=7.4.3=pyhd8ed1ab_0
-  - notebook-shim=0.2.4=pyhd8ed1ab_1
+  - notebook=7.3.2=py311haa95532_1
+  - notebook-shim=0.2.4=py311haa95532_0
   - numpy=1.26.4=py311h0b4df5a_0
   - openjpeg=2.5.3=h4d64b90_0
   - openssl=3.5.0=ha4e3fda_1
@@ -314,7 +314,7 @@ dependencies:
   - pywin32=307=py311hda3d55a_3
   - pywinpty=2.0.15=py311hda3d55a_0
   - pyyaml=6.0.2=py311h5082efb_2
-  - pyzmq=26.4.0=py311h484c95c_0
+  - pyzmq=24.0.1=py311h2bbff1b_0
   - qhull=2020.2=hc790b64_5
   - qt6-main=6.9.1=h02ddd7d_0
   - rasterio=1.4.3=py311hf7d2747_1
@@ -350,7 +350,7 @@ dependencies:
   - snowplow-tracker=1.0.4=pyhd8ed1ab_0
   - snuggs=1.4.7=pyhd8ed1ab_2
   - soupsieve=2.7=pyhd8ed1ab_0
-  - sqlalchemy=2.0.41=py311he736701_0
+  - sqlalchemy=1.4.51=py311h827c3e9_1
   - sqlalchemy-utils=0.41.2=hd8ed1ab_2
   - sqlalchemy-utils-arrow=0.41.2=hd8ed1ab_2
   - sqlalchemy-utils-babel=0.41.2=hd8ed1ab_2
