@@ -499,4 +499,3 @@ dependencies:
       - sqlalchemy==2.0.41
       - sqlalchemy-schemadisplay==2.0
       - ujson==5.10.0
-prefix: /home/rcesa/anaconda3/envs/digital_tmp_base
