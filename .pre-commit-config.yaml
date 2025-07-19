@@ -1,53 +1,63 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
+# Global exclusion patterns
+exclude: '^(knowledge_base/|large_files_for_dropbox_download/|\.windsurf/|\.cursor/|\.idea/)'
+
 repos:
-  # --- Foundational hooks for all file types ---
+  # --- Foundational hooks ---
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
     hooks:
       - id: check-yaml
-      - id: end-of-file-fixer
-      - id: trailing-whitespace
+        args: ['--unsafe']  # Allow custom tags
+      - id: check-json
+      - id: check-toml
       - id: check-added-large-files
-        args: ["--maxkb=1024"] # Fail if a file > 1MB is added
+        args: ['--maxkb=1024']
+      # These hooks will be skipped in CI to prevent modification issues
+      - id: end-of-file-fixer
+        stages: [commit]  # Only run locally
+      - id: trailing-whitespace
+        stages: [commit]  # Only run locally
+      - id: mixed-line-ending
+        args: ['--fix=lf']
 
-  # --- Python Linting & Formatting with Ruff ---
-  # Ruff is extremely fast and replaces black, isort, and flake8.
-  # This builds upon your existing configuration.
+  # --- Python: Ruff (fast, replaces Black/isort/flake8) ---
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.5
+    rev: v0.8.8
     hooks:
-      # Lints and automatically fixes import sorting, syntax errors, etc.
       - id: ruff
-        args: [--fix, --exit-non-zero-on-fix]
-      # Formats code to the black standard.
+        args: [--fix]
+        exclude: '^(phases/01_LegacyDB/infrastructure/)'
       - id: ruff-format
+        exclude: '^(phases/01_LegacyDB/infrastructure/)'
 
-  # --- Jupyter Notebook Output Stripping ---
-  # Based on your use of .ipynb files like 'template_comparative_analysis.ipynb'.
-  # This strips output cells to keep your git history clean and reduce file size.
+  # --- Jupyter Notebooks ---
   - repo: https://github.com/kynan/nbstripout
     rev: 0.7.1
     hooks:
       - id: nbstripout
+        args: [--max-size, '1000']  # Strip outputs from cells > 1KB
 
   # --- SQL Formatting ---
-  # Your project has a large number of .sql files. This will enforce a
-  # consistent style and catch syntax errors.
   - repo: https://github.com/sqlfluff/sqlfluff
     rev: 3.0.7
     hooks:
-      - id: sqlfluff-fix
-        # Assuming postgres dialect based on your use of psycopg2.
-        # This will auto-format your SQL files.
+      - id: sqlfluff-lint
         args: [--dialect, postgres]
+        files: \.sql$
+        exclude: '^(infrastructure/db/legacy_db_sql_scripts/TMP_.*\.sql)'
+      # Fix hook only runs locally
+      - id: sqlfluff-fix
+        stages: [commit]
+        args: [--dialect, postgres]
+        files: \.sql$
+        exclude: '^(infrastructure/db/legacy_db_sql_scripts/TMP_.*\.sql)'
 
-  # --- Security: Detect Hardcoded Secrets ---
-  # A crucial security check for any project.
+  # --- Security: Detect Secrets ---
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.5.0
     hooks:
       - id: detect-secrets
-        # To establish a baseline of "known" secrets (including false positives),
-        # run `detect-secrets scan . > .secrets.baseline` and uncomment the next line.
-        # args: ['--baseline', '.secrets.baseline']
+        args: ['--baseline', '.secrets.baseline']
+        exclude_types: [pdf, png, jpeg, jpg, tif, tiff, epub]

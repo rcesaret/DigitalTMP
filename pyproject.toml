@@ -10,15 +10,6 @@
 target-version = "py311"
 line-length = 88
 # Match Black's default line length
-
-# Define the set of rules to use.
-# E/W = pycodestyle errors/warnings
-# F = Pyflakes
-# I = isort (import sorting)
-# N = pep8-naming
-# B = flake8-bugbear
-lint.select = ["E", "F", "W", "I", "N", "B"]
-
 # Exclude common directories from linting.
 exclude = [
     ".bzr",
@@ -38,29 +29,38 @@ exclude = [
     "dist",
     "node_modules",
     "venv",
+    # Project-specific exclusions
+    "knowledge_base",
+    "large_files_for_dropbox_download",
+    ".windsurf",
+    ".cursor",
+    ".idea",
+    "project_materials",
 ]
 
+[tool.ruff.lint]
+# Define the set of rules to use.
+# E/W = pycodestyle errors/warnings
+# F = Pyflakes
+# I = isort (import sorting)
+# N = pep8-naming
+# B = flake8-bugbear
+select = ["E", "F", "W", "I", "N", "B"]
+ignore = ["E501"]  # Line length handled by formatter
+
+# Ruff formatter configuration
 [tool.ruff.format]
-# Ruff formatter configuration (replaces Black)
-# Use a line length of 88, which is the standard for Black.
-# Enables preview mode for new formatting features.
-preview = true
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "lf"
 
+# Radon configuration
+[tool.radon]
+exclude = "knowledge_base/*,large_files_for_dropbox_download/*,.windsurf/*"
+cc_min = "C"  # Minimum complexity grade
+mi_min = "B"  # Minimum maintainability index
 
-[tool.sqlfluff.core]
-# SQLFluff configuration: https://docs.sqlfluff.com/en/stable/configuration.html
-# This configures the SQL linter/formatter for all .sql files in your project.
-# Based on your use of psycopg2 and postgres-related scripts.
-dialect = "postgres"
-# Rely on the default .sql file extension to avoid parsing issues.
-
-[tool.pytest.ini_options]
-# Pytest configuration: https://docs.pytest.org/en/latest/reference/reference.html#ini-options-ref
-# Define the directory where your tests will live.
-testpaths = [
-    "tests"
-]
-# Default options for running pytest.
-# -s: Show output from print statements
-# -v: Verbose mode
-addopts = "-sv"
+# Detect-secrets configuration
+[tool.detect-secrets]
+exclude_files = "knowledge_base/.*|large_files_for_dropbox_download/.*|\\.windsurf/.*|\\.cursor/.*"

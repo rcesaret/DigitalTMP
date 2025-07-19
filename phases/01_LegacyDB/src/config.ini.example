@@ -30,7 +30,7 @@ user = postgres
 
 ; The password for the specified PostgreSQL user.
 ; THIS IS A SENSITIVE VALUE. Ensure this file is not tracked by Git.
-password = __YOUR_POSTGRES_PASSWORD__
+password = __YOUR_POSTGRES_PASSWORD__ # pragma: allowlist secret
 
 ; The name of the root or default database on your server. The scripts will
 ; connect to this database initially in order to run CREATE DATABASE commands
