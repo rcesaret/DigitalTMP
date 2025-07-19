@@ -152,25 +152,16 @@ For a complete, categorized list of technologies and the rationale for their sel
 ```
 .
 ├── README.md
-├── .env
 ├── .env.example
 ├── .gitignore
 ├── LICENSE
-├── PLANNING.md
-├── TASKS.md
-├── PULL_REQUEST_TEMPLATE.md
-├───.windsurf/
-│   └── rules/
-│        └── python_coding_standards.md
 ├───docs/
-│   ├── drafts/
 │   ├── overview.md
 │   ├── architecture.md
 │   ├── data_sources.md
 │   ├── methods.md
 │   └── outputs_summary.md
 ├── envs/
-│   └── environment.yml
 ├───data/
 │   ├── raw/
 │   ├── external/
@@ -238,18 +229,10 @@ For a complete, categorized list of technologies and the rationale for their sel
 │   ├── db/
 │   │   └── legacy_db_sql_scripts/
 │   │       ├── TMP_DF8.sql
-│   │       ├── TMP_DF8_create.sql
 │   │       ├── TMP_DF9.sql
-│   │       ├── TMP_DF9_create.sql
 │   │       ├── TMP_DF10.sql
-│   │       ├── TMP_DF10_create.sql
-│   │       ├── TMP_REAN_DF2.sql
-│   │       └── TMP_REAN_DF2_create.sql
+│   │       └── TMP_REAN_DF2.sql
 │   └── docker/
-├── large_files_for_dropbox_download/
-│   └── raster_tiles_millon_space/
-│       ├── architectural/
-│       └── topographic/
 ├── tests/
 ├── outputs/
 │   ├── figures/
@@ -279,7 +262,8 @@ For a complete, categorized list of technologies and the rationale for their sel
 ## 👤 Author & Attribution
 
 **Rudolf Cesaretti**
-PhD, ASU Teotihuacan Research Laboratory
+PhD Candidate
+[ASU Teotihuacan Research Laboratory](https://shesc.asu.edu/centers/teotihuacan-research-laboratory)
 - Email: Rudolf.Cesaretti@asu.edu
 - Website: [rcesaret.github.io](https://rcesaret.github.io/)
 - LinkedIn: [rudolf-cesaretti](https://www.linkedin.com/in/rudolf-cesaretti)
