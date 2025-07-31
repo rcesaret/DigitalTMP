@@ -46,13 +46,15 @@ class TestGetTableLevelMetrics:
         schema_name = "public"
         mock_get_tables.return_value = ["table1"]
         # Create a mock DataFrame with all required columns for the calculations
-        mock_df = pd.DataFrame({
-            "table_name": ["table1"],
-            "total_size_mb": [0.20],
-            "bloat_ratio_estimate": [0.05],
-            "expected_size_b": [1000],
-            "actual_size_b": [1200],
-        })
+        mock_df = pd.DataFrame(
+            {
+                "table_name": ["table1"],
+                "total_size_mb": [0.20],
+                "bloat_ratio_estimate": [0.05],
+                "expected_size_b": [1000],
+                "actual_size_b": [1200],
+            }
+        )
         mock_pandas_read_sql.return_value = mock_df
 
         metrics = metrics_schema.get_table_level_metrics(mock_engine, schema_name)
@@ -84,11 +86,13 @@ class TestGetColumnStructuralMetrics:
     def test_success(self, mock_engine, mock_pandas_read_sql):
         """Test successful retrieval of column structural metrics."""
         schema_name = "public"
-        mock_df = pd.DataFrame({
-            "table_name": ["users"],
-            "column_name": ["id"],
-            "data_type": ["integer"],
-        })
+        mock_df = pd.DataFrame(
+            {
+                "table_name": ["users"],
+                "column_name": ["id"],
+                "data_type": ["integer"],
+            }
+        )
         mock_pandas_read_sql.return_value = mock_df
 
         metrics = metrics_schema.get_column_structural_metrics(mock_engine, schema_name)

@@ -1,21 +1,21 @@
 /* =====================================================================================
-   
+
    Teotihuacan Mapping Project (TMP) – DF8 Database (MS Access .mdb → PostgreSQL 17)
-   
+
    Rudolf Cesaretti
    2025-04-25
-   
-   PostgreSQL 17 syntax SQL script to migrate DF8 from MS Access 2003 to PostgreSQL 17. 
+
+   PostgreSQL 17 syntax SQL script to migrate DF8 from MS Access 2003 to PostgreSQL 17.
 	As such, this script replicates the DF8 MS Access database authored by Ian Robertson
-	(DF8.all.mdb; last modifications in 2005) with some minor structural changes to the 
-	schema and translation-based edits to facilitate valid migration. Column and table 
+	(DF8.all.mdb; last modifications in 2005) with some minor structural changes to the
+	schema and translation-based edits to facilitate valid migration. Column and table
 	names are preserved verbatim.
-	
-   NOTE: Running this script does not create a database. It populates an empty database. 
-   
+
+   NOTE: Running this script does not create a database. It populates an empty database.
+
    ===================================================================================== */
-   
-   
+
+
 -- ============================================================================
 --                            CREATE SCHEMA
 -- ============================================================================
@@ -40,8 +40,8 @@ COMMIT;
 
 /* ---------- Create `ssn_master` table ------------------------------------------------ */
 
---- NOTE: This table is not in the original DF8, but was inserted by Rudolf Cesaretti in 
----    April 2025 in order to facilitate hierarchical schema operations on the PK shared 
+--- NOTE: This table is not in the original DF8, but was inserted by Rudolf Cesaretti in
+---    April 2025 in order to facilitate hierarchical schema operations on the PK shared
 ---    by all other tables in the database.
 
 BEGIN;
@@ -648,7 +648,7 @@ COMMIT;
 BEGIN;
 
 CREATE TABLE IF NOT EXISTS tmp_df8.v305 (
-	SSN SMALLINT NOT NULL, 
+	SSN SMALLINT NOT NULL,
 	NUBBTOTS SMALLINT,
 	PRIMARY KEY (SSN),
     FOREIGN KEY (SSN) REFERENCES tmp_df8.ssn_master(SSN) ON DELETE CASCADE
@@ -5740,7 +5740,7 @@ INSERT INTO tmp_df8.ssn_master (SSN) VALUES
 	(5048),
 	(5049),
 	(5050);
-	
+
 COMMIT;
 
 BEGIN;
@@ -10796,7 +10796,7 @@ INSERT INTO tmp_df8.v201 (SSN, FLDWRK1, FLDWRK2, FLDWRK3, FLDWRK4, FLDWRK5, COLL
 	(5048, 7, 11, -1, -1, -1, 66, 2, 0, -1, 0, 4, 1),
 	(5049, 7, 11, -1, -1, -1, 66, 2, 0, 0, 0, 4, 4),
 	(5050, 7, 11, -1, -1, -1, 66, 2, 0, 0, 0, 0, -1);
-	
+
 COMMIT;
 
 /* ---------- Insert data for `v202` table --------------------------------------------- */
@@ -137269,5 +137269,5 @@ INSERT INTO tmp_df8.v401 (SSN, SUBSITE, UNIT, NORTHING, EASTING, CXUNIT, MCXUNIT
 	(5048, 'NONE', 'S3E7', -133, 339, 'XXXX', 'XXXX', 110, 49, 292, 113, -1, 'L18'),
 	(5049, 'NONE', 'S3E7', -131, 334, 'XXXX', 'XXXX', 178, 107, 510, 164, -1, 'L19'),
 	(5050, 'NONE', 'S3E7', -117, 331, 'XXXX', 'XXXX', 572, 473, 173, 5, -1, 'L21');
-	
+
 COMMIT;

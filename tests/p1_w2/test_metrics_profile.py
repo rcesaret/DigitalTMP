@@ -51,13 +51,15 @@ class TestGetAllColumnProfiles:
         mock_get_tables.return_value = ["users"]
 
         # Use correct column names from pg_stats table
-        mock_df = pd.DataFrame({
-            "fq_table_name": ["public.users"],
-            "tablename": ["users"],
-            "column_name": ["email"],
-            "null_percent": [10.0],
-            "distinct_values_estimate": [100.0],
-        })
+        mock_df = pd.DataFrame(
+            {
+                "fq_table_name": ["public.users"],
+                "tablename": ["users"],
+                "column_name": ["email"],
+                "null_percent": [10.0],
+                "distinct_values_estimate": [100.0],
+            }
+        )
         mock_pandas_read_sql.return_value = mock_df
 
         mock_connection.execute.return_value.scalar_one.return_value = 1000

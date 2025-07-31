@@ -30,30 +30,36 @@ def mock_pipeline_modules():
 
     # Configure mock returns with realistic DataFrame/dict structures
     # For basic metrics - return a DataFrame with database statistics
-    metrics_basic_mock.get_basic_database_metrics.return_value = pd.DataFrame({
-        "database": ["test_db"],
-        "schema_count": [5],
-        "table_count": [20],
-        "total_size_mb": [150.5],
-    })
+    metrics_basic_mock.get_basic_database_metrics.return_value = pd.DataFrame(
+        {
+            "database": ["test_db"],
+            "schema_count": [5],
+            "table_count": [20],
+            "total_size_mb": [150.5],
+        }
+    )
 
     # For schema metrics - return a DataFrame with schema information
-    metrics_schema_mock.get_schema_metrics.return_value = pd.DataFrame({
-        "schema": ["public", "private"],
-        "table_count": [10, 5],
-        "total_columns": [50, 25],
-        "avg_columns_per_table": [5, 5],
-    })
+    metrics_schema_mock.get_schema_metrics.return_value = pd.DataFrame(
+        {
+            "schema": ["public", "private"],
+            "table_count": [10, 5],
+            "total_columns": [50, 25],
+            "avg_columns_per_table": [5, 5],
+        }
+    )
 
     # For profile metrics - return a DataFrame with column profiles
-    metrics_profile_mock.get_column_profiles.return_value = pd.DataFrame({
-        "table": ["users", "orders"],
-        "column": ["name", "amount"],
-        "data_type": ["text", "numeric"],
-        "distinct_count": [1000, 500],
-        "null_count": [10, 5],
-        "row_count_exact": [1010, 505],
-    })
+    metrics_profile_mock.get_column_profiles.return_value = pd.DataFrame(
+        {
+            "table": ["users", "orders"],
+            "column": ["name", "amount"],
+            "data_type": ["text", "numeric"],
+            "distinct_count": [1000, 500],
+            "null_count": [10, 5],
+            "row_count_exact": [1010, 505],
+        }
+    )
 
     # For interoperability metrics - return a dictionary with scores
     metrics_interop_mock.calculate_interoperability_metrics.return_value = {
@@ -64,12 +70,14 @@ def mock_pipeline_modules():
     }
 
     # For performance metrics - return a DataFrame with benchmark results
-    metrics_performance_mock.run_performance_benchmarks.return_value = pd.DataFrame({
-        "query_id": ["q1", "q2", "q3"],
-        "query_category": ["basic", "filtering", "joining"],
-        "execution_time_ms": [15.2, 45.7, 120.3],
-        "rows_returned": [1000, 500, 200],
-    })
+    metrics_performance_mock.run_performance_benchmarks.return_value = pd.DataFrame(
+        {
+            "query_id": ["q1", "q2", "q3"],
+            "query_category": ["basic", "filtering", "joining"],
+            "execution_time_ms": [15.2, 45.7, 120.3],
+            "rows_returned": [1000, 500, 200],
+        }
+    )
 
     return {
         "metrics_basic": metrics_basic_mock,

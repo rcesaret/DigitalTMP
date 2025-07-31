@@ -80,75 +80,85 @@ def mock_config_file(temp_metrics_dir, temp_output_dir):
 def sample_metrics(temp_metrics_dir):
     """Creates sample metric files for testing."""
     # Sample table metrics
-    db1_table_metrics = pd.DataFrame({
-        "table_name": ["table1", "table2"],
-        "row_count": [100, 200],
-        "index_count": [1, 2],
-        "total_size_kb": [50, 100],
-        "row_estimate": [110, 220],
-    })
+    db1_table_metrics = pd.DataFrame(
+        {
+            "table_name": ["table1", "table2"],
+            "row_count": [100, 200],
+            "index_count": [1, 2],
+            "total_size_kb": [50, 100],
+            "row_estimate": [110, 220],
+        }
+    )
     db1_table_metrics.to_csv(temp_metrics_dir / "db1_table_metrics.csv", index=False)
 
     # Sample schema counts
-    db1_schema_counts = pd.DataFrame({
-        "table_count": [10],
-        "view_count": [5],
-        "function_count": [3],
-        "total_objects": [18],
-    })
+    db1_schema_counts = pd.DataFrame(
+        {
+            "table_count": [10],
+            "view_count": [5],
+            "function_count": [3],
+            "total_objects": [18],
+        }
+    )
     db1_schema_counts.to_csv(temp_metrics_dir / "db1_schema_counts.csv", index=False)
 
     # Sample performance benchmarks with correct format for current implementation
     # The script expects 'query_name' column and creates 'query_id' from it
-    db1_performance = pd.DataFrame({
-        "query_name": [
-            "SELECT - query1",
-            "SELECT - query2",
-            "INSERT - query3",
-            "SELECT - query4",
-            "UPDATE - query5",
-        ],
-        "latency_ms": [100, 200, 150, 80, 90],
-        "status": ["Success", "Success", "Failed", "Success", "Success"],
-        "database": ["db1", "db1", "db1", "db1", "db1"],
-        "rows_returned": [10, 20, 0, 15, 25],
-    })
+    db1_performance = pd.DataFrame(
+        {
+            "query_name": [
+                "SELECT - query1",
+                "SELECT - query2",
+                "INSERT - query3",
+                "SELECT - query4",
+                "UPDATE - query5",
+            ],
+            "latency_ms": [100, 200, 150, 80, 90],
+            "status": ["Success", "Success", "Failed", "Success", "Success"],
+            "database": ["db1", "db1", "db1", "db1", "db1"],
+            "rows_returned": [10, 20, 0, 15, 25],
+        }
+    )
     db1_performance.to_csv(
         temp_metrics_dir / "db1_performance_benchmarks.csv", index=False
     )
 
     # Benchmark database with matching query_names
-    db2_performance = pd.DataFrame({
-        "query_name": [
-            "SELECT - query1",
-            "SELECT - query2",
-            "INSERT - query3",
-            "SELECT - query4",
-            "UPDATE - query5",
-        ],
-        "latency_ms": [120, 180, 300, 85, 95],
-        "status": ["Success", "Success", "Success", "Success", "Success"],
-        "database": [
-            "tmp_benchmark_db",
-            "tmp_benchmark_db",
-            "tmp_benchmark_db",
-            "tmp_benchmark_db",
-            "tmp_benchmark_db",
-        ],
-        "rows_returned": [10, 20, 30, 15, 25],
-    })
+    db2_performance = pd.DataFrame(
+        {
+            "query_name": [
+                "SELECT - query1",
+                "SELECT - query2",
+                "INSERT - query3",
+                "SELECT - query4",
+                "UPDATE - query5",
+            ],
+            "latency_ms": [120, 180, 300, 85, 95],
+            "status": ["Success", "Success", "Success", "Success", "Success"],
+            "database": [
+                "tmp_benchmark_db",
+                "tmp_benchmark_db",
+                "tmp_benchmark_db",
+                "tmp_benchmark_db",
+                "tmp_benchmark_db",
+            ],
+            "rows_returned": [10, 20, 30, 15, 25],
+        }
+    )
     db2_performance.to_csv(
         temp_metrics_dir / "tmp_benchmark_db_performance_benchmarks.csv", index=False
     )
 
     # Second database (benchmark)
-    db2_table_metrics = pd.DataFrame({
-        "table_name": ["table1", "table2"],
-        "row_count": [110, 210],
-        "index_count": [2, 3],
-        "total_size_kb": [55, 110],
-        "row_estimate": [120, 230],
-    })
+    db2_table_metrics = pd.DataFrame(
+        {
+            "table_name": ["table1", "table2"],
+            "row_count": [110, 210],
+            "index_count": [2, 3],
+            "total_size_kb": [55, 110],
+            "row_estimate": [120, 230],
+        }
+    )
     db2_table_metrics.to_csv(
         temp_metrics_dir / "tmp_benchmark_db_table_metrics.csv", index=False
     )
@@ -223,23 +233,27 @@ def test_calculate_comparative_performance_metrics(sample_metrics):
 def test_generate_markdown_report(temp_output_dir):
     """Test generation of markdown report."""
     # Create sample summary dataframe for report
-    summary_df = pd.DataFrame({
-        "Database": ["db1", "tmp_benchmark_db"],
-        "Database Size (MB)": [25, 30],
-        "Table Count": [10, 12],
-        "Total Estimated Rows": [300, 320],
-        "JDI (Join Dependency Index)": [2.5, 2.7],
-        "NF (Normalization Factor)": [3.0, 3.1],
-    })
+    summary_df = pd.DataFrame(
+        {
+            "Database": ["db1", "tmp_benchmark_db"],
+            "Database Size (MB)": [25, 30],
+            "Table Count": [10, 12],
+            "Total Estimated Rows": [300, 320],
+            "JDI (Join Dependency Index)": [2.5, 2.7],
+            "NF (Normalization Factor)": [3.0, 3.1],
+        }
+    )
 
     # Create sample performance dataframe
-    perf_df = pd.DataFrame({
-        "database": ["db1", "tmp_benchmark_db"],
-        "category": ["SELECT", "SELECT"],
-        "query_id": ["query1", "query1"],
-        "latency_ms": [10.5, 9.8],
-        "schema_efficiency_factor": [1.0, 1.07],
-    })
+    perf_df = pd.DataFrame(
+        {
+            "database": ["db1", "tmp_benchmark_db"],
+            "category": ["SELECT", "SELECT"],
+            "query_id": ["query1", "query1"],
+            "latency_ms": [10.5, 9.8],
+            "schema_efficiency_factor": [1.0, 1.07],
+        }
+    )
 
     report_path = temp_output_dir / "test_report.md"
     run_comparison.generate_markdown_report(summary_df, perf_df, report_path)
@@ -353,10 +367,12 @@ def test_calculate_summary_metrics_with_missing_data():
     """Test summary calculation when some metrics are missing."""
     db_name = "test_db"
     db_data = {
-        "table_metrics": pd.DataFrame({
-            "row_estimate": [100, 200],
-            "index_count": [1, 2],
-        }),
+        "table_metrics": pd.DataFrame(
+            {
+                "row_estimate": [100, 200],
+                "index_count": [1, 2],
+            }
+        ),
         # Missing basic_metrics, schema_counts, interop_metrics
     }
 

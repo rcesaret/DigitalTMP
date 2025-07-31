@@ -318,8 +318,7 @@ def populate_database(cfg: Config, db_name: str, sql_file: Path) -> bool:
         return False
     except FileNotFoundError:
         logging.error(
-            "psql command not found. Is PostgreSQL installed and in the "
-            "system's PATH?"
+            "psql command not found. Is PostgreSQL installed and in the system's PATH?"
         )
         return False
     except subprocess.CalledProcessError as e:
@@ -370,7 +369,7 @@ def verify_database_setup(cfg: Config, db_name: str) -> Tuple[bool, str]:
                 f"{len(table_stats)} tables, {total_rows} total rows",
             )
         else:
-            return (False, f"Database '{db_name}' appears empty or " f"corrupted")
+            return (False, f"Database '{db_name}' appears empty or corrupted")
 
     except Exception as e:
         return False, f"Failed to verify database '{db_name}': {e}"
@@ -452,7 +451,7 @@ def main() -> None:
                     if args.verify_only:
                         continue
                     logging.info(
-                        "Database '%s' already properly set up, " "skipping.", db_name
+                        "Database '%s' already properly set up, skipping.", db_name
                     )
                     continue
                 else:
@@ -461,7 +460,7 @@ def main() -> None:
                         setup_success = False
                         continue
                     logging.info(
-                        "Database '%s' exists but needs " "re-population.", db_name
+                        "Database '%s' exists but needs re-population.", db_name
                     )
 
             if args.verify_only:
@@ -502,9 +501,7 @@ def main() -> None:
                 logging.error("✗ Some legacy databases failed verification.")
         else:
             if setup_success:
-                logging.info(
-                    "✓ Legacy Database Setup Complete - " "All databases ready"
-                )
+                logging.info("✓ Legacy Database Setup Complete - All databases ready")
             else:
                 logging.error("✗ Legacy Database Setup encountered errors")
         logging.info("=" * 60)

@@ -374,14 +374,14 @@ def main() -> None:
                 is_verified = verify_benchmark_database(cfg, db_name)
                 if is_verified:
                     logging.info(
-                        "✓ Database '%s' already properly set up, " "skipping.", db_name
+                        "✓ Database '%s' already properly set up, skipping.", db_name
                     )
                     if args.verify_only:
                         continue
                     continue
                 else:
                     logging.warning(
-                        "✗ Database '%s' exists but needs " "reconstruction.", db_name
+                        "✗ Database '%s' exists but needs reconstruction.", db_name
                     )
                     if args.verify_only:
                         creation_success = False
@@ -426,7 +426,7 @@ def main() -> None:
             is_verified = verify_benchmark_database(cfg, db_name)
             if is_verified:
                 logging.info(
-                    "✓ Database '%s' successfully created and " "verified.", db_name
+                    "✓ Database '%s' successfully created and verified.", db_name
                 )
             else:
                 logging.error("✗ Database '%s' creation appears incomplete.", db_name)
@@ -436,16 +436,16 @@ def main() -> None:
         logging.info("=" * 60)
         if args.verify_only:
             if creation_success:
-                logging.info("✓ All benchmark databases verified " "successfully.")
+                logging.info("✓ All benchmark databases verified successfully.")
             else:
-                logging.error("✗ Some benchmark databases failed " "verification.")
+                logging.error("✗ Some benchmark databases failed verification.")
         else:
             if creation_success:
                 logging.info(
-                    "✓ Benchmark database creation complete - " "All databases ready"
+                    "✓ Benchmark database creation complete - All databases ready"
                 )
             else:
-                logging.error("✗ Benchmark database creation encountered " "errors")
+                logging.error("✗ Benchmark database creation encountered errors")
         logging.info("=" * 60)
 
     except (ConfigurationError, ValueError) as e:

@@ -317,8 +317,7 @@ def check_pipeline_prerequisites(cfg, script_name: str) -> Tuple[bool, List[str]
                 )
                 if len(metric_files) == 0:
                     errors.append(
-                        "No metric files found. "
-                        "Run 02_run_profiling_pipeline.py first."
+                        "No metric files found. Run 02_run_profiling_pipeline.py first."
                     )
 
         root_engine.dispose()

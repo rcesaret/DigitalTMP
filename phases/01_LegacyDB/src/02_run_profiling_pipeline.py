@@ -363,7 +363,7 @@ def main() -> None:
                     )
                 except Exception as e:
                     logging.error(
-                        "CRITICAL ERROR in Performance Benchmarks for " "'%s': %s",
+                        "CRITICAL ERROR in Performance Benchmarks for '%s': %s",
                         db_name,
                         e,
                         exc_info=True,

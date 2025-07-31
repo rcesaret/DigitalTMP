@@ -22,4 +22,3 @@ Run this script from the root directory:
 ```bash
 bash scripts/download_big_files.sh
 ```
-

@@ -127,11 +127,13 @@ def test_pipeline_completes_without_error(mock_config, mock_engine, temp_output_
     )
 
     column_profiles_mock = MagicMock(
-        return_value=pd.DataFrame({
-            "table": ["users"],
-            "column": ["name"],
-            "row_count_exact": [1000],
-        })
+        return_value=pd.DataFrame(
+            {
+                "table": ["users"],
+                "column": ["name"],
+                "row_count_exact": [1000],
+            }
+        )
     )
 
     interop_metrics_mock = MagicMock(return_value={"score": 0.85})
@@ -217,27 +219,27 @@ def test_pipeline_completes_without_error(mock_config, mock_engine, temp_output_
         print(f"performance_benchmarks calls: {perf_benchmarks_mock.call_count}")
 
         # Verify all mock functions were called at least once
-        assert (
-            basic_db_metrics_mock.call_count >= 1
-        ), "basic_db_metrics function was not called"
-        assert (
-            schema_object_counts_mock.call_count >= 1
-        ), "schema_object_counts function was not called"
-        assert (
-            table_level_metrics_mock.call_count >= 1
-        ), "table_level_metrics function was not called"
-        assert (
-            column_structural_metrics_mock.call_count >= 1
-        ), "column_structural_metrics function was not called"
-        assert (
-            column_profiles_mock.call_count >= 1
-        ), "column_profiles function was not called"
-        assert (
-            interop_metrics_mock.call_count >= 1
-        ), "interop_metrics function was not called"
-        assert (
-            perf_benchmarks_mock.call_count >= 1
-        ), "performance_benchmarks function was not called"
+        assert basic_db_metrics_mock.call_count >= 1, (
+            "basic_db_metrics function was not called"
+        )
+        assert schema_object_counts_mock.call_count >= 1, (
+            "schema_object_counts function was not called"
+        )
+        assert table_level_metrics_mock.call_count >= 1, (
+            "table_level_metrics function was not called"
+        )
+        assert column_structural_metrics_mock.call_count >= 1, (
+            "column_structural_metrics function was not called"
+        )
+        assert column_profiles_mock.call_count >= 1, (
+            "column_profiles function was not called"
+        )
+        assert interop_metrics_mock.call_count >= 1, (
+            "interop_metrics function was not called"
+        )
+        assert perf_benchmarks_mock.call_count >= 1, (
+            "performance_benchmarks function was not called"
+        )
 
 
 def test_pipeline_creates_expected_metric_files(
@@ -383,18 +385,18 @@ def test_pipeline_creates_expected_metric_files(
             db_files = [f for f in saved_csv_files if db_name.lower() in f.lower()]
 
             # Verify we have at least some files for this database
-            assert (
-                len(db_files) > 0
-            ), f"No files found for database {db_name} in {saved_csv_files}"
+            assert len(db_files) > 0, (
+                f"No files found for database {db_name} in {saved_csv_files}"
+            )
 
             # Check for specific metrics we know should exist
-            assert any(
-                "table_metrics" in f.lower() for f in db_files
-            ), f"No table_metrics file found for {db_name}"
+            assert any("table_metrics" in f.lower() for f in db_files), (
+                f"No table_metrics file found for {db_name}"
+            )
 
-            assert any(
-                "column_structure" in f.lower() for f in db_files
-            ), f"No column_structure file found for {db_name}"
+            assert any("column_structure" in f.lower() for f in db_files), (
+                f"No column_structure file found for {db_name}"
+            )
 
             # Verify that we have a reasonable number of total files
             total_files = len(saved_csv_files) + len(saved_json_files)
@@ -493,7 +495,7 @@ def test_pipeline_handles_module_failure_gracefully(
                 table_level_metrics_mock,
             ),
             patch(
-                "profiling_modules.metrics_schema." "get_column_structural_metrics",
+                "profiling_modules.metrics_schema.get_column_structural_metrics",
                 column_structural_metrics_mock,
             ),
             patch(
@@ -501,12 +503,11 @@ def test_pipeline_handles_module_failure_gracefully(
                 column_profiles_mock,
             ),
             patch(
-                "profiling_modules.metrics_interop."
-                "calculate_interoperability_metrics",
+                "profiling_modules.metrics_interop.calculate_interoperability_metrics",
                 interop_metrics_mock,
             ),
             patch(
-                "profiling_modules.metrics_performance." "run_performance_benchmarks",
+                "profiling_modules.metrics_performance.run_performance_benchmarks",
                 perf_benchmarks_mock,
             ),
             patch("configparser.ConfigParser", return_value=mock_config),
@@ -526,12 +527,12 @@ def test_pipeline_handles_module_failure_gracefully(
 
             # Verify other functions were still called despite
             # column_profiles_mock failing
-            assert (
-                basic_db_metrics_mock.call_count >= 1
-            ), "basic_db_metrics function was not called"
-            assert (
-                schema_object_counts_mock.call_count >= 1
-            ), "schema_object_counts function was not called"
+            assert basic_db_metrics_mock.call_count >= 1, (
+                "basic_db_metrics function was not called"
+            )
+            assert schema_object_counts_mock.call_count >= 1, (
+                "schema_object_counts function was not called"
+            )
 
             # Verify that error was logged properly
             error_logs = [

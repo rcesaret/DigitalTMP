@@ -1,21 +1,21 @@
 /* =====================================================================================
-   
-   Teotihuacan Mapping Project (TMP) – Ceramic Reanalysis ('REANs') DF2 Database 
+
+   Teotihuacan Mapping Project (TMP) – Ceramic Reanalysis ('REANs') DF2 Database
    (MS Access .mdb → PostgreSQL 17)
-   
+
    Rudolf Cesaretti
    2025-04-25
-   
+
    PostgreSQL 17 syntax SQL script to migrate the REANs DF2 database from MS Access to
-    PostgreSQL 17. As such, this script replicates the REANs DF2 MS Access database 
-    authored by Ian Robertson and Angela Huster, last updated in May of 2018 
-    (`TMP Ceramic Reanalysis Datafile 2 WORKING COPY.mdb`), with some minor structural 
-    changes to the DB schema and translation-based edits to facilitate valid migration. 
-    Column and table names are mostly preserved verbatim, with the exception that spaces 
+    PostgreSQL 17. As such, this script replicates the REANs DF2 MS Access database
+    authored by Ian Robertson and Angela Huster, last updated in May of 2018
+    (`TMP Ceramic Reanalysis Datafile 2 WORKING COPY.mdb`), with some minor structural
+    changes to the DB schema and translation-based edits to facilitate valid migration.
+    Column and table names are mostly preserved verbatim, with the exception that spaces
     in column names have been replaced with underscores to optimize machine readability
-    
-   NOTE: Running this script does not create a database. It populates an empty database. 
-   
+
+   NOTE: Running this script does not create a database. It populates an empty database.
+
    ===================================================================================== */
 
 

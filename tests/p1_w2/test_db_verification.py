@@ -155,11 +155,13 @@ class TestVerifySchemaPopulated:
                 mock_result.scalar.return_value = 1
             elif "information_schema.tables" in query_str:
                 # Table listing query - make result iterable
-                mock_result.__iter__ = lambda self: iter([
-                    ("table1",),
-                    ("table2",),
-                    ("table3",),
-                ])
+                mock_result.__iter__ = lambda self: iter(
+                    [
+                        ("table1",),
+                        ("table2",),
+                        ("table3",),
+                    ]
+                )
             elif "COUNT(*)" in query_str:
                 # Row count queries - return different counts for each table
                 if "table1" in query_str:

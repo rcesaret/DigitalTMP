@@ -128,13 +128,15 @@ def run_performance_benchmarks(
                     f"  Benchmark query '{query_name}' failed: {error_message}"
                 )
 
-            results.append({
-                "query_name": query_name,
-                "status": status,
-                "latency_ms": latency_ms,
-                "records_returned": records_returned,
-                "error_message": error_message,
-                "executed_sql": final_sql,
-            })
+            results.append(
+                {
+                    "query_name": query_name,
+                    "status": status,
+                    "latency_ms": latency_ms,
+                    "records_returned": records_returned,
+                    "error_message": error_message,
+                    "executed_sql": final_sql,
+                }
+            )
 
     return pd.DataFrame(results)

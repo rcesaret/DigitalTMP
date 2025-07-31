@@ -1,20 +1,20 @@
 /* =====================================================================================
-   
+
    Teotihuacan Mapping Project (TMP) – DF9 Database (MS Access .mdb → PostgreSQL 17)
-   
+
    Rudolf Cesaretti
    2025-04-25
-   
-   PostgreSQL 17 syntax SQL script to migrate the DF9 database from MS Access 2016 to 
-    PostgreSQL 17. As such, this script replicates the DF9 MS Access database authored 
+
+   PostgreSQL 17 syntax SQL script to migrate the DF9 database from MS Access 2016 to
+    PostgreSQL 17. As such, this script replicates the DF9 MS Access database authored
     by Ian Robertson, Angela Huster and Anne Sherfield, last updated by Sherfield in 2021
-    (`TMP Datafile 9-MES.accdb`) with some minor structural changes to the schema and 
-    translation-based edits to facilitate valid migration. Column and table names are 
-    mostly preserved verbatim, with the exception that spaces in column names have been 
+    (`TMP Datafile 9-MES.accdb`) with some minor structural changes to the schema and
+    translation-based edits to facilitate valid migration. Column and table names are
+    mostly preserved verbatim, with the exception that spaces in column names have been
     replaced with underscores to optimize machine readability.
-    
-   NOTE: Running this script does not create a database. It populates an empty database. 
-   
+
+   NOTE: Running this script does not create a database. It populates an empty database.
+
    ===================================================================================== */
 
 
@@ -1609,7 +1609,7 @@ INSERT INTO tmp_df9."Codes_slope" VALUES
     (2, 'moderate slope'),
     (3, 'considerable slope'),
     (4, 'very steep slope');
-	
+
 /* ---------- Insert data for `Codes_ceramicAbundance` table --------------------------- */
 
 INSERT INTO tmp_df9."Codes_ceramicAbundance" VALUES
@@ -1660,7 +1660,7 @@ COMMIT;
 
 /* ---------- Insert data for `Plazas` table ------------------------------------------- */
 
-BEGIN; 
+BEGIN;
 
 INSERT INTO tmp_df9."Plazas" VALUES
     (1, -1),
@@ -16832,7 +16832,7 @@ INSERT INTO tmp_df9."archInterp" VALUES
 COMMIT;
 
 /* ---------- Insert data for `archMaterial` table ------------------------------------- */
-BEGIN; 
+BEGIN;
 
 INSERT INTO tmp_df9."archMaterial" VALUES
     (1, 5, 2, 0, 2, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, 0, -1, 0, 0, 0, 0),
@@ -108109,8 +108109,8 @@ BEGIN;
   ALTER TABLE ONLY tmp_df9."condition" ADD CONSTRAINT "condition_erosion_fkey" FOREIGN KEY ("erosion") REFERENCES tmp_df9."Codes_altering_features"("code") NOT VALID;
   ALTER TABLE ONLY tmp_df9."condition" ADD CONSTRAINT "condition_silting_fkey" FOREIGN KEY ("silting") REFERENCES tmp_df9."Codes_altering_features"("code") NOT VALID;
   ALTER TABLE ONLY tmp_df9."condition" ADD CONSTRAINT "condition_siteAlteration_fkey" FOREIGN KEY ("siteAlteration") REFERENCES tmp_df9."Codes_overall_condition"("code") NOT VALID;
-COMMIT; 
-  
+COMMIT;
+
 /* ---------- Add foreign key constraints to `workshop` table -------------------------- */
 
 BEGIN;
@@ -108163,17 +108163,17 @@ COMMIT;
 BEGIN;
   CREATE INDEX IF NOT EXISTS idx_admin_collectionquarter ON tmp_df9."admin"("collectionQuarter");
   CREATE INDEX IF NOT EXISTS idx_admin_analysisquarter ON tmp_df9."admin"("analysisQuarter");
-  
+
   CREATE INDEX IF NOT EXISTS idx_description_lastbuildphase ON tmp_df9."description"("lastBuildPhase");
   CREATE INDEX IF NOT EXISTS idx_description_burials ON tmp_df9."description"("burials");
   CREATE INDEX IF NOT EXISTS idx_description_midden ON tmp_df9."description"("midden");
   CREATE INDEX IF NOT EXISTS idx_description_intrusivesherd ON tmp_df9."description"("intrusiveSherd");
   CREATE INDEX IF NOT EXISTS idx_description_slope ON tmp_df9."description"("slope");
   CREATE INDEX IF NOT EXISTS idx_description_ceramicabundance ON tmp_df9."description"("ceramicAbundance");
-  
+
   CREATE INDEX IF NOT EXISTS idx_archinterp_neighborhoodchar ON tmp_df9."archInterp"("neighborhoodChar");
   CREATE INDEX IF NOT EXISTS idx_archinterp_boundinfoqual ON tmp_df9."archInterp"("boundInfoQual");
-  
+
   CREATE INDEX IF NOT EXISTS idx_archinterp_arch1mctl ON tmp_df9."archInterp"("arch1McTl");
   CREATE INDEX IF NOT EXISTS idx_archinterp_arch1oxto ON tmp_df9."archInterp"("arch1Oxto");
   CREATE INDEX IF NOT EXISTS idx_archinterp_arch1pmic ON tmp_df9."archInterp"("arch1PMic");
@@ -108218,7 +108218,7 @@ BEGIN;
   CREATE INDEX IF NOT EXISTS idx_archmaterial_walls ON tmp_df9."archMaterial"("walls");
   CREATE INDEX IF NOT EXISTS idx_archmaterial_wells ON tmp_df9."archMaterial"("wells");
   CREATE INDEX IF NOT EXISTS idx_archmaterial_xalnene ON tmp_df9."archMaterial"("xalnene");
-  
+
   CREATE INDEX IF NOT EXISTS idx_complexdata_archInt1McTl ON tmp_df9."complexData"("archInt1McTl");
   CREATE INDEX IF NOT EXISTS idx_complexdata_archInt1PaTz ON tmp_df9."complexData"("archInt1PaTz");
   CREATE INDEX IF NOT EXISTS idx_complexdata_archInt1XlMt ON tmp_df9."complexData"("archInt1XlMt");
@@ -108238,7 +108238,7 @@ BEGIN;
   CREATE INDEX IF NOT EXISTS idx_complexdata_funcTmpMcTl ON tmp_df9."complexData"("funcTmpMcTl");
   CREATE INDEX IF NOT EXISTS idx_complexdata_funcTmpPaTz ON tmp_df9."complexData"("funcTmpPaTz");
   CREATE INDEX IF NOT EXISTS idx_complexdata_funcTmpXlMt ON tmp_df9."complexData"("funcTmpXlMt");
-    
+
   CREATE INDEX IF NOT EXISTS idx_complexmacrodata_funcIntMcTl ON tmp_df9."complexMacroData"("funcIntMcTl");
   CREATE INDEX IF NOT EXISTS idx_complexmacrodata_funcIntPaTz ON tmp_df9."complexMacroData"("funcIntPaTz");
   CREATE INDEX IF NOT EXISTS idx_complexmacrodata_funcIntXlMt ON tmp_df9."complexMacroData"("funcIntXlMt");
@@ -108275,7 +108275,7 @@ BEGIN;
   CREATE INDEX IF NOT EXISTS idx_condition_erosion ON tmp_df9."condition"("erosion");
   CREATE INDEX IF NOT EXISTS idx_condition_silting ON tmp_df9."condition"("silting");
   CREATE INDEX IF NOT EXISTS idx_condition_sitealteration ON tmp_df9."condition"("siteAlteration");
-   
+
   CREATE INDEX IF NOT EXISTS idx_workshop_ceramicfield ON tmp_df9."workshop"("ceramicField");
   CREATE INDEX IF NOT EXISTS idx_workshop_ceramickrotser ON tmp_df9."workshop"("ceramicKrotser");
   CREATE INDEX IF NOT EXISTS idx_workshop_groundstonefield ON tmp_df9."workshop"("groundstoneField");
@@ -108283,7 +108283,7 @@ BEGIN;
   CREATE INDEX IF NOT EXISTS idx_workshop_obsidianspencephase1 ON tmp_df9."workshop"("obsidianSpencePhase1");
   CREATE INDEX IF NOT EXISTS idx_workshop_obsidianspencephase2 ON tmp_df9."workshop"("obsidianSpencePhase2");
   CREATE INDEX IF NOT EXISTS idx_workshop_figurineconcbarbour ON tmp_df9."workshop"("figurineConcBarbour");
-  
+
   CREATE INDEX IF NOT EXISTS idx_fieldWorkers_personnelCode ON tmp_df9."fieldWorkers"("personnelCode");
   CREATE INDEX IF NOT EXISTS idx_labAnalysts_personnelCode ON tmp_df9."labAnalysts"("personnelCode");
 COMMIT;

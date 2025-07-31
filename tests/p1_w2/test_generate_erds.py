@@ -182,9 +182,9 @@ def test_when_valid_config_then_generates_all_erds_successfully(
         f"Expected {total_expected_erds} ERDs to be generated, "
         f"got {len(create_schema_graph_calls)}"
     )
-    assert (
-        mock_graph.write_svg.call_count == total_expected_erds
-    ), f"Expected {total_expected_erds} SVG files to be written"
+    assert mock_graph.write_svg.call_count == total_expected_erds, (
+        f"Expected {total_expected_erds} SVG files to be written"
+    )
 
     # Verify new styling API is used
     assert mock_graph.set_graph_defaults.call_count == total_expected_erds
@@ -240,9 +240,9 @@ def test_when_tmp_df9_has_subsystems_then_generates_focused_erds(
     focused_erd_calls = [
         call for call in tmp_df9_calls if call[1].get("tables") is not None
     ]
-    assert (
-        len(focused_erd_calls) == 3
-    ), f"Expected 3 focused ERDs for tmp_df9, got {len(focused_erd_calls)}"
+    assert len(focused_erd_calls) == 3, (
+        f"Expected 3 focused ERDs for tmp_df9, got {len(focused_erd_calls)}"
+    )
 
     # Verify each focused ERD has a restricted table list
     for _, kwargs in focused_erd_calls:
@@ -363,15 +363,14 @@ def test_when_no_subsystem_tables_configured_then_only_generates_full_erds(
     # Note: The script has hardcoded TMP_DF9_SUBSYSTEMS but since we mock empty
     # tables, the subsystem ERDs will be skipped due to no matching tables
     assert len(create_schema_graph_calls) == 1, (
-        f"Expected 1 ERD without subsystem tables, "
-        f"got {len(create_schema_graph_calls)}"
+        f"Expected 1 ERD without subsystem tables, got {len(create_schema_graph_calls)}"
     )
 
     # The single call should be for a full ERD (no tables restriction)
     _, kwargs = create_schema_graph_calls[0]
-    assert (
-        kwargs.get("tables") is None
-    ), "Without matching tables, should only generate full ERD"
+    assert kwargs.get("tables") is None, (
+        "Without matching tables, should only generate full ERD"
+    )
 
 
 @pytest.mark.parametrize(
@@ -447,12 +446,12 @@ def test_when_database_connection_fails_then_continues_with_other_databases(
     # --- Assertions ---
     # Should have processed fewer databases due to the failure
     # But should have continued processing other databases
-    assert (
-        len(create_schema_graph_calls) < 9
-    ), "Should have fewer ERDs due to database failure"
-    assert (
-        len(create_schema_graph_calls) > 0
-    ), "Should still process some databases despite failure"
+    assert len(create_schema_graph_calls) < 9, (
+        "Should have fewer ERDs due to database failure"
+    )
+    assert len(create_schema_graph_calls) > 0, (
+        "Should still process some databases despite failure"
+    )
 
 
 def test_when_graph_generation_fails_then_logs_error_and_continues(
@@ -536,9 +535,9 @@ def test_when_valid_config_then_script_executes_successfully(
         pytest.fail(f"Script execution failed with error: {e}")
 
     # --- Assertions ---
-    assert (
-        execution_successful
-    ), "Script should execute successfully with valid configuration"
+    assert execution_successful, (
+        "Script should execute successfully with valid configuration"
+    )
 
     # Verify create_schema_graph was called (indicating ERD generation attempted)
     assert mock_graph.write_svg.called, "Should have attempted to write SVG files"

@@ -6,7 +6,7 @@
 ## 🎯 Objective
 Brief paragraph on the purpose of this phase.
 
-> _Example_:  
+> _Example_:
 > This phase focuses on ingesting and standardizing heterogeneous tabular data from CSV and Access sources to create a unified relational schema in PostgreSQL.
 
 ## 📊 Data Inputs

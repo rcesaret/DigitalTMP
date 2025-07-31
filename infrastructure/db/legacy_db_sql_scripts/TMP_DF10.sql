@@ -1,18 +1,18 @@
 /* =====================================================================================
-   
+
    Teotihuacan Mapping Project (TMP) – DF10 Database (MS Access .accdb → PostgreSQL 17)
-   
+
    Rudolf Cesaretti
    2025-04-25
-   
-   PostgreSQL 17 syntax SQL script to migrate DF10 from MS Access 2010 to PostgreSQL 17. 
-	As such, this script replicates the DF10 MS Access database authored by Anne 
-	Sherfield in May of 2022 (DF10.May2022.accdb) with some minor structural changes 
-	to the schema and translation-based edits to facilitate valid migration. 
+
+   PostgreSQL 17 syntax SQL script to migrate DF10 from MS Access 2010 to PostgreSQL 17.
+	As such, this script replicates the DF10 MS Access database authored by Anne
+	Sherfield in May of 2022 (DF10.May2022.accdb) with some minor structural changes
+	to the schema and translation-based edits to facilitate valid migration.
 	Column and table names are preserved verbatim.
-	
-   NOTE: Running this script does not create a database. It populates an empty database. 
-   
+
+   NOTE: Running this script does not create a database. It populates an empty database.
+
    ===================================================================================== */
 
 
@@ -79,7 +79,7 @@ COMMIT;
 /* ---------- Create `artifactTable` table --------------------------------------------- */
 BEGIN;
 CREATE TABLE IF NOT EXISTS tmp_df10."artifactTable" (
-    "ID"         SERIAL PRIMARY KEY,         --- ID is a newly added field            
+    "ID"         SERIAL PRIMARY KEY,         --- ID is a newly added field
     "ArtCode1"   SMALLINT,
     "ArtCode2"   SMALLINT,
     "ArtCode3"   SMALLINT,
@@ -345065,7 +345065,7 @@ INSERT INTO tmp_df10."codeTable" ("SSN", "Code", "Variable", "Where") VALUES
 	(999, 103, 'fieldWorker1', 'NA'),
 	(999, 109, 'fieldWorker2', 'NA'),
 	(999, 116, 'fieldWorker3', 'NA');
-	
+
 /* ---------- Insert data for `interpTable` table -------------------------------------- */
 BEGIN;
 INSERT INTO tmp_df10."interpTable" ("SSN", "Code", "Variable", "Where") VALUES
@@ -407935,7 +407935,7 @@ INSERT INTO tmp_df10."interpTable" ("SSN", "Code", "Variable", "Where") VALUES
 	(999, 40, 'arch1Oxto', 'NA'),
 	(999, 70, 'neighborhoodChar', 'NA');
 COMMIT;
-	
+
 /* ---------- Insert data for `totalsTable` table -------------------------------------- */
 BEGIN;
 INSERT INTO tmp_df10."totalsTable" ("SSN", "Count", "Variable", "Where") VALUES
@@ -486040,5 +486040,3 @@ INSERT INTO tmp_df10."archToSSN" ("ArchPolyID",  "SSN",  "Area_SSN_Coverage") VA
 	(3963, 5045, 86.81346865);
 
 COMMIT;
-
-

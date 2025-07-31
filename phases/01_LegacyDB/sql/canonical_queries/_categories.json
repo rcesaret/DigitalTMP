@@ -5,7 +5,7 @@
       "description": "Tests raw I/O performance with full table scans"
     },
     "join_performance": {
-      "name": "Join Performance", 
+      "name": "Join Performance",
       "description": "Tests efficiency of multi-table joins and aggregations"
     },
     "complex_filtering": {
