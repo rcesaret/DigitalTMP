@@ -6,7 +6,7 @@ exclude: '^(knowledge_base/|large_files_for_dropbox_download/|\.windsurf/|\.curs
 repos:
   # --- Foundational hooks ---
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: check-yaml
         args: ['--unsafe']  # Allow custom tags
@@ -16,15 +16,15 @@ repos:
         args: ['--maxkb=1024']
       # These hooks will be skipped in CI to prevent modification issues
       - id: end-of-file-fixer
-        stages: [commit]  # Only run locally
+        stages: [pre-commit]  # Only run locally
       - id: trailing-whitespace
-        stages: [commit]  # Only run locally
+        stages: [pre-commit]  # Only run locally
       - id: mixed-line-ending
         args: ['--fix=lf']
 
   # --- Python: Ruff (fast, replaces Black/isort/flake8) ---
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.8.8
+    rev: v0.12.7
     hooks:
       - id: ruff
         args: [--fix]
@@ -34,14 +34,14 @@ repos:
 
   # --- Jupyter Notebooks ---
   - repo: https://github.com/kynan/nbstripout
-    rev: 0.7.1
+    rev: 0.8.1
     hooks:
       - id: nbstripout
         args: [--max-size, '1000']  # Strip outputs from cells > 1KB
 
   # --- SQL Formatting ---
   - repo: https://github.com/sqlfluff/sqlfluff
-    rev: 3.0.7
+    rev: 3.4.2
     hooks:
       - id: sqlfluff-lint
         args: [--dialect, postgres]
@@ -49,7 +49,7 @@ repos:
         exclude: '^(infrastructure/db/legacy_db_sql_scripts/TMP_.*\.sql)'
       # Fix hook only runs locally
       - id: sqlfluff-fix
-        stages: [commit]
+        stages: [pre-commit]
         args: [--dialect, postgres]
         files: \.sql$
         exclude: '^(infrastructure/db/legacy_db_sql_scripts/TMP_.*\.sql)'
@@ -60,4 +60,4 @@ repos:
     hooks:
       - id: detect-secrets
         args: ['--baseline', '.secrets.baseline']
-        exclude_types: [pdf, png, jpeg, jpg, tif, tiff, epub]
+        # exclude_types removed: handled by default file-type detection
