@@ -1,0 +1,304 @@
+variable,table,long_format_df10,variable_col,value_col,order_index,order_df10_tables,coded_na_values,var_df11,var_in_df10,is_coded,code_table,code_col,label_col
+SSN,,FALSE,,,0,1,,meta_id_ssn,TRUE,FALSE,,,
+Site,provTable,FALSE,,,1,2,,meta_loc_site,TRUE,FALSE,,,
+Subsite,provTable,FALSE,,,2,3,NONE,meta_loc_subsite,TRUE,FALSE,,,
+Unit,provTable,FALSE,,,3,4,,meta_loc_unit,TRUE,FALSE,,,
+Northing,provTable,FALSE,,,4,5,-999,meta_loc_northing,TRUE,FALSE,,,
+Easting,provTable,FALSE,,,5,6,-999,meta_loc_easting,TRUE,FALSE,,,
+SSN,codeTable,TRUE,,,0,1000,,meta_id_ssn,TRUE,FALSE,,,
+workFie1,codeTable,TRUE,Variable,Code,6,1001,"Where == ""Missing""",meta_pers_field1,TRUE,TRUE,codeCodes,Code,Description
+workFie2,codeTable,TRUE,Variable,Code,7,1002,"Where == ""Missing""",meta_pers_field2,TRUE,TRUE,codeCodes,Code,Description
+workFie3,codeTable,TRUE,Variable,Code,8,1003,"Where == ""Missing""",meta_pers_field3,TRUE,TRUE,codeCodes,Code,Description
+workFie4,codeTable,TRUE,Variable,Code,9,1004,"Where == ""Missing""",meta_pers_field4,TRUE,TRUE,codeCodes,Code,Description
+workFie5,codeTable,TRUE,Variable,Code,10,1005,"Where == ""Missing""",meta_pers_field5,TRUE,TRUE,codeCodes,Code,Description
+collectionYear,codeTable,TRUE,Variable,Code,11,1006,"Where == ""Missing""",meta_time_survcollect_yr,TRUE,TRUE,codeCodes,Code,Description
+collectionQuarter,codeTable,TRUE,Variable,Code,12,1007,"Where == ""Missing""",meta_time_survcollect_qtr,TRUE,TRUE,codeCodes,Code,Description
+stoneQuant,codeTable,TRUE,Variable,Code,16,1008,"Where == ""Missing""",arch_mat_stonequant,TRUE,TRUE,codeCodes,Code,Description
+stoneDist,codeTable,TRUE,Variable,Code,17,1009,"Where == ""Missing""",arch_mat_stonedist,TRUE,TRUE,codeCodes,Code,Description
+lajas,codeTable,TRUE,Variable,Code,19,1010,"Where == ""Missing""",arch_mat_lajas,TRUE,TRUE,codeCodes,Code,Description
+tepetate,codeTable,TRUE,Variable,Code,20,1011,"Where == ""Missing""",arch_mat_tepetate,TRUE,TRUE,codeCodes,Code,Description
+adobe,codeTable,TRUE,Variable,Code,21,1012,"Where == ""Missing""",arch_mat_adobe,TRUE,TRUE,codeCodes,Code,Description
+xalnene,codeTable,TRUE,Variable,Code,22,1013,"Where == ""Missing""",arch_mat_xalnene,TRUE,TRUE,codeCodes,Code,Description
+cascajo,codeTable,TRUE,Variable,Code,23,1014,"Where == ""Missing""",arch_mat_cascajo,TRUE,TRUE,codeCodes,Code,Description
+concrete,codeTable,TRUE,Variable,Code,24,1015,"Where == ""Missing""",arch_mat_concrete,TRUE,TRUE,codeCodes,Code,Description
+plasterUnpaint,codeTable,TRUE,Variable,Code,25,1016,"Where == ""Missing""",arch_mat_plasterunpaint,TRUE,TRUE,codeCodes,Code,Description
+plasterPaint,codeTable,TRUE,Variable,Code,26,1017,"Where == ""Missing""",arch_mat_plasterpaint,TRUE,TRUE,codeCodes,Code,Description
+burntClay,codeTable,TRUE,Variable,Code,27,1018,"Where == ""Missing""",arch_mat_burntclay,TRUE,TRUE,codeCodes,Code,Description
+burnedStruct,codeTable,TRUE,Variable,Code,29,1019,"Where == ""Missing""",arch_mat_burnedstruct,TRUE,TRUE,codeCodes,Code,Description
+floors,codeTable,TRUE,Variable,Code,30,1020,"Where == ""Missing""",arch_situ_floors,TRUE,TRUE,codeCodes,Code,Description
+walls,codeTable,TRUE,Variable,Code,31,1021,"Where == ""Missing""",arch_situ_walls,TRUE,TRUE,codeCodes,Code,Description
+drainSitu,codeTable,TRUE,Variable,Code,32,1022,"Where == ""Missing""",arch_situ_drains,TRUE,TRUE,codeCodes,Code,Description
+wallFixSitu,codeTable,TRUE,Variable,Code,33,1023,"Where == ""Missing""",arch_situ_wallfixture,TRUE,TRUE,codeCodes,Code,Description
+murals,codeTable,TRUE,Variable,Code,34,1024,"Where == ""Missing""",arch_situ_murals,TRUE,TRUE,codeCodes,Code,Description
+columns,codeTable,TRUE,Variable,Code,35,1025,"Where == ""Missing""",arch_situ_columns,TRUE,TRUE,codeCodes,Code,Description
+taludes,codeTable,TRUE,Variable,Code,36,1026,"Where == ""Missing""",arch_situ_taludes,TRUE,TRUE,codeCodes,Code,Description
+tableros,codeTable,TRUE,Variable,Code,37,1027,"Where == ""Missing""",arch_situ_tableros,TRUE,TRUE,codeCodes,Code,Description
+floorMaterial,codeTable,TRUE,Variable,Code,38,1028,"Where == ""Missing""",arch_mat_floormaterials,TRUE,TRUE,codeCodes,Code,Description
+wallCoreStone,codeTable,TRUE,Variable,Code,39,1029,"Where == ""Missing""",arch_mat_wallcore_stone,TRUE,TRUE,codeCodes,Code,Description
+wallCoreOthMat,codeTable,TRUE,Variable,Code,40,1030,"Where == ""Missing""",arch_mat_wallcore_other,TRUE,TRUE,codeCodes,Code,Description
+wallFacing,codeTable,TRUE,Variable,Code,41,1031,"Where == ""Missing""",arch_mat_wallfacing,TRUE,TRUE,codeCodes,Code,Description
+intrusiveSherd,codeTable,TRUE,Variable,Code,42,1032,"Where == ""Missing""",art_chron_intrusivesherd,TRUE,TRUE,codeCodes,Code,Description
+constructQual,codeTable,TRUE,Variable,Code,52,1033,"Where == ""Missing""",arch_constructqual,TRUE,TRUE,codeCodes,Code,Description
+freeStandWall,codeTable,TRUE,Variable,Code,91,1034,"Where == ""Missing""",arch_situ_freestandwall,TRUE,TRUE,codeCodes,Code,Description
+wells,codeTable,TRUE,Variable,Code,92,1035,"Where == ""Missing""",arch_situ_wells,TRUE,TRUE,codeCodes,Code,Description
+jaguey,codeTable,TRUE,Variable,Code,93,1036,"Where == ""Missing""",arch_situ_jagueys,TRUE,TRUE,codeCodes,Code,Description
+puestos,codeTable,TRUE,Variable,Code,94,1037,"Where == ""Missing""",arch_situ_puestos,TRUE,TRUE,codeCodes,Code,Description
+milpa,codeTable,TRUE,Variable,Code,95,1038,"Where == ""Missing""",mod_veg_milpa,TRUE,TRUE,codeCodes,Code,Description
+barley,codeTable,TRUE,Variable,Code,96,1039,"Where == ""Missing""",mod_veg_barley,TRUE,TRUE,codeCodes,Code,Description
+beans,codeTable,TRUE,Variable,Code,97,1040,"Where == ""Missing""",mod_veg_beans,TRUE,TRUE,codeCodes,Code,Description
+alfalfaCut,codeTable,TRUE,Variable,Code,98,1041,"Where == ""Missing""",mod_veg_alfalfacut,TRUE,TRUE,codeCodes,Code,Description
+alfalfaUncut,codeTable,TRUE,Variable,Code,99,1042,"Where == ""Missing""",mod_veg_alfalfauncut,TRUE,TRUE,codeCodes,Code,Description
+nopales,codeTable,TRUE,Variable,Code,100,1043,"Where == ""Missing""",mod_veg_nopales,TRUE,TRUE,codeCodes,Code,Description
+magueys,codeTable,TRUE,Variable,Code,101,1044,"Where == ""Missing""",mod_veg_magueys,TRUE,TRUE,codeCodes,Code,Description
+fallow,codeTable,TRUE,Variable,Code,102,1045,"Where == ""Missing""",mod_veg_fallow,TRUE,TRUE,codeCodes,Code,Description
+uncultivate,codeTable,TRUE,Variable,Code,103,1046,"Where == ""Missing""",mod_veg_uncultivate,TRUE,TRUE,codeCodes,Code,Description
+cropWater,codeTable,TRUE,Variable,Code,104,1047,"Where == ""Missing""",mod_cropwater,TRUE,TRUE,codeCodes,Code,Description
+plowing,codeTable,TRUE,Variable,Code,105,1048,"Where == ""Missing""",mod_plowing,TRUE,TRUE,codeCodes,Code,Description
+pitCultivate,codeTable,TRUE,Variable,Code,106,1049,"Where == ""Missing""",mod_disturb_pitcultivate,TRUE,TRUE,codeCodes,Code,Description
+pitLoot,codeTable,TRUE,Variable,Code,107,1050,"Where == ""Missing""",mod_disturb_pit_loot,TRUE,TRUE,codeCodes,Code,Description
+archaeoExcRest,codeTable,TRUE,Variable,Code,108,1051,"Where == ""Missing""",mod_disturb_archaeoexcav,TRUE,TRUE,codeCodes,Code,Description
+pitMisc,codeTable,TRUE,Variable,Code,109,1052,"Where == ""Missing""",mod_disturb_pit_misc,TRUE,TRUE,codeCodes,Code,Description
+quarrying,codeTable,TRUE,Variable,Code,110,1053,"Where == ""Missing""",mod_disturb_quarrying,TRUE,TRUE,codeCodes,Code,Description
+stoneClearing,codeTable,TRUE,Variable,Code,111,1054,"Where == ""Missing""",mod_disturb_stoneclearing,TRUE,TRUE,codeCodes,Code,Description
+landLeveling,codeTable,TRUE,Variable,Code,112,1055,"Where == ""Missing""",mod_disturb_landleveling,TRUE,TRUE,codeCodes,Code,Description
+terracing,codeTable,TRUE,Variable,Code,113,1056,"Where == ""Missing""",mod_disturb_terracing,TRUE,TRUE,codeCodes,Code,Description
+ditching,codeTable,TRUE,Variable,Code,114,1057,"Where == ""Missing""",mod_disturb_ditching,TRUE,TRUE,codeCodes,Code,Description
+roadOrRail,codeTable,TRUE,Variable,Code,115,1058,"Where == ""Missing""",mod_disturb_roadorrail,TRUE,TRUE,codeCodes,Code,Description
+recentWall,codeTable,TRUE,Variable,Code,116,1059,"Where == ""Missing""",mod_disturb_recentwall,TRUE,TRUE,codeCodes,Code,Description
+stoneRows,codeTable,TRUE,Variable,Code,117,1060,"Where == ""Missing""",mod_disturb_stonerows,TRUE,TRUE,codeCodes,Code,Description
+recentBuild,codeTable,TRUE,Variable,Code,118,1061,"Where == ""Missing""",mod_disturb_recentbuild,TRUE,TRUE,codeCodes,Code,Description
+dam,codeTable,TRUE,Variable,Code,119,1062,"Where == ""Missing""",mod_disturb_dam,TRUE,TRUE,codeCodes,Code,Description
+jagueyMod,codeTable,TRUE,Variable,Code,120,1063,"Where == ""Missing""",mod_disturb_jaguey,TRUE,TRUE,codeCodes,Code,Description
+erosion,codeTable,TRUE,Variable,Code,121,1064,"Where == ""Missing""",mod_disturb_erosion,TRUE,TRUE,codeCodes,Code,Description
+silting,codeTable,TRUE,Variable,Code,122,1065,"Where == ""Missing""",mod_disturb_silting,TRUE,TRUE,codeCodes,Code,Description
+siteAlteration,codeTable,TRUE,Variable,Code,123,1066,"Where == ""Missing""",mod_disturb_tot,TRUE,TRUE,codeCodes,Code,Description
+slope,codeTable,TRUE,Variable,Code,124,1067,"Where == ""Missing""",mod_slope,TRUE,TRUE,codeCodes,Code,Description
+workLab1,codeTable,TRUE,Variable,Code,187,1068,"Where == ""Missing""",meta_pers_lab1,TRUE,TRUE,codeCodes,Code,Description
+workLab2,codeTable,TRUE,Variable,Code,188,1069,"Where == ""Missing""",meta_pers_lab2,TRUE,TRUE,codeCodes,Code,Description
+workLab3,codeTable,TRUE,Variable,Code,189,1070,"Where == ""Missing""",meta_pers_lab3,TRUE,TRUE,codeCodes,Code,Description
+analysisYear,codeTable,TRUE,Variable,Code,190,1071,"Where == ""Missing""",meta_time_analysis_yr,TRUE,FALSE,codeCodes,Code,Description
+analysisQuarter,codeTable,TRUE,Variable,Code,191,1072,"Where == ""Missing""",meta_time_analysis_qtr,TRUE,TRUE,codeCodes,Code,Description
+ceramicAbundance,codeTable,TRUE,Variable,Code,193,1073,"Where == ""Missing""",art_cer_abundance,TRUE,TRUE,codeCodes,Code,Description
+boundInfoQual,codeTable,TRUE,Variable,Code,291,1074,"Where == ""Missing""",arch_struct_boundary_dataquality,TRUE,TRUE,codeCodes,Code,Description
+SSN,interpTable,FALSE,,,0,2000,,meta_id_ssn,TRUE,FALSE,,,
+arch1PMic,interpTable,TRUE,Variable,Code,44,2001,"Where == ""Missing""",arch_archinterp1_pmic,TRUE,TRUE,interpCodes,Code,Description
+arch1McTl,interpTable,TRUE,Variable,Code,45,2002,"Where == ""Missing""",arch_archinterp1_mctl,TRUE,TRUE,interpCodes,Code,Description
+arch1XlMe,interpTable,TRUE,Variable,Code,46,2003,"Where == ""Missing""",arch_archinterp1_xlme,TRUE,TRUE,interpCodes,Code,Description
+arch1Oxto,interpTable,TRUE,Variable,Code,47,2004,"Where == ""Missing""",arch_archinterp1_oxto,TRUE,TRUE,interpCodes,Code,Description
+arch2PMic,interpTable,TRUE,Variable,Code,48,2005,"Where == ""Missing""",arch_archinterp2_pmic,TRUE,TRUE,interpCodes,Code,Description
+arch2McTl,interpTable,TRUE,Variable,Code,49,2006,"Where == ""Missing""",arch_archinterp2_mctl,TRUE,TRUE,interpCodes,Code,Description
+arch2XlMe,interpTable,TRUE,Variable,Code,50,2007,"Where == ""Missing""",arch_archinterp2_xlme,TRUE,TRUE,interpCodes,Code,Description
+arch2Oxto,interpTable,TRUE,Variable,Code,51,2008,"Where == ""Missing""",arch_archinterp2_oxto,TRUE,TRUE,interpCodes,Code,Description
+func1PMic,interpTable,TRUE,Variable,Code,53,2009,"Where == ""Missing""",arch_funcinterp1_pmic,TRUE,TRUE,interpCodes,Code,Description
+func1McTl,interpTable,TRUE,Variable,Code,54,2010,"Where == ""Missing""",arch_funcinterp1_mctl,TRUE,TRUE,interpCodes,Code,Description
+func1XlMe,interpTable,TRUE,Variable,Code,55,2011,"Where == ""Missing""",arch_funcinterp1_xlme,TRUE,TRUE,interpCodes,Code,Description
+func1Oxto,interpTable,TRUE,Variable,Code,56,2012,"Where == ""Missing""",arch_funcinterp1_oxto,TRUE,TRUE,interpCodes,Code,Description
+func2PMic,interpTable,TRUE,Variable,Code,57,2013,"Where == ""Missing""",arch_funcinterp2_pmic,TRUE,TRUE,interpCodes,Code,Description
+func2McTl,interpTable,TRUE,Variable,Code,58,2014,"Where == ""Missing""",arch_funcinterp2_mctl,TRUE,TRUE,interpCodes,Code,Description
+func2XlMe,interpTable,TRUE,Variable,Code,59,2015,"Where == ""Missing""",arch_funcinterp2_xlme,TRUE,TRUE,interpCodes,Code,Description
+func2Oxto,interpTable,TRUE,Variable,Code,60,2016,"Where == ""Missing""",arch_funcinterp2_oxto,TRUE,TRUE,interpCodes,Code,Description
+archInt1PaTz,interpTable,TRUE,Variable,Code,61,2017,"Where == ""Missing""",arch_cplx_archinterp1_patz,TRUE,TRUE,interpCodes,Code,Description
+archInt1McTl,interpTable,TRUE,Variable,Code,62,2018,"Where == ""Missing""",arch_cplx_archinterp1_mctl,TRUE,TRUE,interpCodes,Code,Description
+archInt1XlMt,interpTable,TRUE,Variable,Code,63,2019,"Where == ""Missing""",arch_cplx_archinterp1_xlmt,TRUE,TRUE,interpCodes,Code,Description
+archInt2PaTz,interpTable,TRUE,Variable,Code,64,2020,"Where == ""Missing""",arch_cplx_archinterp2_patz,TRUE,TRUE,interpCodes,Code,Description
+archInt2McTl,interpTable,TRUE,Variable,Code,65,2021,"Where == ""Missing""",arch_cplx_archinterp2_mctl,TRUE,TRUE,interpCodes,Code,Description
+archInt2XlMt,interpTable,TRUE,Variable,Code,66,2022,"Where == ""Missing""",arch_cplx_archinterp2_xlmt,TRUE,TRUE,interpCodes,Code,Description
+funcIntPaTz,interpTable,TRUE,Variable,Code,67,2023,"Where == ""Missing""",arch_cplx_funcinterp_patz,TRUE,TRUE,interpCodes,Code,Description
+funcIntMcTl,interpTable,TRUE,Variable,Code,68,2024,"Where == ""Missing""",arch_cplx_funcinterp_mctl,TRUE,TRUE,interpCodes,Code,Description
+funcIntXlMt,interpTable,TRUE,Variable,Code,69,2025,"Where == ""Missing""",arch_cplx_funcinterp_xlmt,TRUE,TRUE,interpCodes,Code,Description
+funcResPaTz,interpTable,TRUE,Variable,Code,70,2026,"Where == ""Missing""",arch_cplx_funcinterp_res_patz,TRUE,TRUE,interpCodes,Code,Description
+funcResMcTl,interpTable,TRUE,Variable,Code,71,2027,"Where == ""Missing""",arch_cplx_funcinterp_res_mctl,TRUE,TRUE,interpCodes,Code,Description
+funcResXlMt,interpTable,TRUE,Variable,Code,72,2028,"Where == ""Missing""",arch_cplx_funcinterp_res_xlmt,TRUE,TRUE,interpCodes,Code,Description
+funcTmpPaTz,interpTable,TRUE,Variable,Code,73,2029,"Where == ""Missing""",arch_cplx_funcinterp_tmpl_patz,TRUE,TRUE,interpCodes,Code,Description
+funcTmpMcTl,interpTable,TRUE,Variable,Code,74,2030,"Where == ""Missing""",arch_cplx_funcinterp_tmpl_mctl,TRUE,TRUE,interpCodes,Code,Description
+funcTmpXlMt,interpTable,TRUE,Variable,Code,75,2031,"Where == ""Missing""",arch_cplx_funcinterp_tmpl_xlmt,TRUE,TRUE,interpCodes,Code,Description
+funcCivPaTz,interpTable,TRUE,Variable,Code,76,2032,"Where == ""Missing""",arch_cplx_funcinterp_civ_patz,TRUE,TRUE,interpCodes,Code,Description
+funcCivMcTl,interpTable,TRUE,Variable,Code,77,2033,"Where == ""Missing""",arch_cplx_funcinterp_civ_mctl,TRUE,TRUE,interpCodes,Code,Description
+funcCivXlMt,interpTable,TRUE,Variable,Code,78,2034,"Where == ""Missing""",arch_cplx_funcinterp_civ_xlmt,TRUE,TRUE,interpCodes,Code,Description
+funcOthXlMt,interpTable,TRUE,Variable,Code,79,2035,"Where == ""Missing""",arch_cplx_funcinterp_other_xlmt,TRUE,TRUE,interpCodes,Code,Description
+complexNum,interpTable,TRUE,Variable,Code,81,2036,"Where == ""Missing""",arch_cplx_unit,TRUE,FALSE,interpCodes,Code,Description
+macroComplexNum,interpTable,TRUE,Variable,Code,82,2037,"Where == ""Missing""",arch_mcplx_num,TRUE,FALSE,interpCodes,Code,Description
+presPaTz,interpTable,TRUE,Variable,Code,84,2038,"Where == ""Missing""",arch_mcplx_patz,TRUE,TRUE,interpCodes,Code,Description
+presMcTl,interpTable,TRUE,Variable,Code,85,2039,"Where == ""Missing""",arch_mcplx_mctl,TRUE,TRUE,interpCodes,Code,Description
+presXlMt,interpTable,TRUE,Variable,Code,86,2040,"Where == ""Missing""",arch_mcplx_xlmt,TRUE,TRUE,interpCodes,Code,Description
+MfuncIntPaTz,interpTable,TRUE,Variable,Code,87,2041,"Where == ""Missing""",arch_mcplx_funcinterp_patz,TRUE,TRUE,interpCodes,Code,Description
+MfuncIntMcTl,interpTable,TRUE,Variable,Code,88,2042,"Where == ""Missing""",arch_mcplx_funcinterp_mctl,TRUE,TRUE,interpCodes,Code,Description
+MfuncIntXlMt,interpTable,TRUE,Variable,Code,89,2043,"Where == ""Missing""",arch_mcplx_funcinterp_xlmt,TRUE,TRUE,interpCodes,Code,Description
+neighborhoodChar,interpTable,TRUE,Variable,Code,90,2044,"Where == ""Missing""",arch_neighborhood,TRUE,TRUE,interpCodes,Code,Description
+groundstoneField,interpTable,TRUE,Variable,Code,125,2045,"Where == ""Missing""",art_lith_gs_wrkshp_field,TRUE,TRUE,interpCodes,Code,Description
+obsidianField,interpTable,TRUE,Variable,Code,126,2046,"Where == ""Missing""",art_lith_obs_wrkshp_field,TRUE,TRUE,interpCodes,Code,Description
+ceramicField,interpTable,TRUE,Variable,Code,192,2047,"Where == ""Missing""",art_cer_wrkshp_field,TRUE,TRUE,interpCodes,Code,Description
+obsidianSpencePhase1,interpTable,TRUE,Variable,Code,285,2048,"Where == ""Missing""",art_lith_obs_wkshp_spence_phase1,TRUE,TRUE,interpCodes,Code,Description
+obsidianSpencePhase2,interpTable,TRUE,Variable,Code,286,2049,"Where == ""Missing""",art_lith_obs_wkshp_spence_phase2,TRUE,TRUE,interpCodes,Code,Description
+ceramicKrotser,interpTable,TRUE,Variable,Code,287,2050,"Where == ""Missing""",art_cer_wkshp_krotser,TRUE,TRUE,interpCodes,Code,Description
+figurineConcBarbour,interpTable,TRUE,Variable,Code,288,2051,"Where == ""Missing""",art_cer_fig_conc_barbour,TRUE,TRUE,interpCodes,Code,Description
+SSN,totalsTable,FALSE,,,0,3000,,meta_id_ssn,TRUE,FALSE,,,
+obsidianTot,totalsTable,TRUE,Variable,Count,147,3001,"Where == ""Missing""",art_lith_obs_tot,TRUE,FALSE,,,
+basaltTot,totalsTable,TRUE,Variable,Count,158,3002,"Where == ""Missing""",art_lith_basalt_tot,TRUE,FALSE,,,
+slateTot,totalsTable,TRUE,Variable,Count,162,3003,"Where == ""Missing""",art_lith_slate_tot,TRUE,FALSE,,,
+shellTot,totalsTable,TRUE,Variable,Count,168,3004,"Where == ""Missing""",art_shell_tot,TRUE,FALSE,,,
+figTot,totalsTable,TRUE,Variable,Count,170,3005,"Where == ""Missing""",art_cer_fig_tot,TRUE,FALSE,,,
+candTot,totalsTable,TRUE,Variable,Count,194,3006,"Where == ""Missing""",art_cer_cand_tot,TRUE,FALSE,,,
+totAll,totalsTable,TRUE,Variable,Count,204,3007,"Where == ""Missing""",art_cer_tot_all,TRUE,FALSE,,,
+totPatl,totalsTable,TRUE,Variable,Count,208,3008,"Where == ""Missing""",art_cer_tot_patl,TRUE,FALSE,,,
+totTzac,totalsTable,TRUE,Variable,Count,209,3009,"Where == ""Missing""",art_cer_tot_tzac,TRUE,FALSE,,,
+totMicc,totalsTable,TRUE,Variable,Count,210,3010,"Where == ""Missing""",art_cer_tot_micc,TRUE,FALSE,,,
+totTlam,totalsTable,TRUE,Variable,Count,211,3011,"Where == ""Missing""",art_cer_tot_tlam,TRUE,FALSE,,,
+totXola,totalsTable,TRUE,Variable,Count,212,3012,"Where == ""Missing""",art_cer_tot_xola,TRUE,FALSE,,,
+totMete,totalsTable,TRUE,Variable,Count,213,3013,"Where == ""Missing""",art_cer_tot_mete,TRUE,FALSE,,,
+censerTot,totalsTable,TRUE,Variable,Count,218,3014,"Where == ""Missing""",art_cer_censer_tot,TRUE,FALSE,,,
+toTot,totalsTable,TRUE,Variable,Count,230,3015,"Where == ""Missing""",art_cer_to_tot,TRUE,FALSE,,,
+smoTot,totalsTable,TRUE,Variable,Count,233,3016,"Where == ""Missing""",art_cer_smo_tot,TRUE,FALSE,,,
+ollaTot,totalsTable,TRUE,Variable,Count,237,3017,"Where == ""Missing""",art_cer_olla_tot,TRUE,FALSE,,,
+comalTot,totalsTable,TRUE,Variable,Count,244,3018,"Where == ""Missing""",art_cer_comal_tot,TRUE,FALSE,,,
+nubbinTot,totalsTable,TRUE,Variable,Count,253,3019,"Where == ""Missing""",art_cer_nubbin_tot,TRUE,FALSE,,,
+foreignTot,totalsTable,TRUE,Variable,Count,265,3020,"Where == ""Missing""",art_cer_foreign_tot,TRUE,FALSE,,,
+granTot,totalsTable,TRUE,Variable,Count,278,3021,"Where == ""Missing""",art_cer_gran_tot,TRUE,FALSE,,,
+SSN,artifactTable,FALSE,,,0,4000,,meta_id_ssn,TRUE,FALSE,,,
+burials,artifactTable,TRUE,ArtCode3,Count,14,4001,"Where == ""Missing""",arch_burials,TRUE,TRUE,,,
+midden,artifactTable,TRUE,ArtCode3,Count,15,4002,"Where == ""Missing""",arch_midden,TRUE,TRUE,,,
+almena,artifactTable,TRUE,ArtCode3,Count,28,4003,"Where == ""Missing""",arch_mat_almena,TRUE,FALSE,,,
+height,artifactTable,TRUE,ArtCode3,Count,43,4004,"Where == ""Missing""",arch_situ_height,TRUE,FALSE,,,
+manos,artifactTable,TRUE,ArtCode3,Count,127,4005,"Where == ""Missing""",art_lith_gs_manos,TRUE,FALSE,,,
+metates,artifactTable,TRUE,ArtCode3,Count,128,4006,"Where == ""Missing""",art_lith_gs_metates,TRUE,FALSE,,,
+mortars,artifactTable,TRUE,ArtCode3,Count,129,4007,"Where == ""Missing""",art_lith_gs_mortars,TRUE,FALSE,,,
+pestles,artifactTable,TRUE,ArtCode3,Count,130,4008,"Where == ""Missing""",art_lith_gs_pestles,TRUE,FALSE,,,
+plasterSmoothers,artifactTable,TRUE,ArtCode3,Count,131,4009,"Where == ""Missing""",art_lith_gs_plastersmoothers,TRUE,FALSE,,,
+plumbBobs,artifactTable,TRUE,ArtCode3,Count,132,4010,"Where == ""Missing""",art_lith_gs_plumbbobs,TRUE,FALSE,,,
+wallFixSurf,artifactTable,TRUE,ArtCode3,Count,133,4011,"Where == ""Missing""",art_lith_gs_wallfixtures,TRUE,FALSE,,,
+fireGods,artifactTable,TRUE,ArtCode3,Count,134,4012,"Where == ""Missing""",art_lith_gs_firegods,TRUE,FALSE,,,
+sculptureFrags,artifactTable,TRUE,ArtCode3,Count,135,4013,"Where == ""Missing""",art_lith_gs_sculpturefrags,TRUE,FALSE,,,
+hammerStones,artifactTable,TRUE,ArtCode3,Count,136,4014,"Where == ""Missing""",art_lith_gs_hammerstones,TRUE,FALSE,,,
+slingStones,artifactTable,TRUE,ArtCode3,Count,137,4015,"Where == ""Missing""",art_lith_gs_slingstones,TRUE,FALSE,,,
+smoothStones,artifactTable,TRUE,ArtCode3,Count,138,4016,"Where == ""Missing""",art_lith_gs_smoothstones,TRUE,FALSE,,,
+whetStones,artifactTable,TRUE,ArtCode3,Count,139,4017,"Where == ""Missing""",art_lith_gs_whetstones,TRUE,FALSE,,,
+palettes,artifactTable,TRUE,ArtCode3,Count,140,4018,"Where == ""Missing""",art_lith_gs_palettes,TRUE,FALSE,,,
+celts,artifactTable,TRUE,ArtCode3,Count,141,4019,"Where == ""Missing""",art_lith_gs_celts,TRUE,FALSE,,,
+lajasReworked,artifactTable,TRUE,ArtCode3,Count,142,4020,"Where == ""Missing""",art_lith_gs_lajasreworked,TRUE,FALSE,,,
+anvils,artifactTable,TRUE,ArtCode3,Count,143,4021,"Where == ""Missing""",art_lith_gs_anvils,TRUE,FALSE,,,
+drainSurface,artifactTable,TRUE,ArtCode3,Count,144,4022,"Where == ""Missing""",art_lith_gs_drains,TRUE,FALSE,,,
+drainCovers,artifactTable,TRUE,ArtCode3,Count,145,4023,"Where == ""Missing""",art_lith_gs_draincovers,TRUE,FALSE,,,
+groundstoneOther,artifactTable,TRUE,ArtCode3,Count,146,4024,"Where == ""Missing""",art_lith_gs_other,TRUE,FALSE,,,
+obsidianBlades,artifactTable,TRUE,ArtCode3,Count,148,4025,"Where == ""Missing""",art_lith_obs_blades,TRUE,FALSE,,,
+obsidianWaste,artifactTable,TRUE,ArtCode3,Count,149,4026,"Where == ""Missing""",art_lith_obs_waste,TRUE,FALSE,,,
+obsidianScrapers,artifactTable,TRUE,ArtCode3,Count,150,4027,"Where == ""Missing""",art_lith_obs_scrapers,TRUE,FALSE,,,
+obsidianCores,artifactTable,TRUE,ArtCode3,Count,152,4028,"Where == ""Missing""",art_lith_obs_cores,TRUE,FALSE,,,
+obsidianEccentrics,artifactTable,TRUE,ArtCode3,Count,154,4029,"Where == ""Missing""",art_lith_obs_eccentrics,TRUE,FALSE,,,
+obsidianMagueyS,artifactTable,TRUE,ArtCode3,Count,155,4030,"Where == ""Missing""",art_lith_obs_scrapersmaguey,TRUE,FALSE,,,
+obsidianUtFlake,artifactTable,TRUE,ArtCode3,Count,156,4031,"Where == ""Missing""",art_lith_obs_utilizedflakes,TRUE,FALSE,,,
+obsidianNodules,artifactTable,TRUE,ArtCode3,Count,157,4032,"Where == ""Missing""",art_lith_obs_nodules,TRUE,FALSE,,,
+basaltTools,artifactTable,TRUE,ArtCode3,Count,159,4033,"Where == ""Missing""",art_lith_basalt_tools,TRUE,FALSE,,,
+Chert,artifactTable,TRUE,ArtCode3,Count,160,4034,"Where == ""Missing""",art_lith_chert_tot,TRUE,FALSE,,,
+Quartz,artifactTable,TRUE,ArtCode3,Count,161,4035,"Where == ""Missing""",art_lith_quartz_tot,TRUE,FALSE,,,
+slatePainted,artifactTable,TRUE,ArtCode3,Count,163,4036,"Where == ""Missing""",art_lith_slate_painted,TRUE,FALSE,,,
+alabaster,artifactTable,TRUE,ArtCode3,Count,164,4037,"Where == ""Missing""",art_lith_alabaster,TRUE,FALSE,,,
+workedBone,artifactTable,TRUE,ArtCode3,Count,167,4038,"Where == ""Missing""",art_bone_worked,TRUE,FALSE,,,
+shellWorked,artifactTable,TRUE,ArtCode3,Count,169,4039,"Where == ""Missing""",art_shell_worked,TRUE,FALSE,,,
+figHead,artifactTable,TRUE,ArtCode3,Count,171,4040,"Where == ""Missing""",art_cer_fig_head,TRUE,FALSE,,,
+figPPat,artifactTable,TRUE,ArtCode3,Count,172,4041,"Where == ""Missing""",art_cer_fig_pre_patl,TRUE,FALSE,,,
+figPatl,artifactTable,TRUE,ArtCode3,Count,173,4042,"Where == ""Missing""",art_cer_fig_patl,TRUE,FALSE,,,
+figTzac,artifactTable,TRUE,ArtCode3,Count,174,4043,"Where == ""Missing""",art_cer_fig_tzac,TRUE,FALSE,,,
+figMic,artifactTable,TRUE,ArtCode3,Count,175,4044,"Where == ""Missing""",art_cer_fig_micc,TRUE,FALSE,,,
+figTlam,artifactTable,TRUE,ArtCode3,Count,176,4045,"Where == ""Missing""",art_cer_fig_tlam,TRUE,FALSE,,,
+figXola,artifactTable,TRUE,ArtCode3,Count,177,4046,"Where == ""Missing""",art_cer_fig_xola,TRUE,FALSE,,,
+figMete,artifactTable,TRUE,ArtCode3,Count,178,4047,"Where == ""Missing""",art_cer_fig_mete,TRUE,FALSE,,,
+figToltec,artifactTable,TRUE,ArtCode3,Count,179,4048,"Where == ""Missing""",art_cer_fig_toltec,TRUE,FALSE,,,
+figAzte,artifactTable,TRUE,ArtCode3,Count,180,4049,"Where == ""Missing""",art_cer_fig_aztec,TRUE,FALSE,,,
+figPupp,artifactTable,TRUE,ArtCode3,Count,181,4050,"Where == ""Missing""",art_cer_fig_pupp,TRUE,FALSE,,,
+spindleWhorl,artifactTable,TRUE,ArtCode3,Count,182,4051,"Where == ""Missing""",art_cer_spwhorl,TRUE,FALSE,,,
+sealStamp,artifactTable,TRUE,ArtCode3,Count,183,4052,"Where == ""Missing""",art_cer_sealstamp,TRUE,FALSE,,,
+earSpool,artifactTable,TRUE,ArtCode3,Count,184,4053,"Where == ""Missing""",art_cer_earspool,TRUE,FALSE,,,
+whistle,artifactTable,TRUE,ArtCode3,Count,185,4054,"Where == ""Missing""",art_cer_whistle,TRUE,FALSE,,,
+flute,artifactTable,TRUE,ArtCode3,Count,186,4055,"Where == ""Missing""",art_cer_flute,TRUE,FALSE,,,
+candCoat,artifactTable,TRUE,ArtCode3,Count,195,4056,"Where == ""Missing""",art_cer_cand_coat,TRUE,FALSE,,,
+candAtoy,artifactTable,TRUE,ArtCode3,Count,196,4057,"Where == ""Missing""",art_cer_cand_atoy,TRUE,FALSE,,,
+candEXol,artifactTable,TRUE,ArtCode3,Count,197,4058,"Where == ""Missing""",art_cer_cand_exol,TRUE,FALSE,,,
+candLXol,artifactTable,TRUE,ArtCode3,Count,198,4059,"Where == ""Missing""",art_cer_cand_lxol,TRUE,FALSE,,,
+candMete,artifactTable,TRUE,ArtCode3,Count,199,4060,"Where == ""Missing""",art_cer_cand_mete,TRUE,FALSE,,,
+candComm,artifactTable,TRUE,ArtCode3,Count,200,4061,"Where == ""Missing""",art_cer_cand_common,TRUE,FALSE,,,
+burner3P,artifactTable,TRUE,ArtCode3,Count,201,4062,"Where == ""Missing""",art_cer_burner3p,TRUE,FALSE,,,
+coverHandled,artifactTable,TRUE,ArtCode3,Count,202,4063,"Where == ""Missing""",art_cer_coverhandled,TRUE,FALSE,,,
+areaSite,artifactTable,TRUE,ArtCode3,Count,203,4064,"Where == ""Missing""",meta_loc_site_area,TRUE,FALSE,,,
+totPreCl,artifactTable,TRUE,ArtCode3,Count,205,4065,"Where == ""Missing""",art_cer_tot_precl,TRUE,FALSE,,,
+totCuan,artifactTable,TRUE,ArtCode3,Count,206,4066,"Where == ""Missing""",art_cer_tot_cuan,TRUE,FALSE,,,
+totTezo,artifactTable,TRUE,ArtCode3,Count,207,4067,"Where == ""Missing""",art_cer_tot_tezo,TRUE,FALSE,,,
+totMazapan,artifactTable,TRUE,ArtCode3,Count,216,4068,"Where == ""Missing""",art_cer_tot_maza,TRUE,FALSE,,,
+totAztec,artifactTable,TRUE,ArtCode3,Count,217,4069,"Where == ""Missing""",art_cer_tot_aztec,TRUE,FALSE,,,
+censerPPat,artifactTable,TRUE,ArtCode3,Count,219,4070,"Where == ""Missing""",art_cer_censer_precl,TRUE,FALSE,,,
+censerPatl,artifactTable,TRUE,ArtCode3,Count,220,4071,"Where == ""Missing""",art_cer_censer_patl,TRUE,FALSE,,,
+censerTzac,artifactTable,TRUE,ArtCode3,Count,221,4072,"Where == ""Missing""",art_cer_censer_tzac,TRUE,FALSE,,,
+censerMicc,artifactTable,TRUE,ArtCode3,Count,222,4073,"Where == ""Missing""",art_cer_censer_micc,TRUE,FALSE,,,
+censerTlam,artifactTable,TRUE,ArtCode3,Count,223,4074,"Where == ""Missing""",art_cer_censer_tlam,TRUE,FALSE,,,
+censerXola,artifactTable,TRUE,ArtCode3,Count,224,4075,"Where == ""Missing""",art_cer_censer_xola,TRUE,FALSE,,,
+censerMete,artifactTable,TRUE,ArtCode3,Count,225,4076,"Where == ""Missing""",art_cer_censer_mete,TRUE,FALSE,,,
+toRegular,artifactTable,TRUE,ArtCode3,Count,231,4077,"Where == ""Missing""",art_cer_to_regular,TRUE,FALSE,,,
+toCoarse,artifactTable,TRUE,ArtCode3,Count,232,4078,"Where == ""Missing""",art_cer_to_coarse,TRUE,FALSE,,,
+smoTlam,artifactTable,TRUE,ArtCode3,Count,234,4079,"Where == ""Missing""",art_cer_smo_tlam,TRUE,FALSE,,,
+smoXola,artifactTable,TRUE,ArtCode3,Count,235,4080,"Where == ""Missing""",art_cer_smo_xola,TRUE,FALSE,,,
+smoMete,artifactTable,TRUE,ArtCode3,Count,236,4081,"Where == ""Missing""",art_cer_smo_mete,TRUE,FALSE,,,
+ollaPatl,artifactTable,TRUE,ArtCode3,Count,238,4082,"Where == ""Missing""",art_cer_olla_patl,TRUE,FALSE,,,
+ollaWedge,artifactTable,TRUE,ArtCode3,Count,239,4083,"Where == ""Missing""",art_cer_olla_wedge,TRUE,FALSE,,,
+ollaMicc,artifactTable,TRUE,ArtCode3,Count,240,4084,"Where == ""Missing""",art_cer_olla_micc,TRUE,FALSE,,,
+ollaTlam,artifactTable,TRUE,ArtCode3,Count,241,4085,"Where == ""Missing""",art_cer_olla_tlam,TRUE,FALSE,,,
+ollaXola,artifactTable,TRUE,ArtCode3,Count,242,4086,"Where == ""Missing""",art_cer_olla_xola,TRUE,FALSE,,,
+ollaMete,artifactTable,TRUE,ArtCode3,Count,243,4087,"Where == ""Missing""",art_cer_olla_mete,TRUE,FALSE,,,
+comalPatl,artifactTable,TRUE,ArtCode3,Count,245,4088,"Where == ""Missing""",art_cer_comal_patl,TRUE,FALSE,,,
+comalTzac,artifactTable,TRUE,ArtCode3,Count,246,4089,"Where == ""Missing""",art_cer_comal_tzac,TRUE,FALSE,,,
+comalMicc,artifactTable,TRUE,ArtCode3,Count,247,4090,"Where == ""Missing""",art_cer_comal_micc,TRUE,FALSE,,,
+comalTlam,artifactTable,TRUE,ArtCode3,Count,248,4091,"Where == ""Missing""",art_cer_comal_tlam,TRUE,FALSE,,,
+comalXola,artifactTable,TRUE,ArtCode3,Count,249,4092,"Where == ""Missing""",art_cer_comal_xola,TRUE,FALSE,,,
+comalMete,artifactTable,TRUE,ArtCode3,Count,250,4093,"Where == ""Missing""",art_cer_comal_mete,TRUE,FALSE,,,
+comalOxto,artifactTable,TRUE,ArtCode3,Count,251,4094,"Where == ""Missing""",art_cer_comal_oxto,TRUE,FALSE,,,
+comalPOxt,artifactTable,TRUE,ArtCode3,Count,252,4095,"Where == ""Missing""",art_cer_comal_postcl,TRUE,FALSE,,,
+nubbinPatl,artifactTable,TRUE,ArtCode3,Count,254,4096,"Where == ""Missing""",art_cer_nubbin_patl,TRUE,FALSE,,,
+nubbinApet,artifactTable,TRUE,ArtCode3,Count,255,4097,"Where == ""Missing""",art_cer_nubbin_apet,TRUE,FALSE,,,
+nubbinInset,artifactTable,TRUE,ArtCode3,Count,256,4098,"Where == ""Missing""",art_cer_nubbin_inset,TRUE,FALSE,,,
+nubbinFlush,artifactTable,TRUE,ArtCode3,Count,257,4099,"Where == ""Missing""",art_cer_nubbin_flush,TRUE,FALSE,,,
+nubbinAtoy,artifactTable,TRUE,ArtCode3,Count,258,4100,"Where == ""Missing""",art_cer_nubbin_atoy,TRUE,FALSE,,,
+nubbinXola,artifactTable,TRUE,ArtCode3,Count,259,4101,"Where == ""Missing""",art_cer_nubbin_xola,TRUE,FALSE,,,
+nubbinMete,artifactTable,TRUE,ArtCode3,Count,260,4102,"Where == ""Missing""",art_cer_nubbin_mete,TRUE,FALSE,,,
+shrdStamped,artifactTable,TRUE,ArtCode3,Count,261,4103,"Where == ""Missing""",art_cer_stamped,TRUE,FALSE,,,
+shrdPlanoR,artifactTable,TRUE,ArtCode3,Count,262,4104,"Where == ""Missing""",art_cer_planorelief,TRUE,FALSE,,,
+shrdStucco,artifactTable,TRUE,ArtCode3,Count,263,4105,"Where == ""Missing""",art_cer_stucco,TRUE,FALSE,,,
+shrdIncised,artifactTable,TRUE,ArtCode3,Count,264,4106,"Where == ""Missing""",art_cer_incised,TRUE,FALSE,,,
+mayaLow,artifactTable,TRUE,ArtCode3,Count,266,4107,"Where == ""Missing""",art_cer_foreign_mayalow,TRUE,FALSE,,,
+mayaHigh,artifactTable,TRUE,ArtCode3,Count,267,4108,"Where == ""Missing""",art_cer_foreign_mayahigh,TRUE,FALSE,,,
+huastec,artifactTable,TRUE,ArtCode3,Count,268,4109,"Where == ""Missing""",art_cer_foreign_huastec,TRUE,FALSE,,,
+tajin,artifactTable,TRUE,ArtCode3,Count,269,4110,"Where == ""Missing""",art_cer_foreign_tajin,TRUE,FALSE,,,
+gulfCoast,artifactTable,TRUE,ArtCode3,Count,270,4111,"Where == ""Missing""",art_cer_foreign_gulfcoast,TRUE,FALSE,,,
+monteAlban,artifactTable,TRUE,ArtCode3,Count,271,4112,"Where == ""Missing""",art_cer_foreign_montealban,TRUE,FALSE,,,
+oaxaca,artifactTable,TRUE,ArtCode3,Count,272,4113,"Where == ""Missing""",art_cer_foreign_oaxaca,TRUE,FALSE,,,
+foreignOther,artifactTable,TRUE,ArtCode3,Count,273,4114,"Where == ""Missing""",art_cer_foreign_other,TRUE,FALSE,,,
+adornos,artifactTable,TRUE,ArtCode3,Count,274,4115,"Where == ""Missing""",art_cer_adornos,TRUE,FALSE,,,
+minatures,artifactTable,TRUE,ArtCode3,Count,275,4116,"Where == ""Missing""",art_cer_mini,TRUE,FALSE,,,
+copas,artifactTable,TRUE,ArtCode3,Count,276,4117,"Where == ""Missing""",art_cer_copas,TRUE,FALSE,,,
+matteWare,artifactTable,TRUE,ArtCode3,Count,277,4118,"Where == ""Missing""",art_cer_matteware,TRUE,FALSE,,,
+ceramicDisk,artifactTable,TRUE,ArtCode3,Count,284,4119,"Where == ""Missing""",art_cer_disk,TRUE,FALSE,,,
+areaStruct,artifactTable,TRUE,ArtCode3,Count,289,4120,"Where == ""Missing""",arch_struct_area,TRUE,FALSE,,,
+unworkedBone,artifactTable,TRUE,ArtCode3,Count,293,4121,"Where == ""Missing""",art_bone_unworked,TRUE,FALSE,,,
+obsidianBifaces,artifactTable,TRUE,ArtCode3,Count,294,4122,"Where == ""Missing""",art_lith_obs_bifaces,TRUE,FALSE,,,
+fineGreenstone,artifactTable,TRUE,ArtCode3,Count,295,4123,"Where == ""Missing""",art_lith_greenstone_tot,TRUE,FALSE,,,
+totCoyo,artifactTable,TRUE,ArtCode3,Count,296,4124,"Where == ""Missing""",art_cer_tot_coyo,TRUE,FALSE,,,
+censerLate,artifactTable,TRUE,ArtCode3,Count,297,4125,"Where == ""Missing""",art_cer_censer_late,TRUE,FALSE,,,
+granular,artifactTable,TRUE,ArtCode3,Count,298,4126,"Where == ""Missing""",art_cer_granular,TRUE,FALSE,,,
+,,,,,13,,,art_chron_lastbuildphase,FALSE,TRUE,,,
+,,,,,18,,,arch_mat_cutstone,FALSE,TRUE,,,
+,,,,,80,,,arch_cplx_num,FALSE,FALSE,,,
+,,,,,83,,,arch_mcplx_unit,FALSE,FALSE,,,
+,,,,,151,,,art_lith_obs_points,FALSE,FALSE,,,
+,,,,,153,,,art_lith_obs_knives,FALSE,FALSE,,,
+,,,,,165,,,art_lith_serpentine_tot,FALSE,FALSE,,,
+,,,,,166,,,art_lith_jade_tot,FALSE,FALSE,,,
+,,,,,214,,,art_cer_tot_oxto,FALSE,FALSE,,,
+,,,,,215,,,art_cer_tot_xome,FALSE,FALSE,,,
+,,,,,226,,,art_cer_censer_oxto,FALSE,FALSE,,,
+,,,,,227,,,art_cer_censer_xome,FALSE,FALSE,,,
+,,,,,228,,,art_cer_censer_maza,FALSE,FALSE,,,
+,,,,,229,,,art_cer_censer_aztec,FALSE,FALSE,,,
+,,,,,279,,,art_cer_gran_pmic,FALSE,FALSE,,,
+,,,,,280,,,art_cer_gran_micc,FALSE,FALSE,,,
+,,,,,281,,,art_cer_gran_tlam,FALSE,FALSE,,,
+,,,,,282,,,art_cer_gran_xola,FALSE,FALSE,,,
+,,,,,283,,,art_cer_gran_mete,FALSE,FALSE,,,
+,,,,,290,,,arch_struct_insubstantial,FALSE,FALSE,,,
+,,,,,292,,,arch_plazas_norwood,FALSE,FALSE,,,
