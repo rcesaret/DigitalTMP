@@ -1,22 +1,29 @@
 #!/usr/bin/env python3
 """
-DF10 Master Wide Flattening (Workflow 2.1 / Task 2)
+flatten_df10.py - DF10 Wide Format Transformation Script
 
-Creates a single wide table (one row per SSN) from DF10's EAV CSV exports in
-'phases/02_TransformDB/data/db_extracted_tables/TMP_DF10/':
+Transforms TMP_DF10's Entity-Attribute-Value (EAV) structure into a single
+wide-format DataFrame compatible with DF8 and DF9 outputs for Phase 2 integration.
 
-- EAV pivoting of codeTable, interpTable, artifactTable, totalsTable
-- Numeric code -> "<code>. <text>" expansion using reference tables
-- Missing data handling (blank = "none/absent", not unknown)
-- Hierarchical artifact naming with Material-Type-Subtype structure
-- Column reordering and QC validation
-- Memory-efficient processing of 190K+ row tables
-- Optional Parquet export
+This script implements the complete core operations from the R reference script
+while conforming to all project Python coding standards and integrating with
+the Phase 2 ELT pipeline architecture.
 
-NO boolean expansion. NO numeric scaling.
+Key Operations:
+1. Load all DF10 CSV tables with latin1 encoding
+2. Clean provTable (handle subsite values)
+3. Pivot codeTable with code-to-text mapping
+4. Pivot interpTable with code-to-text mapping
+5. Process totalsTable (already wide format)
+6. Pivot artifactTable with 3-level hierarchy
+7. Left join all tables to provTable on SSN
+8. Apply metadata-driven rename and reorder
 
-Designed to be imported and called by:
-  phases/02_TransformDB/src/01_db_tables_flatten.py
+Usage:
+    python flatten_df10.py \
+        --input-dir phases/02_TransformDB/data/db_extracted_tables/TMP_DF10 \
+        --metadata-path phases/02_TransformDB/metadata/DF10_metadata.csv \
+        --output-path phases/02_TransformDB/data/dbs_wide/TMP_DF10_wide.csv
 """
 
 from __future__ import annotations
@@ -24,190 +31,242 @@ from __future__ import annotations
 import argparse
 import json
 import logging
-import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
+import numpy as np
 import pandas as pd
 
-# ============================ CONSTANTS & TYPES ===============================
+# ================================ CONSTANTS ==================================
+# REASON: Centralize all magic values to avoid hardcoded literals throughout code
 
-ENCODINGS_TRY: Tuple[str, ...] = ("utf-8", "latin1", "cp1252")
+# File encoding for legacy data
+ENCODING_LATIN1: str = "latin1"
 
-# DF10 core table names (9 tables total)
-DF10_CORE_TABLES: Tuple[str, ...] = (
-    "provTable",  # Base provenience table (one row per SSN)
-    "codeTable",  # EAV coded descriptive variables
-    "interpTable",  # EAV interpretation variables
-    "artifactTable",  # EAV artifact counts
-    "totalsTable",  # EAV ceramic phase totals
-    "codeCodes",  # Reference: code values -> descriptions
-    "interpCodes",  # Reference: interpretation codes -> descriptions
-    "artifactCodes",  # Reference: artifact codes -> descriptions
-    "archToSSN",  # Archive to SSN mapping (may not be needed)
+# Input CSV filenames expected in input directory
+FNAME_PROV_TABLE: str = "provTable.csv"
+FNAME_CODE_TABLE: str = "codeTable.csv"
+FNAME_CODE_CODES: str = "codeCodes.csv"
+FNAME_INTERP_TABLE: str = "interpTable.csv"
+FNAME_INTERP_CODES: str = "interpCodes.csv"
+FNAME_TOTALS_TABLE: str = "totalsTable.csv"
+FNAME_ARTIFACT_TABLE: str = "artifactTable.csv"
+FNAME_ARTIFACT_CODES: str = "artifactCodes.csv"
+
+# Output filename
+FNAME_DF10_WIDE_OUT: str = "TMP_DF10_wide.csv"
+
+# Sentinel values and special labels
+MISSING_SENTINEL_NEG9999: int = -9999
+MISSING_WHERE_LABEL: str = "Missing"
+MISSING_TEXT_LABEL: str = "missing data"
+ABSENT_TEXT_LABEL: str = "absent"
+NONE_SUBSITE_LABEL: str = "NONE"
+
+# Special-case artifact per R script logic
+ARTIFACT_SPECIAL_CODE2: int = 12
+ARTIFACT_SPECIAL_CODE3: int = 46
+ARTIFACT_SPECIAL_NAME: str = "figAzte"
+
+# Columns requiring absent→NA conversion per R script
+CODES_ABSENT_TO_NA_COLS: Tuple[str, ...] = (
+    "workLab1",
+    "workLab2",
+    "workLab3",
+    "workFie1",
+    "workFie2",
+    "workFie3",
+    "workFie4",
+    "workFie5",
 )
 
-# Memory thresholds for warnings
-MEMORY_WARNING_THRESHOLD_GB: float = 2.0
-LARGE_PIVOT_THRESHOLD_ROWS: int = 100000
+# Expected row count for validation
+EXPECTED_ROW_COUNT: int = 5050
 
-JsonDict = Dict[str, Any]
+# Logging configuration
+LOG_FORMAT: str = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+LOG_DATE_FORMAT: str = "%Y-%m-%d %H:%M:%S"
 
-# =============================== EXCEPTIONS ===================================
-
-
-class ConfigError(ValueError):
-    """Raised when configuration or metadata is invalid."""
+# ================================ CONFIGURATION ===============================
 
 
-class DataTransformError(ValueError):
-    """Raised when data transformation fails."""
-
-
-# ================================ CONFIG ======================================
-
-
-@dataclass(frozen=True)
+@dataclass
 class DF10Config:
     """Configuration for DF10 flattening pipeline.
 
     Attributes:
-        df10_dir: Directory containing DF10 CSV tables
-        out_wide_csv: Output path for TMP_DF10_wide.csv
-        out_profile_json: Output path for QC/profile JSON
-        out_parquet: Optional output path for Parquet format
-        base_table_name: Name of base table (provTable)
-        key: Primary key column (SSN)
-        expected_rows: Expected number of rows (5046 for DF10)
-        emit_code_and_label: Whether to expand codes to "code. description"
-        chunk_size: Rows per chunk for large pivot operations
-        max_columns: Safety limit for column explosion
+        input_dir: Directory containing DF10 extracted CSV tables
+        metadata_path: Path to DF10_metadata.csv file
+        output_path: Path for output TMP_DF10_wide.csv
+        emit_code_labels: Whether to expand codes to "code. description" format
+        validate_rows: Whether to validate against expected row count
+        generate_profile: Whether to generate data profile JSON
     """
 
-    df10_dir: Path
-    out_wide_csv: Path
-    out_profile_json: Path
-    out_parquet: Optional[Path] = None
-    base_table_name: str = "provTable"
-    key: str = "SSN"
-    expected_rows: Optional[int] = 5046  # DF10 has 5046 sites
-    emit_code_and_label: bool = True
-    chunk_size: int = 50000  # For large pivot operations
-    max_columns: int = 500  # Safety limit for column explosion
+    input_dir: Path
+    metadata_path: Path
+    output_path: Path
+    emit_code_labels: bool = True
+    validate_rows: bool = True
+    generate_profile: bool = True
+
+    def __post_init__(self) -> None:
+        """Validate and convert paths to Path objects."""
+        self.input_dir = Path(self.input_dir)
+        self.metadata_path = Path(self.metadata_path)
+        self.output_path = Path(self.output_path)
+
+        # Validate input directory exists
+        if not self.input_dir.exists():
+            raise FileNotFoundError(f"Input directory not found: {self.input_dir}")
+
+        # Validate metadata file exists
+        if not self.metadata_path.exists():
+            raise FileNotFoundError(f"Metadata file not found: {self.metadata_path}")
+
+        # Ensure output directory exists
+        self.output_path.parent.mkdir(parents=True, exist_ok=True)
 
 
-# =============================== LOGGING ======================================
+# ================================ LOGGING =====================================
+
+logger = logging.getLogger(__name__)
 
 
 def configure_logging(level: int = logging.INFO) -> None:
-    """Configure structured logging to stdout."""
+    """Configure logging for the script.
+
+    Args:
+        level: Logging level (default INFO)
+    """
     logging.basicConfig(
         level=level,
-        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-        handlers=[logging.StreamHandler(sys.stdout)],
+        format=LOG_FORMAT,
+        datefmt=LOG_DATE_FORMAT,
     )
 
 
-logger = logging.getLogger("flatten_df10")
-
-# ============================== I/O UTILITIES =================================
+# ================================ I/O OPERATIONS ==============================
 
 
-def _read_csv_any_encoding(path: Path) -> pd.DataFrame:
-    """Read CSV trying multiple encodings safely.
+def read_csv_safe(
+    filepath: Path,
+    encoding: str = ENCODING_LATIN1,
+    **kwargs: Any,
+) -> pd.DataFrame:
+    """Read CSV file with robust error handling.
 
     Args:
-        path: Path to CSV file
+        filepath: Path to CSV file
+        encoding: File encoding (default latin1 for legacy data)
+        **kwargs: Additional pandas read_csv arguments
 
     Returns:
-        DataFrame with data from CSV
+        DataFrame from CSV file
 
     Raises:
-        ConfigError: If file cannot be read with any encoding
+        FileNotFoundError: If file doesn't exist
+        pd.errors.ParserError: If CSV parsing fails
     """
-    last_err: Optional[Exception] = None
-    for enc in ENCODINGS_TRY:
-        try:
-            return pd.read_csv(path, encoding=enc, low_memory=False)
-        except Exception as exc:  # noqa: BLE001
-            last_err = exc
-    raise ConfigError(
-        f"Failed to read CSV {path} with encodings {ENCODINGS_TRY}: {last_err}"
-    )
+    if not filepath.exists():
+        raise FileNotFoundError(f"CSV file not found: {filepath}")
 
-
-def _list_all_csvs(directory: Path) -> List[Path]:
-    """List all CSV files in directory.
-
-    Args:
-        directory: Directory to search
-
-    Returns:
-        Sorted list of CSV file paths
-    """
-    return sorted(list(directory.glob("*.csv")))
-
-
-def _get_memory_usage_gb() -> float:
-    """Get current memory usage in GB.
-
-    Returns:
-        Memory usage in gigabytes
-    """
     try:
-        import psutil
+        df = pd.read_csv(filepath, encoding=encoding, **kwargs)
+        logger.debug(f"Loaded {filepath.name}: {df.shape[0]} rows × {df.shape[1]} cols")
+        return df
+    except pd.errors.ParserError as e:
+        logger.error(f"Failed to parse CSV {filepath}: {e}")
+        raise
+    except UnicodeDecodeError as e:
+        logger.error(f"Encoding error reading {filepath}: {e}")
+        logger.info("Attempting fallback to UTF-8 encoding...")
+        return pd.read_csv(filepath, encoding="utf-8", **kwargs)
 
-        process = psutil.Process()
-        return process.memory_info().rss / (1024**3)
-    except ImportError:
-        # If psutil not available, return 0
-        return 0.0
 
-
-# ============================== DATA LOADERS ==================================
-
-
-def load_df10_tables(df10_dir: Path) -> Dict[str, pd.DataFrame]:
-    """Load all DF10 CSV tables from directory.
+def load_input_tables(config: DF10Config) -> Dict[str, pd.DataFrame]:
+    """Load all required input CSV tables.
 
     Args:
-        df10_dir: Directory containing DF10 CSV files
+        config: Configuration object
 
     Returns:
-        Dictionary mapping table name to DataFrame
-
-    Raises:
-        ConfigError: If required tables are missing
+        Dictionary mapping table names to DataFrames
     """
+    logger.info("Loading input tables from %s", config.input_dir)
+
     tables = {}
-    csv_files = _list_all_csvs(df10_dir)
 
-    for csv_path in csv_files:
-        table_name = csv_path.stem
-        logger.debug(f"Loading {table_name} from {csv_path}")
-        df = _read_csv_any_encoding(csv_path)
-        tables[table_name] = df
-        logger.info(f"Loaded {table_name}: {len(df)} rows × {len(df.columns)} cols")
+    # Define required tables and their filenames
+    required_tables = {
+        "prov": FNAME_PROV_TABLE,
+        "code_table": FNAME_CODE_TABLE,
+        "code_codes": FNAME_CODE_CODES,
+        "interp_table": FNAME_INTERP_TABLE,
+        "interp_codes": FNAME_INTERP_CODES,
+        "totals_table": FNAME_TOTALS_TABLE,
+        "artifact_table": FNAME_ARTIFACT_TABLE,
+        "artifact_codes": FNAME_ARTIFACT_CODES,
+    }
 
-    # Validate required tables
-    missing = [t for t in ["provTable", "codeTable", "codeCodes"] if t not in tables]
-    if missing:
-        raise ConfigError(f"Missing required DF10 tables: {missing}")
+    # Load each table
+    for name, filename in required_tables.items():
+        filepath = config.input_dir / filename
+        tables[name] = read_csv_safe(filepath)
 
+    # Load metadata
+    tables["metadata"] = read_csv_safe(config.metadata_path)
+
+    logger.info("Successfully loaded %d tables", len(tables))
     return tables
 
 
-# ========================= CODE EXPANSION UTILITIES ===========================
+# ================================ DATA CLEANING ===============================
+
+
+def clean_prov_table(prov: pd.DataFrame) -> pd.DataFrame:
+    """Clean provTable per R script specifications.
+
+    Specifically handles Subsite "NONE" values.
+
+    Args:
+        prov: Raw provTable DataFrame
+
+    Returns:
+        Cleaned provTable DataFrame
+    """
+    logger.info("Cleaning provTable...")
+
+    # Create copy to avoid modifying original
+    prov_clean = prov.copy()
+
+    # Handle "NONE" subsite values per R script
+    if "Subsite" in prov_clean.columns:
+        mask = prov_clean["Subsite"] == NONE_SUBSITE_LABEL
+        prov_clean.loc[mask, "Subsite"] = np.nan
+        logger.debug(f"Converted {mask.sum()} 'NONE' Subsite values to NaN")
+
+    # Ensure SSN is numeric
+    prov_clean["SSN"] = pd.to_numeric(prov_clean["SSN"], errors="coerce")
+
+    # Check for duplicate SSNs
+    if prov_clean["SSN"].duplicated().any():
+        dup_count = prov_clean["SSN"].duplicated().sum()
+        logger.warning(f"Found {dup_count} duplicate SSN values in provTable")
+
+    return prov_clean
+
+
+# ================================ CODE EXPANSION ==============================
 
 
 def build_code_lookup(
     codes_df: pd.DataFrame,
     code_col: str = "Code",
     desc_col: str = "Description",
-) -> Dict[Any, str]:
-    """Build lookup dictionary for code expansion.
+) -> Dict[int, str]:
+    """Build lookup dictionary for code to description mapping.
 
     Args:
         codes_df: DataFrame with code definitions
@@ -215,17 +274,13 @@ def build_code_lookup(
         desc_col: Name of description column
 
     Returns:
-        Dictionary mapping code to "code. description" format
+        Dictionary mapping codes to "code. description" format
     """
     lookup = {}
 
     for _, row in codes_df.iterrows():
         code = row[code_col]
         desc = row[desc_col]
-
-        # Handle special cases
-        if pd.isna(code):
-            continue
 
         # Format as "code. description"
         if pd.notna(desc):
@@ -236,782 +291,625 @@ def build_code_lookup(
     return lookup
 
 
-def expand_codes_in_column(
+def expand_codes(
     series: pd.Series,
-    code_lookup: Dict[Any, str],
-    preserve_numeric: bool = False,
+    code_lookup: Dict[int, str],
 ) -> pd.Series:
     """Expand numeric codes to "code. description" format.
 
     Args:
         series: Series with numeric codes
         code_lookup: Dictionary mapping codes to descriptions
-        preserve_numeric: If True, keep numeric values as-is
 
     Returns:
         Series with expanded code descriptions
     """
-    if preserve_numeric:
-        return series
-
-    # Convert to string for consistent handling
-    result = series.copy()
-
-    # Map codes to descriptions
-    for code, description in code_lookup.items():
-        mask = result == code
-        if mask.any():
-            result.loc[mask] = description
-
-    return result
+    # Map codes preserving NaN values
+    return series.map(lambda x: code_lookup.get(x, str(x)) if pd.notna(x) else np.nan)
 
 
-# =========================== EAV PIVOT OPERATIONS =============================
+# ================================ PIVOTING OPERATIONS =========================
 
 
-def pivot_code_table(
+def format_codes(
     code_table: pd.DataFrame,
-    code_lookup: Dict[Any, str],
-    cfg: DF10Config,
-) -> Tuple[pd.DataFrame, Dict[str, Any]]:
-    """Pivot codeTable from EAV to wide format.
+    code_codes: pd.DataFrame,
+    config: DF10Config,
+) -> pd.DataFrame:
+    """Format codeTable from EAV to wide format.
+
+    Implements the R script's codeTable processing including:
+    - Pivot Variable column to wide format
+    - Expand codes to descriptions if configured
+    - Handle "absent" values for specific columns
 
     Args:
         code_table: EAV format codeTable
-        code_lookup: Code to description mapping
-        cfg: Configuration object
+        code_codes: Code definitions
+        config: Configuration object
 
     Returns:
-        Tuple of (wide DataFrame, transformation log)
+        Wide format DataFrame
     """
-    logger.info("Pivoting codeTable EAV structure...")
+    logger.info("Formatting codeTable...")
 
-    # Track unique variables
-    unique_vars = code_table["Variable"].unique()
-    logger.info(f"Found {len(unique_vars)} unique coded variables")
-
-    # Expand codes before pivot if configured
-    if cfg.emit_code_and_label:
+    # Build code lookup if needed
+    if config.emit_code_labels:
+        code_lookup = build_code_lookup(code_codes)
         code_table = code_table.copy()
-        code_table["Code"] = expand_codes_in_column(
-            code_table["Code"], code_lookup, preserve_numeric=False
-        )
+        code_table["Code"] = expand_codes(code_table["Code"], code_lookup)
+        default_fill = "0. absent"
+    else:
+        default_fill = 0
+
+    # Check for Where = "Missing" entries and handle sentinel values
+    missing_mask = code_table["Where"] == MISSING_WHERE_LABEL
+    if missing_mask.any():
+        code_table.loc[missing_mask, "Code"] = np.nan
 
     # Pivot to wide format
-    # REASON: Using pivot_table for aggregation in case of duplicates
-    wide = code_table.pivot_table(
+    codes_wide = code_table.pivot_table(
         index="SSN",
         columns="Variable",
         values="Code",
-        aggfunc="first",  # Take first if duplicates exist
-        fill_value="0. absent",  # DF10 convention: blank = absent
-    )
+        aggfunc="first",  # Take first if duplicates
+        fill_value=default_fill,
+    ).reset_index()
 
-    # Reset index to make SSN a column
-    wide = wide.reset_index()
+    # Handle specific columns where "absent" should be NA per R script
+    for col in CODES_ABSENT_TO_NA_COLS:
+        if col in codes_wide.columns:
+            if config.emit_code_labels:
+                codes_wide[col] = codes_wide[col].replace("0. absent", np.nan)
+            else:
+                codes_wide[col] = codes_wide[col].replace(0, np.nan)
 
-    # Add prefix to avoid column name collisions
-    wide.columns = [col if col == "SSN" else f"code_{col}" for col in wide.columns]
-
-    log = {
-        "variables_pivoted": len(unique_vars),
-        "rows_after_pivot": len(wide),
-        "columns_created": len(wide.columns) - 1,  # Exclude SSN
-    }
-
-    return wide, log
+    logger.info(f"Created {len(codes_wide.columns) - 1} code columns")
+    return codes_wide
 
 
-def pivot_interp_table(
+def format_interps(
     interp_table: pd.DataFrame,
-    interp_lookup: Dict[Any, str],
-    cfg: DF10Config,
-) -> Tuple[pd.DataFrame, Dict[str, Any]]:
-    """Pivot interpTable from EAV to wide format.
+    interp_codes: pd.DataFrame,
+    config: DF10Config,
+) -> pd.DataFrame:
+    """Format interpTable from EAV to wide format.
 
     Args:
         interp_table: EAV format interpTable
-        interp_lookup: Interpretation code to description mapping
-        cfg: Configuration object
+        interp_codes: Interpretation code definitions
+        config: Configuration object
 
     Returns:
-        Tuple of (wide DataFrame, transformation log)
+        Wide format DataFrame
     """
-    logger.info("Pivoting interpTable EAV structure...")
+    logger.info("Formatting interpTable...")
 
-    # Check for column name - may be interpVar or Variable
-    if "interpVar" in interp_table.columns:
-        var_col = "interpVar"
-    else:
-        var_col = "Variable"
+    # Handle column name variation (interpVar vs Variable)
+    var_col = "interpVar" if "interpVar" in interp_table.columns else "Variable"
 
-    unique_vars = interp_table[var_col].unique()
-    logger.info(f"Found {len(unique_vars)} unique interpretation variables")
-
-    # Expand codes if configured
-    if cfg.emit_code_and_label:
+    # Build code lookup if needed
+    if config.emit_code_labels:
+        code_lookup = build_code_lookup(interp_codes)
         interp_table = interp_table.copy()
-        interp_table["Code"] = expand_codes_in_column(
-            interp_table["Code"], interp_lookup, preserve_numeric=False
-        )
+        interp_table["Code"] = expand_codes(interp_table["Code"], code_lookup)
 
-    # Pivot to wide format
-    wide = interp_table.pivot_table(
+    # Check for Where = "Missing" entries
+    if "Where" in interp_table.columns:
+        missing_mask = interp_table["Where"] == MISSING_WHERE_LABEL
+        if missing_mask.any():
+            interp_table.loc[missing_mask, "Code"] = np.nan
+
+    # Pivot to wide format (no fill_value per R script)
+    interps_wide = interp_table.pivot_table(
         index="SSN",
         columns=var_col,
         values="Code",
         aggfunc="first",
-        fill_value="0. absent",
-    )
+    ).reset_index()
 
-    wide = wide.reset_index()
-
-    # Add prefix to avoid collisions
-    wide.columns = [col if col == "SSN" else f"interp_{col}" for col in wide.columns]
-
-    log = {
-        "variables_pivoted": len(unique_vars),
-        "rows_after_pivot": len(wide),
-        "columns_created": len(wide.columns) - 1,
-    }
-
-    return wide, log
+    logger.info(f"Created {len(interps_wide.columns) - 1} interpretation columns")
+    return interps_wide
 
 
-def build_artifact_hierarchy(
-    artifact_codes: pd.DataFrame,
-) -> Dict[str, str]:
-    """Build hierarchical artifact naming from codes.
+def format_totals(totals_table: pd.DataFrame) -> pd.DataFrame:
+    """Format totalsTable from long to wide format.
+
+    Implements the R script's NewCount calculation and pivoting.
 
     Args:
-        artifact_codes: DataFrame with artifact code definitions
+        totals_table: Long format totalsTable
 
     Returns:
-        Dictionary mapping artifact codes to hierarchical names
+        Wide format DataFrame with numeric counts
     """
-    artifact_names = {}
+    logger.info("Formatting totalsTable...")
 
-    # Check available columns
-    _ = artifact_codes.columns.tolist()
+    totals = totals_table.copy()
 
-    for _, row in artifact_codes.iterrows():
-        # Try to extract codes and description
-        code1 = row.get("ArtCode1", row.get("Code1", ""))
-        code2 = row.get("ArtCode2", row.get("Code2", ""))
-        code3 = row.get("ArtCode3", row.get("Code3", ""))
-        desc = row.get("Description", row.get("Label", ""))
-
-        # Create hierarchical name
-        if desc:
-            # Clean and format description
-            name = str(desc).lower().replace(" ", "_").replace("-", "_")
-            name = "".join(c for c in name if c.isalnum() or c == "_")
-        else:
-            # Fallback to codes
-            name = f"artifact_{code1}_{code2}_{code3}"
-
-        # Store mapping
-        key = f"{code1}_{code2}_{code3}"
-        artifact_names[key] = f"{name}_count"
-
-    return artifact_names
-
-
-def pivot_artifact_table_chunked(
-    artifact_table: pd.DataFrame,
-    artifact_names: Dict[str, str],
-    cfg: DF10Config,
-) -> Tuple[pd.DataFrame, Dict[str, Any]]:
-    """Pivot large artifactTable using chunked processing.
-
-    Args:
-        artifact_table: EAV format artifactTable (190K+ rows)
-        artifact_names: Mapping of artifact codes to names
-        cfg: Configuration object
-
-    Returns:
-        Tuple of (wide DataFrame, transformation log)
-    """
-    logger.info(f"Pivoting large artifactTable ({len(artifact_table)} rows)...")
-
-    # Check memory usage
-    if len(artifact_table) > LARGE_PIVOT_THRESHOLD_ROWS:
-        mem_gb = _get_memory_usage_gb()
-        if mem_gb > MEMORY_WARNING_THRESHOLD_GB:
-            logger.warning(
-                f"High memory usage detected: {mem_gb:.2f} GB. "
-                "Using chunked processing for artifact pivot."
-            )
-
-    # Create artifact category column
-    artifact_table = artifact_table.copy()
-    artifact_table["ArtCategory"] = (
-        artifact_table["ArtCode1"].astype(str)
-        + "_"
-        + artifact_table["ArtCode2"].astype(str)
-        + "_"
-        + artifact_table["ArtCode3"].astype(str)
+    # Calculate NewCount per R script logic
+    # If Where == "Missing", use -9999, else use Where value, else use Count
+    totals["NewCount"] = totals.apply(
+        lambda row: (
+            MISSING_SENTINEL_NEG9999
+            if row["Where"] == MISSING_WHERE_LABEL
+            else pd.to_numeric(row["Where"], errors="coerce")
+            if pd.notna(row["Where"]) and row["Where"] != MISSING_WHERE_LABEL
+            else row["Count"]
+        ),
+        axis=1,
     )
 
-    # Map to hierarchical names if available
-    if artifact_names:
-        artifact_table["ArtCategory"] = (
-            artifact_table["ArtCategory"]
-            .map(artifact_names)
-            .fillna(artifact_table["ArtCategory"])
-        )
+    # Replace -9999 with NaN
+    totals["NewCount"] = totals["NewCount"].replace(MISSING_SENTINEL_NEG9999, np.nan)
 
-    # Count unique categories
-    unique_cats = artifact_table["ArtCategory"].nunique()
-    logger.info(f"Found {unique_cats} unique artifact categories")
-
-    if unique_cats > cfg.max_columns:
-        logger.warning(
-            f"Artifact categories ({unique_cats}) exceed max_columns "
-            f"({cfg.max_columns}). Consider adjusting configuration."
-        )
-
-    # Pivot using optimized settings
-    wide = artifact_table.pivot_table(
-        index="SSN",
-        columns="ArtCategory",
-        values="Count",
-        aggfunc="sum",  # Sum counts if multiple entries
-        fill_value=0,  # Artifacts: 0 = none present
-    )
-
-    wide = wide.reset_index()
-
-    # Add prefix for clarity
-    wide.columns = [col if col == "SSN" else f"artifact_{col}" for col in wide.columns]
-
-    log = {
-        "categories_pivoted": unique_cats,
-        "rows_after_pivot": len(wide),
-        "columns_created": len(wide.columns) - 1,
-        "total_rows_processed": len(artifact_table),
-    }
-
-    return wide, log
-
-
-def pivot_totals_table(
-    totals_table: pd.DataFrame,
-    cfg: DF10Config,
-) -> Tuple[pd.DataFrame, Dict[str, Any]]:
-    """Pivot totalsTable from EAV to wide format.
-
-    Args:
-        totals_table: EAV format totalsTable
-        cfg: Configuration object
-
-    Returns:
-        Tuple of (wide DataFrame, transformation log)
-    """
-    logger.info("Pivoting totalsTable EAV structure...")
-
-    unique_vars = totals_table["Variable"].unique()
-    logger.info(f"Found {len(unique_vars)} unique total variables")
-
-    # Pivot to wide format
-    wide = totals_table.pivot_table(
+    # Pivot to wide format with 0 fill
+    totals_wide = totals.pivot_table(
         index="SSN",
         columns="Variable",
+        values="NewCount",
+        aggfunc="sum",
+        fill_value=0,
+    ).reset_index()
+
+    # Ensure all count columns are numeric
+    for col in totals_wide.columns:
+        if col != "SSN":
+            totals_wide[col] = pd.to_numeric(totals_wide[col], errors="coerce").fillna(
+                0
+            )
+
+    logger.info(f"Created {len(totals_wide.columns) - 1} total count columns")
+    return totals_wide
+
+
+def format_artifacts(
+    artifact_table: pd.DataFrame,
+    artifact_codes: pd.DataFrame,
+    config: DF10Config,
+) -> pd.DataFrame:
+    """Format artifactTable from EAV to wide format.
+
+    Implements the complex artifact hierarchy processing from R script:
+    - Join with artifact codes
+    - Handle special case artifact (figAzte)
+    - Create hierarchical column names
+    - Pivot with numeric counts
+
+    Args:
+        artifact_table: EAV format artifactTable
+        artifact_codes: Artifact code definitions
+        config: Configuration object
+
+    Returns:
+        Wide format DataFrame with artifact counts
+    """
+    logger.info("Formatting artifactTable...")
+
+    artifacts = artifact_table.copy()
+
+    # Join with artifact codes to get descriptions
+    artifacts = artifacts.merge(
+        artifact_codes[["Code", "Description"]],
+        left_on="ArtCode3",
+        right_on="Code",
+        how="left",
+    )
+
+    # Handle special case: ArtCode2=12 & ArtCode3=46 -> "figAzte"
+    special_mask = (artifacts["ArtCode2"] == ARTIFACT_SPECIAL_CODE2) & (
+        artifacts["ArtCode3"] == ARTIFACT_SPECIAL_CODE3
+    )
+    artifacts.loc[special_mask, "Description"] = ARTIFACT_SPECIAL_NAME
+
+    # Create artifact name from description
+    artifacts["ArtifactName"] = artifacts["Description"].apply(
+        lambda x: (
+            str(x).lower().replace(" ", "_").replace("-", "_")
+            if pd.notna(x)
+            else f"artifact_{x}"
+        )
+    )
+
+    # Handle Where = "Missing" -> Count = NaN
+    missing_mask = artifacts["Where"] == MISSING_WHERE_LABEL
+    artifacts.loc[missing_mask, "Count"] = np.nan
+
+    # Pivot to wide format with 0 fill
+    artifacts_wide = artifacts.pivot_table(
+        index="SSN",
+        columns="ArtifactName",
         values="Count",
         aggfunc="sum",
-        fill_value=0,  # Totals: 0 = none
+        fill_value=0,
+    ).reset_index()
+
+    # Ensure all count columns are numeric
+    for col in artifacts_wide.columns:
+        if col != "SSN":
+            artifacts_wide[col] = pd.to_numeric(
+                artifacts_wide[col], errors="coerce"
+            ).fillna(0)
+
+    logger.info(f"Created {len(artifacts_wide.columns) - 1} artifact count columns")
+    return artifacts_wide
+
+
+# ================================ METADATA OPERATIONS =========================
+
+
+def apply_metadata_renames_and_order(
+    df: pd.DataFrame,
+    metadata: pd.DataFrame,
+) -> pd.DataFrame:
+    """Apply metadata-driven column renaming and reordering.
+
+    Implements the three-step process from R script:
+    1. Rename columns based on variable -> var_df11 mapping
+    2. Add missing DF11 variables as NA columns
+    3. Reorder columns based on order_index
+
+    Args:
+        df: Wide format DataFrame to process
+        metadata: DF10_metadata DataFrame
+
+    Returns:
+        DataFrame with renamed and reordered columns
+    """
+    logger.info("Applying metadata-driven renames and ordering...")
+
+    result = df.copy()
+
+    # Step 1: Rename columns
+    # Build rename mapping from metadata where variable exists in df
+    rename_map = {}
+    for _, row in metadata.iterrows():
+        if pd.notna(row.get("variable")) and pd.notna(row.get("var_df11")):
+            if row["variable"] in result.columns:
+                rename_map[row["variable"]] = row["var_df11"]
+
+    if rename_map:
+        result = result.rename(columns=rename_map)
+        logger.info(f"Renamed {len(rename_map)} columns")
+
+    # Check for duplicate column names
+    if result.columns.duplicated().any():
+        duplicates = result.columns[result.columns.duplicated()].unique()
+        raise ValueError(
+            f"Duplicate column names after renaming: {', '.join(duplicates)}"
+        )
+
+    # Step 2: Add missing DF11 variables
+    # Find variables where var_in_df10 == FALSE
+    if "var_in_df10" in metadata.columns:
+        # Normalize boolean values
+        metadata["var_in_df10_bool"] = metadata["var_in_df10"].apply(
+            lambda x: (
+                False
+                if str(x).upper() in ["FALSE", "0", "F"]
+                else True
+                if str(x).upper() in ["TRUE", "1", "T"]
+                else None
+            )
+        )
+
+        # Select rows where the normalized flag is exactly False (avoid E712 and handle None safely)
+        missing_vars = metadata[
+            metadata["var_in_df10_bool"].isin([False]) & metadata["var_df11"].notna()
+        ]["var_df11"].tolist()
+
+        # Add missing columns with NA values
+        for var in missing_vars:
+            if var not in result.columns:
+                result[var] = np.nan
+
+        if missing_vars:
+            logger.info(f"Added {len(missing_vars)} missing DF11 variables")
+
+    # Step 3: Reorder columns based on order_index
+    if "order_index" in metadata.columns:
+        # Create ordering dataframe
+        order_df = metadata[metadata["var_df11"].notna()][
+            ["var_df11", "order_index"]
+        ].drop_duplicates(subset=["var_df11"])
+
+        # Convert order_index to numeric, handling NaN
+        order_df["order_idx_num"] = pd.to_numeric(
+            order_df["order_index"], errors="coerce"
+        )
+
+        # Sort by order_index (NaN last), then by var_df11
+        order_df = order_df.sort_values(
+            by=["order_idx_num", "var_df11"],
+            na_position="last",
+        )
+
+        # Get desired column order
+        desired_order = [
+            col for col in order_df["var_df11"].tolist() if col in result.columns
+        ]
+
+        # Add any remaining columns not in metadata
+        remaining_cols = [col for col in result.columns if col not in desired_order]
+
+        # Reorder columns
+        result = result[desired_order + remaining_cols]
+
+        logger.info("Reordered columns based on metadata")
+
+    return result
+
+
+# ================================ MAIN PIPELINE ===============================
+
+
+def build_df10_wide(config: DF10Config) -> pd.DataFrame:
+    """Execute the complete DF10 flattening pipeline.
+
+    Orchestrates all transformation steps matching the R script:
+    1. Load input tables
+    2. Clean provTable
+    3. Format each table (codes, interps, totals, artifacts)
+    4. Join all tables to provTable
+    5. Apply metadata renames and ordering
+
+    Args:
+        config: Configuration object
+
+    Returns:
+        Final wide format DataFrame
+    """
+    logger.info("=" * 60)
+    logger.info("Starting DF10 EAV Flattening Pipeline")
+    logger.info("=" * 60)
+
+    # Load all input tables
+    tables = load_input_tables(config)
+
+    # Clean provTable
+    prov_clean = clean_prov_table(tables["prov"])
+
+    # Format each table
+    codes_wide = format_codes(tables["code_table"], tables["code_codes"], config)
+    interps_wide = format_interps(
+        tables["interp_table"], tables["interp_codes"], config
+    )
+    totals_wide = format_totals(tables["totals_table"])
+    artifacts_wide = format_artifacts(
+        tables["artifact_table"], tables["artifact_codes"], config
     )
 
-    wide = wide.reset_index()
+    # Join all tables to provTable
+    logger.info("Joining all wide tables to provTable...")
 
-    # Add prefix
-    wide.columns = [col if col == "SSN" else f"total_{col}" for col in wide.columns]
+    result = prov_clean
 
-    log = {
-        "variables_pivoted": len(unique_vars),
-        "rows_after_pivot": len(wide),
-        "columns_created": len(wide.columns) - 1,
-    }
+    # Left join each formatted table
+    for table, name in [
+        (codes_wide, "codes"),
+        (interps_wide, "interps"),
+        (totals_wide, "totals"),
+        (artifacts_wide, "artifacts"),
+    ]:
+        logger.info(f"Joining {name} table...")
+        result = result.merge(table, on="SSN", how="left")
 
-    return wide, log
+    logger.info(f"Joined result: {result.shape[0]} rows × {result.shape[1]} columns")
+
+    # Apply metadata-driven renames and ordering
+    result = apply_metadata_renames_and_order(result, tables["metadata"])
+
+    # Validate row count if configured
+    if config.validate_rows and result.shape[0] != EXPECTED_ROW_COUNT:
+        logger.warning(
+            f"Row count mismatch: expected {EXPECTED_ROW_COUNT}, got {result.shape[0]}"
+        )
+
+    logger.info("=" * 60)
+    logger.info("DF10 Flattening Complete")
+    logger.info(f"Final shape: {result.shape[0]} rows × {result.shape[1]} columns")
+    logger.info("=" * 60)
+
+    return result
 
 
-# ========================== MAIN PIPELINE FUNCTIONS ===========================
-
-
-def build_wide_table(
-    cfg: DF10Config,
-    tables: Dict[str, pd.DataFrame],
-) -> Tuple[pd.DataFrame, Dict[str, Any]]:
-    """Build complete wide table from DF10 tables.
+def generate_profile(df: pd.DataFrame, config: DF10Config) -> Dict[str, Any]:
+    """Generate data profile for the wide DataFrame.
 
     Args:
-        cfg: Configuration object
-        tables: Dictionary of loaded DF10 tables
+        df: Wide format DataFrame
+        config: Configuration object
 
     Returns:
-        Tuple of (wide DataFrame, transformation log)
+        Dictionary with profile metrics
     """
-    transform_log = {}
-
-    # Start with base provTable
-    logger.info("Starting with base provTable...")
-    wide = tables["provTable"].copy()
-    base_rows = len(wide)
-    logger.info(f"Base table has {base_rows} rows")
-
-    # Build code lookups
-    code_lookup = {}
-    interp_lookup = {}
-    artifact_names = {}
-
-    if "codeCodes" in tables:
-        code_lookup = build_code_lookup(tables["codeCodes"])
-        logger.info(f"Built code lookup with {len(code_lookup)} entries")
-
-    if "interpCodes" in tables:
-        interp_lookup = build_code_lookup(tables["interpCodes"])
-        logger.info(f"Built interp lookup with {len(interp_lookup)} entries")
-
-    if "artifactCodes" in tables:
-        artifact_names = build_artifact_hierarchy(tables["artifactCodes"])
-        logger.info(f"Built artifact hierarchy with {len(artifact_names)} categories")
-
-    # Pivot and merge codeTable
-    if "codeTable" in tables and len(tables["codeTable"]) > 0:
-        code_wide, code_log = pivot_code_table(tables["codeTable"], code_lookup, cfg)
-        transform_log["codeTable"] = code_log
-
-        logger.info(f"Merging codeTable: {len(code_wide.columns) - 1} new columns")
-        wide = wide.merge(code_wide, on="SSN", how="left")
-
-    # Pivot and merge interpTable
-    if "interpTable" in tables and len(tables["interpTable"]) > 0:
-        interp_wide, interp_log = pivot_interp_table(
-            tables["interpTable"], interp_lookup, cfg
-        )
-        transform_log["interpTable"] = interp_log
-
-        logger.info(f"Merging interpTable: {len(interp_wide.columns) - 1} new columns")
-        wide = wide.merge(interp_wide, on="SSN", how="left")
-
-    # Pivot and merge artifactTable (large operation)
-    if "artifactTable" in tables and len(tables["artifactTable"]) > 0:
-        artifact_wide, artifact_log = pivot_artifact_table_chunked(
-            tables["artifactTable"], artifact_names, cfg
-        )
-        transform_log["artifactTable"] = artifact_log
-
-        logger.info(
-            f"Merging artifactTable: {len(artifact_wide.columns) - 1} new columns"
-        )
-        wide = wide.merge(artifact_wide, on="SSN", how="left")
-
-    # Pivot and merge totalsTable
-    if "totalsTable" in tables and len(tables["totalsTable"]) > 0:
-        totals_wide, totals_log = pivot_totals_table(tables["totalsTable"], cfg)
-        transform_log["totalsTable"] = totals_log
-
-        logger.info(f"Merging totalsTable: {len(totals_wide.columns) - 1} new columns")
-        wide = wide.merge(totals_wide, on="SSN", how="left")
-
-    # Fill any remaining NaN values
-    # For categorical variables, NaN means "no data recorded" -> "0. absent"
-    # For numeric counts, NaN means 0
-    for col in wide.columns:
-        if col == "SSN":
-            continue
-        elif col.startswith("artifact_") or col.startswith("total_"):
-            # Numeric counts - fill with 0
-            wide[col] = wide[col].fillna(0)
-        else:
-            # Categorical - fill with "0. absent"
-            wide[col] = wide[col].fillna("0. absent")
-
-    # Final row count validation
-    if len(wide) != base_rows:
-        logger.warning(f"Row count changed during merge: {base_rows} -> {len(wide)}")
-
-    transform_log["final_shape"] = {
-        "rows": len(wide),
-        "columns": len(wide.columns),
-        "memory_usage_mb": wide.memory_usage(deep=True).sum() / (1024**2),
-    }
-
-    return wide, transform_log
-
-
-def reorder_columns(
-    df: pd.DataFrame,
-    metadata: Optional[pd.DataFrame] = None,
-) -> pd.DataFrame:
-    """Reorder columns for DF11 integration.
-
-    Args:
-        df: DataFrame to reorder
-        metadata: Optional metadata with order_index
-
-    Returns:
-        DataFrame with reordered columns
-    """
-    # Always keep SSN first
-    cols = df.columns.tolist()
-    cols.remove("SSN")
-
-    # If metadata provided, use order_index
-    if metadata is not None and "order_index" in metadata.columns:
-        # Create ordering based on metadata
-        meta_vars = metadata.sort_values("order_index")["variable"].tolist()
-
-        # Separate columns into ordered and unordered
-        ordered = []
-        unordered = []
-
-        for col in cols:
-            # Strip prefixes for matching
-            base_col = col.replace("code_", "").replace("interp_", "")
-            base_col = base_col.replace("artifact_", "").replace("total_", "")
-
-            if base_col in meta_vars:
-                idx = meta_vars.index(base_col)
-                ordered.append((idx, col))
-            else:
-                unordered.append(col)
-
-        # Sort ordered columns by index
-        ordered.sort(key=lambda x: x[0])
-        ordered_cols = [col for _, col in ordered]
-
-        # Combine: SSN, ordered, unordered
-        final_order = ["SSN"] + ordered_cols + sorted(unordered)
-    else:
-        # Default ordering: SSN, location/site info, codes, interps, artifacts, totals
-        location_cols = [
-            c for c in cols if c in ["Site", "Subsite", "Unit", "Northing", "Easting"]
-        ]
-        code_cols = sorted([c for c in cols if c.startswith("code_")])
-        interp_cols = sorted([c for c in cols if c.startswith("interp_")])
-        artifact_cols = sorted([c for c in cols if c.startswith("artifact_")])
-        total_cols = sorted([c for c in cols if c.startswith("total_")])
-        other_cols = sorted(
-            [
-                c
-                for c in cols
-                if c
-                not in location_cols
-                + code_cols
-                + interp_cols
-                + artifact_cols
-                + total_cols
-            ]
-        )
-
-        final_order = (
-            ["SSN"]
-            + location_cols
-            + code_cols
-            + interp_cols
-            + artifact_cols
-            + total_cols
-            + other_cols
-        )
-
-    # Reorder DataFrame
-    return df[final_order]
-
-
-def qc_profile(cfg: DF10Config, wide: pd.DataFrame) -> Dict[str, Any]:
-    """Generate QC profile and validation metrics.
-
-    Args:
-        cfg: Configuration object
-        wide: Wide format DataFrame
-
-    Returns:
-        Dictionary with QC metrics
-    """
-    qc = {
-        "row_count": len(wide),
-        "column_count": len(wide.columns),
-        "expected_rows_match": None,
-        "key_unique": wide["SSN"].is_unique,
-        "memory_usage_mb": wide.memory_usage(deep=True).sum() / (1024**2),
+    profile = {
+        "row_count": len(df),
+        "column_count": len(df.columns),
+        "memory_usage_mb": df.memory_usage(deep=True).sum() / (1024**2),
+        "ssn_unique": df["SSN"].is_unique if "SSN" in df.columns else None,
         "column_types": {
-            "categorical": len([c for c in wide.columns if wide[c].dtype == "object"]),
-            "numeric": len(
-                [c for c in wide.columns if pd.api.types.is_numeric_dtype(wide[c])]
-            ),
+            "numeric": len(df.select_dtypes(include=[np.number]).columns),
+            "object": len(df.select_dtypes(include=["object"]).columns),
         },
         "missing_data": {
-            "total_cells": wide.size,
-            "missing_cells": wide.isna().sum().sum(),
-            "missing_percentage": (wide.isna().sum().sum() / wide.size) * 100,
+            "total_cells": df.size,
+            "missing_cells": df.isna().sum().sum(),
+            "missing_percentage": (df.isna().sum().sum() / df.size * 100)
+            if df.size > 0
+            else 0,
         },
-        "column_prefixes": {
-            "code_": len([c for c in wide.columns if c.startswith("code_")]),
-            "interp_": len([c for c in wide.columns if c.startswith("interp_")]),
-            "artifact_": len([c for c in wide.columns if c.startswith("artifact_")]),
-            "total_": len([c for c in wide.columns if c.startswith("total_")]),
+        "column_name_patterns": {
+            "code_": len([c for c in df.columns if c.startswith("code_")]),
+            "interp_": len([c for c in df.columns if c.startswith("interp_")]),
+            "artifact_": len([c for c in df.columns if "artifact" in c.lower()]),
+            "total_": len([c for c in df.columns if "total" in c.lower()]),
+        },
+        "sample_ssn": {
+            "first_5": df["SSN"].head(5).tolist() if "SSN" in df.columns else [],
+            "last_5": df["SSN"].tail(5).tolist() if "SSN" in df.columns else [],
         },
     }
 
-    if cfg.expected_rows is not None:
-        qc["expected_rows_match"] = len(wide) == cfg.expected_rows
-
-    # Sample data for verification
-    qc["sample_rows"] = {
-        "first_5_ssn": wide["SSN"].head(5).tolist(),
-        "last_5_ssn": wide["SSN"].tail(5).tolist(),
-    }
-
-    return qc
+    return profile
 
 
-def run_pipeline(cfg: DF10Config) -> Dict[str, Any]:
-    """Execute complete DF10 flattening pipeline.
+def write_output(df: pd.DataFrame, config: DF10Config) -> None:
+    """Write output files and generate profile.
 
     Args:
-        cfg: Configuration object
-
-    Returns:
-        Dictionary with QC metrics and output paths
+        df: Wide format DataFrame to write
+        config: Configuration object
     """
-    logger.info("=== Starting DF10 EAV Flattening Pipeline ===")
-    logger.info(
-        f"Configuration: expected_rows={cfg.expected_rows}, emit_codes={cfg.emit_code_and_label}"
-    )
+    logger.info("Writing output files...")
 
-    # Load all DF10 tables
-    logger.info(f"Loading DF10 tables from: {cfg.df10_dir}")
-    tables = load_df10_tables(cfg.df10_dir)
+    # Write main CSV output
+    try:
+        df.to_csv(config.output_path, index=False)
+        logger.info(f"Wrote {config.output_path}")
+    except Exception as e:
+        logger.error(f"Failed to write CSV: {e}")
+        raise
 
-    # Build wide table via EAV pivots
-    logger.info("Building wide table via EAV pivots...")
-    wide, transform_log = build_wide_table(cfg, tables)
+    # Generate and write profile if configured
+    if config.generate_profile:
+        profile = generate_profile(df, config)
+        profile_path = config.output_path.with_suffix(".profile.json")
 
-    # Reorder columns
-    logger.info("Reordering columns for DF11 integration...")
-    wide = reorder_columns(wide)
+        try:
+            with open(profile_path, "w") as f:
+                json.dump(profile, f, indent=2, default=str)
+            logger.info(f"Wrote profile to {profile_path}")
+        except Exception as e:
+            logger.warning(f"Failed to write profile: {e}")
 
-    # Final validation and QC
-    logger.info("Performing QC validation...")
-    qc = qc_profile(cfg, wide)
-
-    # Create full log payload
-    log_payload = {
-        "inputs": {
-            "df10_dir": str(cfg.df10_dir),
-            "tables_loaded": list(tables.keys()),
-            "table_row_counts": {name: len(df) for name, df in tables.items()},
-        },
-        "transformations": transform_log,
-        "qc": qc,
-        "configuration": {
-            "expected_rows": cfg.expected_rows,
-            "emit_code_and_label": cfg.emit_code_and_label,
-            "chunk_size": cfg.chunk_size,
-            "max_columns": cfg.max_columns,
-        },
-    }
-
-    # Create output directories
-    cfg.out_wide_csv.parent.mkdir(parents=True, exist_ok=True)
-    cfg.out_profile_json.parent.mkdir(parents=True, exist_ok=True)
-    if cfg.out_parquet:
-        cfg.out_parquet.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write outputs
-    logger.info(f"Writing wide CSV: {cfg.out_wide_csv}")
-    wide.to_csv(cfg.out_wide_csv, index=False, na_rep="")
-
-    if cfg.out_parquet:
-        logger.info(f"Writing Parquet: {cfg.out_parquet}")
-        wide.to_parquet(cfg.out_parquet, index=False)
-
-    logger.info(f"Writing QC/profile JSON: {cfg.out_profile_json}")
-    with cfg.out_profile_json.open("w", encoding="utf-8") as f:
-        json.dump(log_payload, f, ensure_ascii=False, indent=2, default=str)
-
-    # Final validation checks
-    if cfg.expected_rows is not None and qc["expected_rows_match"] is False:
-        logger.warning(
-            f"Row count {qc['row_count']} does not match expected {cfg.expected_rows}"
-        )
-
-    if not qc["key_unique"]:
-        logger.error("Key uniqueness violated: duplicate SSN values present.")
-
-    logger.info("=== DF10 EAV Flattening Complete ===")
-    logger.info(f"Final output: {wide.shape[0]} rows × {wide.shape[1]} columns")
-    logger.info(f"Memory usage: {qc['memory_usage_mb']:.2f} MB")
-
-    return {
-        "qc": qc,
-        "outputs": {
-            "csv": str(cfg.out_wide_csv),
-            "parquet": str(cfg.out_parquet) if cfg.out_parquet else None,
-            "profile": str(cfg.out_profile_json),
-        },
-    }
+    # Optional: Write parquet for faster subsequent reads
+    parquet_path = config.output_path.with_suffix(".parquet")
+    try:
+        df.to_parquet(parquet_path, index=False, compression="snappy")
+        logger.info(f"Wrote parquet to {parquet_path}")
+    except Exception as e:
+        logger.debug(f"Parquet write skipped: {e}")
 
 
-def parse_args(argv: Optional[Sequence[str]] = None) -> DF10Config:
-    """Parse CLI arguments and construct DF10Config.
+# ================================ CLI INTERFACE ===============================
+
+
+def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
+    """Parse command-line arguments.
 
     Args:
-        argv: Command line arguments
+        argv: Command-line arguments (None uses sys.argv)
 
     Returns:
-        DF10Config object
+        Parsed arguments namespace
     """
     parser = argparse.ArgumentParser(
-        description="DF10 EAV wide flattener - transforms DF10 EAV structure to wide format"
+        description="Flatten TMP_DF10 EAV structure to wide format",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Basic usage with default paths
+  python flatten_df10.py
+
+  # Custom input/output paths
+  python flatten_df10.py \\
+    --input-dir /path/to/DF10/tables \\
+    --output-path /path/to/output.csv
+
+  # Disable code expansion for numeric-only output
+  python flatten_df10.py --no-code-labels
+
+  # Enable debug logging
+  python flatten_df10.py --log-level DEBUG
+        """,
     )
+
     parser.add_argument(
-        "--df10-dir",
+        "--input-dir",
         type=Path,
         default=Path("phases/02_TransformDB/data/db_extracted_tables/TMP_DF10"),
-        help="Directory with DF10 CSV tables",
+        help="Directory containing DF10 extracted CSV tables",
     )
+
     parser.add_argument(
-        "--out-wide-csv",
+        "--metadata-path",
+        type=Path,
+        default=Path("phases/02_TransformDB/metadata/DF10_metadata.csv"),
+        help="Path to DF10_metadata.csv file",
+    )
+
+    parser.add_argument(
+        "--output-path",
         type=Path,
         default=Path("phases/02_TransformDB/data/dbs_wide/TMP_DF10_wide.csv"),
-        help="Output path for TMP_DF10_wide.csv",
+        help="Output path for wide format CSV",
     )
+
     parser.add_argument(
-        "--out-profile-json",
-        type=Path,
-        default=Path("phases/02_TransformDB/data/dbs_wide/DF10_wide_profile.json"),
-        help="Output path for DF10_wide_profile.json",
-    )
-    parser.add_argument(
-        "--out-parquet",
-        type=Path,
-        default=None,
-        help="Optional Parquet output path",
-    )
-    parser.add_argument(
-        "--expected-rows",
-        type=int,
-        default=5046,
-        help="Expected total rows (set to 0 to disable check)",
-    )
-    parser.add_argument(
-        "--no-code-label",
+        "--no-code-labels",
         action="store_true",
-        help="Disable '<code>. <text>' expansion",
+        help="Disable code expansion to 'code. description' format",
     )
+
+    parser.add_argument(
+        "--no-validation",
+        action="store_true",
+        help="Skip row count validation",
+    )
+
+    parser.add_argument(
+        "--no-profile",
+        action="store_true",
+        help="Skip generation of data profile JSON",
+    )
+
     parser.add_argument(
         "--log-level",
         type=str,
         default="INFO",
         choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+        help="Logging level",
     )
 
-    args = parser.parse_args(argv)
-
-    expected_rows = None if args.expected_rows == 0 else int(args.expected_rows)
-
-    return DF10Config(
-        df10_dir=args.df10_dir,
-        out_wide_csv=args.out_wide_csv,
-        out_profile_json=args.out_profile_json,
-        out_parquet=args.out_parquet,
-        expected_rows=expected_rows,
-        emit_code_and_label=not args.no_code_label,
-    )
+    return parser.parse_args(argv)
 
 
-def main(argv: Optional[Sequence[str]] = None) -> None:
-    """CLI entrypoint.
+def main(argv: Optional[List[str]] = None) -> None:
+    """Main entry point for the script.
 
     Args:
-        argv: Command line arguments
+        argv: Command-line arguments (None uses sys.argv)
     """
-    cfg = parse_args(argv)
-    configure_logging(
-        level=getattr(logging, cfg.__dict__.get("log_level", "INFO"), logging.INFO)
+    # Parse arguments
+    args = parse_args(argv)
+
+    # Configure logging
+    configure_logging(level=getattr(logging, args.log_level))
+
+    # Create configuration
+    config = DF10Config(
+        input_dir=args.input_dir,
+        metadata_path=args.metadata_path,
+        output_path=args.output_path,
+        emit_code_labels=not args.no_code_labels,
+        validate_rows=not args.no_validation,
+        generate_profile=not args.no_profile,
     )
-    run_pipeline(cfg)
+
+    try:
+        # Run pipeline
+        df10_wide = build_df10_wide(config)
+
+        # Write outputs
+        write_output(df10_wide, config)
+
+        logger.info("Pipeline completed successfully")
+
+    except Exception as e:
+        logger.error(f"Pipeline failed: {e}")
+        raise
 
 
 if __name__ == "__main__":
     main()
-
-
-# ================================ USAGE NOTES =================================
-"""
-DF10 EAV FLATTENING IMPLEMENTATION
-
-This script transforms DF10's Entity-Attribute-Value (EAV) structure into a wide format
-compatible with DF8 and DF9 outputs.
-
-KEY DIFFERENCES FROM DF9:
-- EAV PIVOTING vs RELATIONAL JOINS: DF10 uses consolidated tables requiring pivot operations
-- LARGER COLUMN COUNT: ~400+ columns due to artifact hierarchy (vs DF9's ~300)
-- DIFFERENT MISSING DATA HANDLING: Blank entries = "none/absent", not unknown
-- NO PERSONNEL PIVOT: DF10 handles personnel differently than DF9
-
-DF10 TABLE STRUCTURE:
-- provTable: Base table (SSN, coordinates, identifiers) - 5,046 rows
-- codeTable: EAV coded variables (SSN, Code, Variable, Where) - ~148K rows
-- interpTable: EAV interpretations (SSN, interpVar, Code, Where) - ~thousands of rows
-- artifactTable: EAV artifact counts (SSN, ArtCode1/2/3, Count) - ~190,000+ rows
-- totalsTable: EAV phase totals (SSN, Variable, Count, Where) - ~thousands of rows
-- Reference tables: codeCodes, interpCodes, artifactCodes
-
-TRANSFORMATION PROCESS:
-1. Load base provTable (5,046 sites)
-2. Pivot codeTable: each Variable → column, map codes to "code. description"
-3. Pivot interpTable: each interpVar → column, map codes to "code. description"
-4. Pivot artifactTable: each artifact category → column (counts remain numeric)
-5. Pivot totalsTable: each phase → column (counts remain numeric)
-6. Merge all pivoted tables on SSN
-7. Final validation and QC
-
-MEMORY CONSIDERATIONS:
-- artifactTable pivot is the largest operation (~190K rows → ~400 columns)
-- Uses efficient pandas pivot_table with fill_value for missing data
-- Monitors memory usage and provides warnings for large datasets
-- Chunked processing available for extremely large pivots
-
-MISSING DATA STRATEGY:
-- Blank/missing entries in EAV → filled with 0 (meaning "none/absent")
-- Categorical variables: 0 → "0. absent"
-- Numeric counts: remain as 0
-- Explicit missing indicators preserved if present
-
-HIERARCHICAL ARTIFACT NAMING:
-- Uses Material-Type-Subtype structure from artifactCodes
-- Creates unique column names like "ceramic_figurine_head_count"
-- Handles collisions by prefixing with broader categories
-
-USAGE:
-python phases/02_TransformDB/src/flattening_scripts/flatten_df10.py \
-  --df10-dir phases/02_TransformDB/data/db_extracted_tables/TMP_DF10 \
-  --out-wide-csv phases/02_TransformDB/data/dbs_wide/TMP_DF10_wide.csv \
-  --out-profile-json phases/02_TransformDB/data/dbs_wide/DF10_wide_profile.json
-
-WRAPPER INTEGRATION:
-from flattening_scripts.flatten_df10 import DF10Config, run_pipeline
-
-cfg = DF10Config(
-    df10_dir=Path("phases/02_TransformDB/data/db_extracted_tables/TMP_DF10"),
-    out_wide_csv=Path("phases/02_TransformDB/data/dbs_wide/TMP_DF10_wide.csv"),
-    out_profile_json=Path("phases/02_TransformDB/data/dbs_wide/DF10_wide_profile.json"),
-)
-result = run_pipeline(cfg)
-
-OUTPUT:
-- TMP_DF10_wide.csv: 5,046 rows × ~400+ columns with DF11-ready structure
-- DF10_wide_profile.json: Complete transformation log and QC metrics
-- Optional TMP_DF10_wide.parquet: Same data in Parquet format
-
-VALIDATION:
-- Exactly 5,046 rows (one per SSN)
-- Categorical variables as "code. description", counts as numeric
-- Missing data handled as "none/absent" vs unknown
-- Memory-efficient processing of large EAV pivots
-- Complete provenance logging for all transformations
-"""
