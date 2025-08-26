@@ -27,6 +27,7 @@ import argparse
 import json
 import logging
 import sys
+from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Tuple
@@ -46,7 +47,6 @@ REQUIRED_META_COLS: Tuple[str, ...] = (
 
 JsonDict = Dict[str, Any]
 CodeMap = Dict[str, Dict[int, str]]
-
 
 # =============================== EXCEPTIONS ===================================
 
@@ -73,7 +73,9 @@ class DF8Config:
     out_profile_json: Path
     out_parquet: Optional[Path] = None
     key: str = "ssn"  # Key after cleaning column names
-    expected_rows: Optional[int] = 5046
+    expected_rows: Optional[int] = 5050
+    log_level: str = "INFO"
+    tier0_fixes: bool = False
 
 
 # =============================== LOGGING ======================================
@@ -143,7 +145,8 @@ def load_metadata(path: Path) -> pd.DataFrame:
     if missing:
         raise ConfigError(f"Metadata is missing required columns: {missing}")
 
-    meta["is_coded"] = meta["is_coded"].astype(bool)
+    # Note: default parsing leaves as provided; normalization occurs under --tier0-fixes
+    meta["is_coded"] = meta["is_coded"].astype(str)
     meta["coded_na_values"] = meta["coded_na_values"].astype(str).fillna("")
     meta["order_index"] = pd.to_numeric(meta["order_index"], errors="coerce").astype(
         "Int64"
@@ -151,6 +154,35 @@ def load_metadata(path: Path) -> pd.DataFrame:
     meta["var_df11"] = meta["var_df11"].astype(str)
 
     return meta
+
+
+def _normalize_bool_series(s: pd.Series) -> pd.Series:
+    """Normalize a heterogeneous boolean-like series (strings/ints/bools) to True/False.
+
+    Accepts case-insensitive tokens: true/1/yes/y/t -> True; false/0/no/n/f/""/nan -> False.
+    """
+    true_set = {"true", "1", "yes", "y", "t"}
+    false_set = {"false", "0", "no", "n", "f", "", "nan"}
+
+    def _coerce(v: Any) -> bool:
+        if pd.isna(v):
+            return False
+        if isinstance(v, bool):
+            return v
+        if isinstance(v, (int, float)):
+            try:
+                return bool(int(v))
+            except Exception:  # noqa: BLE001
+                return False
+        sval = str(v).strip().lower()
+        if sval in true_set:
+            return True
+        if sval in false_set:
+            return False
+        # default safe fallback
+        return False
+
+    return s.map(_coerce)
 
 
 def load_code_mappings_from_json(path: Path) -> CodeMap:
@@ -227,8 +259,8 @@ def assemble_df8_tables(cfg: DF8Config) -> pd.DataFrame:
     file_order.insert(0, base_table_name)
 
     logger.info(f"Using '{base_table_name}' as the base for merging.")
-    # The primary key must be consistent for merging
-    merge_key_original_case = "SSN"
+    # The primary key must be consistent for merging (match actual CSV column names)
+    merge_key_original_case = "ssn"
     merged_df = dataframes[base_table_name]
 
     for table_name in file_order[1:]:
@@ -301,8 +333,12 @@ def replace_sentinels_with_na(
 
 
 def expand_coded_values(
-    df: pd.DataFrame, meta: pd.DataFrame, code_maps: CodeMap
-) -> pd.DataFrame:
+    df: pd.DataFrame,
+    meta: pd.DataFrame,
+    code_maps: CodeMap,
+    *,
+    format_code_text: bool = False,
+) -> Tuple[pd.DataFrame, Dict[str, int]]:
     """
     Stage 4: Apply code mappings to transform numeric codes into text.
 
@@ -317,18 +353,53 @@ def expand_coded_values(
     logger.info("Stage 4: Expanding coded variables to text...")
     df = df.copy()
     coded_vars_count = 0
+    unmapped_counts: Dict[str, int] = {}
     for _, row in meta.iterrows():
-        if row["is_coded"] and row["variable"] in df.columns:
+        if bool(row["is_coded"]) and row["variable"] in df.columns:
             var = row["variable"]
             if var in code_maps:
-                # Use .map() for efficient replacement on the series
-                df[var] = df[var].map(code_maps[var]).astype("string")
+                if format_code_text:
+                    mapping = code_maps[var]
+
+                    # Build "<code>. <text>" with fallback to raw code when unmapped
+                    def _fmt(val: Any, _mapping=mapping) -> Any:
+                        if pd.isna(val):
+                            return pd.NA
+                        try:
+                            ival = int(val)
+                        except Exception:  # noqa: BLE001
+                            # non-integer code, attempt direct lookup
+                            txt = _mapping.get(val)
+                            if txt is not None:
+                                # Check if mapping already includes code prefix
+                                return (
+                                    txt
+                                    if txt.startswith(f"{val}. ")
+                                    else f"{val}. {txt}"
+                                )
+                            return str(val)
+                        txt = _mapping.get(ival)
+                        if txt is not None:
+                            # Check if mapping already includes code prefix
+                            return (
+                                txt if txt.startswith(f"{ival}. ") else f"{ival}. {txt}"
+                            )
+                        return str(ival)
+
+                    ser = df[var].apply(_fmt).astype("string")
+                    # Count unmapped: values without the literal ". " delimiter and non-NA
+                    unmapped = ser.notna() & (~ser.str.contains(". ", regex=False))
+                    unmapped_counts[var] = int(unmapped.sum())
+                    df[var] = ser
+                else:
+                    # Use .map() for efficient replacement on the series
+                    df[var] = df[var].map(code_maps[var]).astype("string")
                 coded_vars_count += 1
             else:
                 logger.debug("No code map found for coded variable: %s", var)
 
-    logger.info("Expanded %d coded variables.", coded_vars_count)
-    return df
+    logger.info("Applied code mappings for %d variables.", coded_vars_count)
+    return df, unmapped_counts
 
 
 def apply_special_transformations(df: pd.DataFrame) -> pd.DataFrame:
@@ -358,8 +429,12 @@ def apply_special_transformations(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def rename_and_reorder_df11(
-    df: pd.DataFrame, meta: pd.DataFrame, key_col: str
-) -> pd.DataFrame:
+    df: pd.DataFrame,
+    meta: pd.DataFrame,
+    key_col: str,
+    *,
+    inject_placeholders: bool = False,
+) -> Tuple[pd.DataFrame, int]:
     """
     Stage 6: Rename and reorder columns to match the DF11 specification.
 
@@ -381,21 +456,84 @@ def rename_and_reorder_df11(
     meta_ordered = meta.dropna(subset=["order_index", "var_df11"]).sort_values(
         "order_index"
     )
-    ordered_vars = [v for v in meta_ordered["var_df11"] if v in df.columns]
+
+    def _unique_preserve(seq: List[str]) -> List[str]:
+        seen = set()
+        out: List[str] = []
+        for x in seq:
+            if x and x not in seen:
+                seen.add(x)
+                out.append(x)
+        return out
+
+    all_df11_unique = _unique_preserve([str(v) for v in meta_ordered["var_df11"]])
+    ordered_vars = [v for v in all_df11_unique if v in df.columns]
+
+    injected_count = 0
+    if inject_placeholders:
+        # Ensure all DF11 variables from metadata exist; add as NA if missing, vectorized
+        missing = [v for v in all_df11_unique if v not in df.columns]
+        if missing:
+            na_frame = pd.DataFrame(
+                {v: pd.Series(pd.NA, index=df.index) for v in missing}
+            )
+            df = pd.concat([df, na_frame], axis=1)
+        injected_count = len(missing)
+        # After injection, refresh ordered_vars from unique set
+        ordered_vars = [v for v in all_df11_unique if v in df.columns]
 
     key_col_df11 = rename_map.get(key_col, key_col)
 
+    # Avoid duplicating the key in the ordered_vars list
+    ordered_vars = [v for v in ordered_vars if v != key_col_df11]
+
+    # Filter out original variable names that have been renamed to prevent duplicates
+    renamed_originals = set(rename_map.keys())  # Original DF8 names that were renamed
+
+    # Also filter out unmapped columns that don't follow DF11 naming patterns
+    # These are likely intermediate artifacts that shouldn't be in final output
+    def is_valid_df11_column(col_name: str) -> bool:
+        """Check if column follows DF11 naming pattern or is a legitimate unmapped column."""
+        # DF11 pattern columns
+        if col_name.startswith(("meta_", "arch_", "art_", "env_")):
+            return True
+        # Modern variables that follow expected naming (start with 'mod_')
+        if col_name.startswith("mod_"):
+            return True
+        return False
+
     other_cols = sorted(
-        [c for c in df.columns if c not in {key_col_df11, *ordered_vars}]
+        [
+            c
+            for c in df.columns
+            if c not in set(ordered_vars + [key_col_df11])
+            and c not in renamed_originals
+            and is_valid_df11_column(c)
+        ]
     )
-    final_order = [key_col_df11] + ordered_vars + other_cols
+
+    # Build final order and de-duplicate defensively while preserving order
+    tmp_order = [key_col_df11] + ordered_vars + other_cols
+    seen_order = set()
+    final_order: List[str] = []
+    for c in tmp_order:
+        if c not in seen_order:
+            seen_order.add(c)
+            final_order.append(c)
     final_order_existing = [c for c in final_order if c in df.columns]
 
     logger.info("Reordered columns based on DF11 specification.")
-    return df[final_order_existing]
+    return df[final_order_existing], injected_count
 
 
-def qc_profile(cfg: DF8Config, df: pd.DataFrame, sentinels: List[str]) -> JsonDict:
+def qc_profile(
+    cfg: DF8Config,
+    df: pd.DataFrame,
+    sentinels: List[str],
+    *,
+    placeholders_injected: int = 0,
+    unmapped_code_counts: Optional[Dict[str, int]] = None,
+) -> JsonDict:
     """
     Generate a QC and validation summary for the transformation log.
 
@@ -411,14 +549,38 @@ def qc_profile(cfg: DF8Config, df: pd.DataFrame, sentinels: List[str]) -> JsonDi
     if key_col_df11 not in df.columns:
         key_col_df11 = cfg.key  # Fallback if rename failed
 
+    # Robust key uniqueness: handle potential duplicate column labels by selecting as DataFrame
+    # and checking row-level duplicates on the key column.
+    if key_col_df11 in df.columns:
+        key_frame = df.loc[:, [key_col_df11]]  # always a DataFrame
+        dup_count = int(key_frame.duplicated(subset=[key_col_df11], keep=False).sum())
+        key_unique = dup_count == 0
+    else:
+        dup_count = 0
+        key_unique = False
+
+    # Header duplicate metrics
+    name_counts = Counter(df.columns)
+    header_dupes = {k: int(v) for k, v in name_counts.items() if v > 1}
+    header_dupe_names_count = len(header_dupes)
+    # All-NA columns count (helps identify placeholder-only columns)
+    all_na_columns_count = int(df.isna().all(axis=0).sum())
+
     return {
         "row_count": int(df.shape[0]),
         "column_count": int(df.shape[1]),
-        "key_unique": bool(df[key_col_df11].is_unique),
+        "key_unique": key_unique,
         "expected_rows_match": (
             None if cfg.expected_rows is None else int(df.shape[0]) == cfg.expected_rows
         ),
         "sentinels_processed": sentinels,
+        "key_duplicate_count": int(dup_count),
+        "placeholders_injected": int(placeholders_injected),
+        "unmapped_code_total": int(sum((unmapped_code_counts or {}).values())),
+        "unmapped_code_counts": (unmapped_code_counts or {}),
+        "header_duplicate_names_count": int(header_dupe_names_count),
+        "header_duplicate_name_counts": header_dupes,
+        "all_na_columns_count": int(all_na_columns_count),
     }
 
 
@@ -435,13 +597,26 @@ def run_pipeline(cfg: DF8Config) -> Dict[str, Any]:
     df = assemble_df8_tables(cfg)
     code_maps = load_code_mappings_from_json(cfg.code_map_json)
     meta = load_metadata(cfg.metadata_csv)
+    if cfg.tier0_fixes:
+        # Normalize is_coded only under gated Phase B
+        meta["is_coded"] = _normalize_bool_series(meta["is_coded"]).astype(bool)
 
     df, sentinels = replace_sentinels_with_na(df, meta)
-    df = expand_coded_values(df, meta, code_maps)
+    df, unmapped = expand_coded_values(
+        df, meta, code_maps, format_code_text=cfg.tier0_fixes
+    )
     df = apply_special_transformations(df)
-    df = rename_and_reorder_df11(df, meta, cfg.key)
+    df, injected_count = rename_and_reorder_df11(
+        df, meta, cfg.key, inject_placeholders=cfg.tier0_fixes
+    )
 
-    qc = qc_profile(cfg, df, sentinels)
+    qc = qc_profile(
+        cfg,
+        df,
+        sentinels,
+        placeholders_injected=injected_count,
+        unmapped_code_counts=unmapped,
+    )
     log_payload: JsonDict = {
         "inputs": {
             "df8_dir": str(cfg.df8_dir),
@@ -517,8 +692,13 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> DF8Config:
     parser.add_argument(
         "--expected-rows",
         type=int,
-        default=5046,
+        default=5050,
         help="Expected total rows (set to 0 to disable check).",
+    )
+    parser.add_argument(
+        "--tier0-fixes",
+        action="store_true",
+        help="Enable Tier 0 Phase B gated fixes: is_coded normalization, DF11 placeholder injection, code expansion format",
     )
     parser.add_argument(
         "--log-level",
@@ -536,6 +716,8 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> DF8Config:
         out_profile_json=args.out_profile_json,
         out_parquet=args.out_parquet,
         expected_rows=None if args.expected_rows == 0 else args.expected_rows,
+        log_level=args.log_level,
+        tier0_fixes=bool(args.tier0_fixes),
     )
 
 

@@ -31,6 +31,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -218,44 +219,118 @@ def load_input_tables(config: DF10Config) -> Dict[str, pd.DataFrame]:
     # Load metadata
     tables["metadata"] = read_csv_safe(config.metadata_path)
 
-    logger.info("Successfully loaded %d tables", len(tables))
     return tables
 
 
-# ================================ DATA CLEANING ===============================
+# ================================ WHERE/NA HELPERS ============================
 
 
-def clean_prov_table(prov: pd.DataFrame) -> pd.DataFrame:
-    """Clean provTable per R script specifications.
-
-    Specifically handles Subsite "NONE" values.
+def _is_numeric_string(s: str) -> bool:
+    """Return True if string represents an integer (optional leading sign).
 
     Args:
-        prov: Raw provTable DataFrame
+        s: Input string to evaluate
+
+    Returns:
+        True if the string is an integer number, False otherwise.
+    """
+    if s is None:
+        return False
+    return bool(re.fullmatch(r"[+-]?\d+", str(s)))
+
+
+def _resolve_where_for_code(where_val: Any, code_fallback: Any) -> Optional[int]:
+    """Resolve DF10 Where logic for coded variables to a numeric code.
+
+    Rules (accuracy-first, per R/SQL logic):
+    - If Where == 'Missing' (case-insensitive) -> -1 (missing marker for codes)
+      (Backward-compatible: also treat 'M' as Missing if encountered)
+    - If Where == 'NA' or NULL -> fallback to original Code
+    - If Where is a valid integer string -> int(Where)
+    - Else -> fallback to original Code
+
+    Args:
+        where_val: The Where field value
+        code_fallback: The original numeric Code value (may be float/str)
+
+    Returns:
+        Integer code or None if fallback is missing.
+    """
+    if pd.isna(where_val):
+        return int(code_fallback) if pd.notna(code_fallback) else None
+    s = str(where_val).strip().upper()
+    if s in {"MISSING", "M"}:
+        return -1
+    if s == "NA":
+        return int(code_fallback) if pd.notna(code_fallback) else None
+    if _is_numeric_string(s):
+        return int(s)
+    return int(code_fallback) if pd.notna(code_fallback) else None
+
+
+def _resolve_where_for_count(where_val: Any, count_fallback: Any) -> Optional[int]:
+    """Resolve DF10 Where logic for count variables to a numeric count.
+
+    Rules (accuracy-first, per R/SQL logic):
+    - If Where == 'Missing' (case-insensitive) -> -9999 (missing marker for counts)
+      (Backward-compatible: also treat 'M' as Missing if encountered)
+    - If Where == 'NA' or NULL -> fallback to original Count
+    - If Where is a valid integer string -> int(Where)
+    - Else -> fallback to original Count
+
+    Args:
+        where_val: The Where field value
+        count_fallback: The original numeric Count value (may be float)
+
+    Returns:
+        Integer count or None if fallback is missing.
+    """
+    if pd.isna(where_val):
+        return int(count_fallback) if pd.notna(count_fallback) else None
+    s = str(where_val).strip().upper()
+    if s in {"MISSING", "M"}:
+        return MISSING_SENTINEL_NEG9999
+    if s == "NA":
+        return int(count_fallback) if pd.notna(count_fallback) else None
+    if _is_numeric_string(s):
+        return int(s)
+    return int(count_fallback) if pd.notna(count_fallback) else None
+
+
+# ================================ PROV CLEANING ===============================
+
+
+def clean_prov_table(prov_df: pd.DataFrame) -> pd.DataFrame:
+    """Clean `provTable` columns per DF10 standards.
+
+    - Normalize Subsite values: fill NA/empty with 'NONE'
+    - Preserve all rows and columns; ensure SSN is present
+
+    Args:
+        prov_df: Raw provTable DataFrame
 
     Returns:
         Cleaned provTable DataFrame
     """
-    logger.info("Cleaning provTable...")
-
-    # Create copy to avoid modifying original
-    prov_clean = prov.copy()
-
-    # Handle "NONE" subsite values per R script
-    if "Subsite" in prov_clean.columns:
-        mask = prov_clean["Subsite"] == NONE_SUBSITE_LABEL
-        prov_clean.loc[mask, "Subsite"] = np.nan
-        logger.debug(f"Converted {mask.sum()} 'NONE' Subsite values to NaN")
-
-    # Ensure SSN is numeric
-    prov_clean["SSN"] = pd.to_numeric(prov_clean["SSN"], errors="coerce")
-
-    # Check for duplicate SSNs
-    if prov_clean["SSN"].duplicated().any():
-        dup_count = prov_clean["SSN"].duplicated().sum()
-        logger.warning(f"Found {dup_count} duplicate SSN values in provTable")
-
-    return prov_clean
+    df = prov_df.copy()
+    # Normalize Subsite if present
+    if "Subsite" in df.columns:
+        sub = df["Subsite"].astype("string")
+        sub = sub.fillna(NONE_SUBSITE_LABEL)
+        sub = sub.str.strip()
+        sub = sub.replace(
+            {
+                "": NONE_SUBSITE_LABEL,
+                "NA": NONE_SUBSITE_LABEL,
+                "None": NONE_SUBSITE_LABEL,
+            },
+            regex=False,
+        )
+        df["Subsite"] = sub
+    # Basic validation for SSN presence
+    if "SSN" not in df.columns:
+        raise KeyError("provTable is missing required 'SSN' column")
+    return df
 
 
 # ================================ CODE EXPANSION ==============================
@@ -333,19 +408,42 @@ def format_codes(
     """
     logger.info("Formatting codeTable...")
 
-    # Build code lookup if needed
+    # Work on a copy and prepare numeric code fallback
+    code_table = code_table.copy()
+    code_numeric = pd.to_numeric(code_table["Code"], errors="coerce")
+
+    # Apply robust Where override to produce a numeric NewCode
+    if "Where" in code_table.columns:
+        code_table["NewCode"] = [
+            _resolve_where_for_code(w, c)
+            for w, c in zip(code_table["Where"], code_numeric, strict=False)
+        ]
+    else:
+        code_table["NewCode"] = (
+            code_numeric.astype("Int64")
+            .astype(object)
+            .where(code_numeric.notna(), None)
+        )
+
+    # Convert sentinel -1 -> NaN per requirement
+    newcode_series = pd.Series(code_table["NewCode"]).astype("Int64")
+    newcode_series = newcode_series.mask(newcode_series == -1, pd.NA)
+
+    # Expand to labels if requested; otherwise keep numeric
     if config.emit_code_labels:
         code_lookup = build_code_lookup(code_codes)
-        code_table = code_table.copy()
-        code_table["Code"] = expand_codes(code_table["Code"], code_lookup)
+
+        def _map_label(x: Any) -> Any:
+            if pd.isna(x):
+                return np.nan
+            xv = int(x)
+            return code_lookup.get(xv, str(xv))
+
+        code_table["Code"] = newcode_series.map(_map_label)
         default_fill = "0. absent"
     else:
+        code_table["Code"] = newcode_series.astype("Int64").astype(object)
         default_fill = 0
-
-    # Check for Where = "Missing" entries and handle sentinel values
-    missing_mask = code_table["Where"] == MISSING_WHERE_LABEL
-    if missing_mask.any():
-        code_table.loc[missing_mask, "Code"] = np.nan
 
     # Pivot to wide format
     codes_wide = code_table.pivot_table(
@@ -388,17 +486,40 @@ def format_interps(
     # Handle column name variation (interpVar vs Variable)
     var_col = "interpVar" if "interpVar" in interp_table.columns else "Variable"
 
-    # Build code lookup if needed
+    # Work on a copy and prepare numeric code fallback
+    interp_table = interp_table.copy()
+    code_numeric = pd.to_numeric(interp_table["Code"], errors="coerce")
+
+    # Apply robust Where override
+    if "Where" in interp_table.columns:
+        interp_table["NewCode"] = [
+            _resolve_where_for_code(w, c)
+            for w, c in zip(interp_table["Where"], code_numeric, strict=False)
+        ]
+    else:
+        interp_table["NewCode"] = (
+            code_numeric.astype("Int64")
+            .astype(object)
+            .where(code_numeric.notna(), None)
+        )
+
+    # Convert sentinel -1 -> NaN
+    newcode_series = pd.Series(interp_table["NewCode"]).astype("Int64")
+    newcode_series = newcode_series.mask(newcode_series == -1, pd.NA)
+
+    # Expand to labels if requested; otherwise keep numeric
     if config.emit_code_labels:
         code_lookup = build_code_lookup(interp_codes)
-        interp_table = interp_table.copy()
-        interp_table["Code"] = expand_codes(interp_table["Code"], code_lookup)
 
-    # Check for Where = "Missing" entries
-    if "Where" in interp_table.columns:
-        missing_mask = interp_table["Where"] == MISSING_WHERE_LABEL
-        if missing_mask.any():
-            interp_table.loc[missing_mask, "Code"] = np.nan
+        def _map_label(x: Any) -> Any:
+            if pd.isna(x):
+                return np.nan
+            xv = int(x)
+            return code_lookup.get(xv, str(xv))
+
+        interp_table["Code"] = newcode_series.map(_map_label)
+    else:
+        interp_table["Code"] = newcode_series.astype("Int64").astype(object)
 
     # Pivot to wide format (no fill_value per R script)
     interps_wide = interp_table.pivot_table(
@@ -427,18 +548,21 @@ def format_totals(totals_table: pd.DataFrame) -> pd.DataFrame:
 
     totals = totals_table.copy()
 
-    # Calculate NewCount per R script logic
-    # If Where == "Missing", use -9999, else use Where value, else use Count
-    totals["NewCount"] = totals.apply(
-        lambda row: (
-            MISSING_SENTINEL_NEG9999
-            if row["Where"] == MISSING_WHERE_LABEL
-            else pd.to_numeric(row["Where"], errors="coerce")
-            if pd.notna(row["Where"]) and row["Where"] != MISSING_WHERE_LABEL
-            else row["Count"]
-        ),
-        axis=1,
-    )
+    # Calculate NewCount using robust Where logic
+    count_numeric = pd.to_numeric(totals["Count"], errors="coerce")
+    if "Where" in totals.columns:
+        where_series = totals["Where"]
+        totals["NewCount"] = [
+            _resolve_where_for_count(w, c)
+            for w, c in zip(where_series, count_numeric, strict=False)
+        ]
+    else:
+        # No Where column: use original counts as-is
+        totals["NewCount"] = (
+            count_numeric.astype("Int64")
+            .astype(object)
+            .where(count_numeric.notna(), None)
+        )
 
     # Replace -9999 with NaN
     totals["NewCount"] = totals["NewCount"].replace(MISSING_SENTINEL_NEG9999, np.nan)
@@ -511,15 +635,29 @@ def format_artifacts(
         )
     )
 
-    # Handle Where = "Missing" -> Count = NaN
-    missing_mask = artifacts["Where"] == MISSING_WHERE_LABEL
-    artifacts.loc[missing_mask, "Count"] = np.nan
+    # Resolve Where override for counts
+    count_numeric = pd.to_numeric(artifacts["Count"], errors="coerce")
+    if "Where" in artifacts.columns:
+        where_series = artifacts["Where"]
+        artifacts["NewCount"] = [
+            _resolve_where_for_count(w, c)
+            for w, c in zip(where_series, count_numeric, strict=False)
+        ]
+    else:
+        artifacts["NewCount"] = (
+            count_numeric.astype("Int64")
+            .astype(object)
+            .where(count_numeric.notna(), None)
+        )
+    artifacts["NewCount"] = artifacts["NewCount"].replace(
+        MISSING_SENTINEL_NEG9999, np.nan
+    )
 
     # Pivot to wide format with 0 fill
     artifacts_wide = artifacts.pivot_table(
         index="SSN",
         columns="ArtifactName",
-        values="Count",
+        values="NewCount",
         aggfunc="sum",
         fill_value=0,
     ).reset_index()
@@ -560,13 +698,57 @@ def apply_metadata_renames_and_order(
 
     result = df.copy()
 
-    # Step 1: Rename columns
-    # Build rename mapping from metadata where variable exists in df
-    rename_map = {}
+    def _tokenize(name: Any) -> str:
+        """Normalization token for fuzzy column matching.
+
+        - Convert camelCase to snake with underscore boundaries
+        - Lowercase
+        - Replace spaces and hyphens with underscore
+        - Remove all non-alphanumeric characters except underscore
+        - Finally, drop underscores to make comparison robust (e.g., 'area_site' == 'areasite')
+        """
+        if pd.isna(name):
+            return ""
+        s = str(name)
+        # camelCase -> snake_case boundaries
+        s = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", s)
+        s = s.replace("-", "_").replace(" ", "_")
+        s = s.lower()
+        s = re.sub(r"[^a-z0-9_]", "", s)
+        return s.replace("_", "")
+
+    # Step 1: Rename columns (exact, then fuzzy by token)
+    rename_map: Dict[str, str] = {}
+
+    # Exact-case mapping first
     for _, row in metadata.iterrows():
-        if pd.notna(row.get("variable")) and pd.notna(row.get("var_df11")):
-            if row["variable"] in result.columns:
-                rename_map[row["variable"]] = row["var_df11"]
+        src = row.get("variable")
+        dst = row.get("var_df11")
+        if pd.notna(src) and pd.notna(dst) and src in result.columns:
+            rename_map[str(src)] = str(dst)
+
+    # Fuzzy mapping by token for remaining columns (handles artifacts and case variants)
+    df_token_map: Dict[str, str] = {_tokenize(c): c for c in result.columns}
+    used_src = set(rename_map.keys())
+    used_dst = set(rename_map.values())
+    for _, row in metadata.iterrows():
+        src = row.get("variable")
+        dst = row.get("var_df11")
+        if pd.isna(src) or pd.isna(dst):
+            continue
+        src_s, dst_s = str(src), str(dst)
+        if src_s in used_src or dst_s in used_dst:
+            continue
+        tok = _tokenize(src_s)
+        # Skip if token empty or not found
+        if not tok:
+            continue
+        if tok in df_token_map:
+            col_name = df_token_map[tok]
+            if col_name not in rename_map and col_name != dst_s:
+                rename_map[col_name] = dst_s
+                used_src.add(src_s)
+                used_dst.add(dst_s)
 
     if rename_map:
         result = result.rename(columns=rename_map)
